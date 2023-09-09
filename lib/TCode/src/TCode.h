@@ -10,7 +10,11 @@
 
 /*
 
-TCode
+TCode -
+    - Input
+    - Buffer
+    - Run Commands
+    - Store Axis
 Axis - Done needs testing
 Setting Management - Done needs testing - tested
 Parser - Done needs testing
