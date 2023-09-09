@@ -1,18 +1,19 @@
 #include <Arduino.h>
+#include <TCode.h>
 
-// put function declarations here:
-int myFunction(int, int);
+Settings settingManager;
+TCodeAxis a1("Testing");
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  Serial.begin(115200);
+  a1.set(9999,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
+  a1.set(0,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
+  a1.set(9999,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
+  a1.set(0,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
+  a1.set(9999,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  int position = a1.getPosition();
+  Serial.println(position);
 }

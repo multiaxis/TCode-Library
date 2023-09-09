@@ -43,7 +43,7 @@ public:
 
     //void addCommand(TCode_Axis_Command command);
 
-    void set(int x, TCode_Axis_Extention_Type ext, long y,TCode_Axis_Ramp_Type e = TCode_Axis_Ramp_Type::Linear); // Function to set the axis dynamic parameters
+    void set(int target_value, TCode_Axis_Extention_Type extention_type = TCode_Axis_Extention_Type::Time, long extention_value = 0, TCode_Axis_Ramp_Type ramp_type = TCode_Axis_Ramp_Type::Linear); // Function to set the axis dynamic parameters
     int getPosition();                                      // Function to return the current position of this axis
     void stop();                                            // Function to stop axis movement at current position
 

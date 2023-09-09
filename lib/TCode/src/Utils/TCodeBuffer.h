@@ -103,7 +103,11 @@ bool TCodeBuffer<BufferType,TCODE_BUFFER_LENGTH>::peekBack(BufferType &obj)
         return false;
     }
 
-    obj = buffer[Back];
+    
+    if((int)Back - 1 < 0)
+        obj = buffer[TCODE_BUFFER_LENGTH];
+    else
+        obj = buffer[Back - 1];
     return true;
 }
 

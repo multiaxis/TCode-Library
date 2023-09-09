@@ -1,5 +1,7 @@
+#ifndef TCODE_AXIS_CPP
+#define TCODE_AXIS_CPP
 #include "TCodeAxis.h"
-
+#include <Arduino.h>
 
 TCodeAxis::TCodeAxis(const char* name)
 {
@@ -39,6 +41,7 @@ unsigned long TCodeAxis::getDeltaTime(int start_position, int target_value, TCod
                 delta_time = minInterval;
         }
     }
+    return delta_time;
 }
 
 /**
@@ -48,7 +51,7 @@ unsigned long TCodeAxis::getDeltaTime(int start_position, int target_value, TCod
  * @param extention_value the extention value
  * @param ramp_type the ramp type
  */
-void TCodeAxis::set(int target_value, TCode_Axis_Extention_Type extention_type = TCode_Axis_Extention_Type::Time, long extention_value = 0,TCode_Axis_Ramp_Type ramp_type = TCode_Axis_Ramp_Type::Linear)
+void TCodeAxis::set(int target_value, TCode_Axis_Extention_Type extention_type , long extention_value, TCode_Axis_Ramp_Type ramp_type)
 {
     unsigned long t = getLastMillis(); // This is for adding this state
     target_value = constrain(target_value, 0, TCODE_MAX_AXIS);
@@ -115,6 +118,9 @@ int TCodeAxis::getLastTargetPosition()
 int TCodeAxis::getPosition()
 {
     bool isInRange = false;
+
+    
+
     int value = getPositionMapped(currentState,isInRange);
     if(isInRange)
     {
@@ -153,6 +159,16 @@ int TCodeAxis::getPositionMapped(TCode_Axis_State &state, bool& inRange)
         return state.startValue;
     }
 
+/*
+    Serial.print("Current State Start Time:");
+    Serial.println(state.startTime);
+    Serial.print("Current State End Time:");
+    Serial.println(state.endTime);
+    Serial.print("Current State start Value:");
+    Serial.println(state.startValue);
+    Serial.print("Current State end Value:");
+    Serial.println(state.endValue);
+*/
 
     switch (state.ramp_type)
     {
@@ -216,3 +232,5 @@ const char* TCodeAxis::getName()
 {
     return axisName;
 }
+
+#endif

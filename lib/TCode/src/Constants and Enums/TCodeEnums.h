@@ -106,6 +106,21 @@ enum class TCode_Device_Command_Type
 };
 
 /**
+ * @brief representation of the data for an TCode Axis Command
+ * @param extention_type the extention type of the command used for time and speed functions when setting axis values
+ * @param ramp_type used to control the ramp type of extention commands
+ * @param command_value the target value of the axis
+ * @param command_value_extention the extention value used by the axis for time and speed functions 
+*/
+struct TCode_Axis_Data
+{
+    TCode_Axis_Extention_Type extention_type;
+    TCode_Axis_Ramp_Type ramp_type;
+    int command_value;
+    long command_value_extention;
+};
+
+/**
  * @brief representation of a TCode Device Command
  * @param type the type of command to be executed
  */
@@ -125,20 +140,7 @@ struct TCode_Axis_Command
     TCode_Axis_Data Data;
 };
 
-/**
- * @brief representation of the data for an TCode Axis Command
- * @param extention_type the extention type of the command used for time and speed functions when setting axis values
- * @param ramp_type used to control the ramp type of extention commands
- * @param command_value the target value of the axis
- * @param command_value_extention the extention value used by the axis for time and speed functions 
-*/
-struct TCode_Axis_Data
-{
-    TCode_Axis_Extention_Type extention_type;
-    TCode_Axis_Ramp_Type ramp_type;
-    int command_value;
-    long command_value_extention;
-};
+
 
 struct TCode_Axis_State
 {
@@ -178,7 +180,13 @@ struct TCode_Setup_Command
  */
 struct TCode_External_Command
 {
+    unsigned int length;
     const char *command;
+
+    ~TCode_External_Command()
+    {
+        delete[] command;
+    }
 };
 
 #endif

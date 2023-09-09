@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SETTING_MANAGEMENT_HPP
 #define SETTING_MANAGEMENT_HPP
 #include <SPIFFS.h>
@@ -7,55 +8,78 @@
 
 class Settings
 {
-    String filepath;
+    const char *filepath;
     bool file_system_mounted = false;
     bool found_file = false;
-public:
-    bool init(const char* filepath);
-    bool isMounted();
-    bool hasSetting(const char* setting);
 
-    template<class T>
-    bool getSetting(const char* setting, T& setting_value);
-    template<class T>
-    bool setSetting(const char* setting, const T& setting_value);
+public:
+    bool init(const char *filepath);
+    bool isMounted();
+    bool hasSetting(const char *setting);
+
+    template <class T>
+    bool getSetting(const char *setting, T &setting_value);
+    template <class T>
+    bool setSetting(const char *setting, const T &setting_value);
     Settings() {}
 
 private:
-    bool getFile(String& out);
-    bool writeFile(const String& file);
-    virtual void createConfigFile(String& out);
+    bool getFile(String &out);
+    bool writeFile(const String &file);
+    virtual void createConfigFile(String &out);
     void outputSystemUsage();
     unsigned long getFileSize();
-} SETTINGS;
+};
 
 template <class T>
 inline bool Settings::getSetting(const char *setting, T &setting_value)
 {
 
-    #ifdef DEBUG
-        Serial.print(F("SM: getting setting "));
-        Serial.println(setting);
-    #endif
+#ifdef DEBUG
+    Serial.print(F("SM: getting setting "));
+    Serial.println(setting);
+#endif
 
     StaticJsonDocument<JSON_FILE_SIZE> doc;
     String file_data;
-    if(!getFile(file_data))
+    if (!getFile(file_data))
     {
+#ifdef DEBUG
+        Serial.println(F("SM: error getting file data "));
+#endif
         return false;
     }
 
     DeserializationError error = deserializeJson(doc, file_data);
-    if (error) {
-        #ifdef DEBUG
+    if (error)
+    {
+#ifdef DEBUG
         Serial.print(F("SM: deserializeJson() failed: "));
         Serial.println(error.f_str());
-        #endif
+#endif
         return false;
     }
 
-    if(!doc.containsKey(setting))
+    #ifdef DEBUG
+        Serial.print(F("SM: keys "));
+        JsonObject documentRoot = doc.as<JsonObject>();
+        for(JsonPair keyValue : documentRoot) {
+            Serial.print(F("\""));
+            Serial.print(keyValue.key().c_str());
+            Serial.print("\":\"");
+            Serial.print(keyValue.value().as<String>());
+            Serial.println(F("\""));
+        }
+    #endif
+
+    
+
+
+    if (!doc.containsKey(setting))
     {
+        #ifdef DEBUG
+        Serial.println(F("SM: key not found"));
+        #endif
         return false;
     }
 
@@ -68,22 +92,23 @@ template <class T>
 inline bool Settings::setSetting(const char *setting, const T &setting_value)
 {
 
-    #ifdef DEBUG
-        Serial.print(F("SM: setting setting "));
-        Serial.print(setting);
-        Serial.print(F(" to "));
-        Serial.println(setting_value);
-    #endif
+#ifdef DEBUG
+    Serial.print(F("SM: setting setting "));
+    Serial.print(setting);
+    Serial.print(F(" to "));
+    Serial.println(setting_value);
+#endif
 
     StaticJsonDocument<JSON_FILE_SIZE> doc;
     String file_data;
-    if(!getFile(file_data))
+    if (!getFile(file_data))
     {
         return false;
     }
 
     DeserializationError error = deserializeJson(doc, file_data);
-    if (error) {
+    if (error)
+    {
         Serial.print(F("SM: deserializeJson() failed: "));
         Serial.println(error.f_str());
         return false;
@@ -91,7 +116,7 @@ inline bool Settings::setSetting(const char *setting, const T &setting_value)
 
     doc[setting] = setting_value;
     String out;
-    serializeJsonPretty(doc,out);
+    serializeJsonPretty(doc, out);
     writeFile(out);
     return true;
 }

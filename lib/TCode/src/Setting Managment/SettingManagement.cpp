@@ -1,5 +1,6 @@
+#ifndef SETTING_MANAGMENT_CPP
+#define SETTING_MANAGEMET_CPP
 #include "SettingManagement.hpp"
-
 
 bool Settings::init(const char *filepath)
 {
@@ -10,20 +11,41 @@ bool Settings::init(const char *filepath)
 #endif
         return false;
     }
+    else
+    {
+#ifdef DEBUG
+        Serial.println(F("SM: SPIFFS mounted correctly"));
+#endif
+    }
     file_system_mounted = true;
     found_file = SPIFFS.exists(filepath);
+    this->filepath = filepath;
+
+#ifdef DEBUG
+    if(found_file)
+        Serial.println(F("SM: setting's file found"));
+    else
+        Serial.println(F("SM: setting's file not found"));
+#endif
+
 
     if (!found_file)
     {
-
+        found_file = true;
         String newConfig;
         createConfigFile(newConfig);
         writeFile(newConfig);
 #ifdef DEBUG
         Serial.println(F("SM: file not found creating settings file"));
-        outputSystemUsage();
+        
 #endif
     }
+
+    #ifdef DEBUG
+        Serial.println(F("SM: initialised"));
+        
+    #endif
+    outputSystemUsage();
     return true;
 }
 
@@ -79,8 +101,6 @@ bool Settings::getFile(String &out)
     while (file.available())
     {
         uint8_t current_byte = file.read();
-        if (current_byte == ' ')
-            continue;
         if (current_byte == '\n')
             continue;
         out += (char)current_byte;
@@ -100,14 +120,26 @@ bool Settings::getFile(String &out)
 
 bool Settings::writeFile(const String &file_data)
 {
+    #ifdef DEBUG
+        Serial.print(F("SM: writing file \""));
+        Serial.print(filepath);
+        Serial.println(F("\""));
+    #endif
+
+
     if (!isMounted())
+    {
+        #ifdef DEBUG
+        Serial.println(F("SM: file system not mounted"));
+        #endif
         return false;
+    }
     File file = SPIFFS.open(filepath, "w", true);
 
     if (!file)
     {
 #ifdef DEBUG
-        Serial.print(F("SM: Could not find file \""));
+        Serial.print(F("SM: Could not write file \""));
         Serial.print(filepath);
         Serial.println(F("\""));
 #endif
@@ -155,11 +187,13 @@ unsigned long Settings::getFileSize()
 
 void Settings::outputSystemUsage()
 {
-    Serial.println(F("Settings Manager:"));
-    Serial.print(F("Used by settings file:"));
+    Serial.println(F("Settings Manager Details:"));
+    Serial.print(F("  Used by settings file:"));
     Serial.println(getFileSize());
-    Serial.print(F("Current Total Bytes:"));
+    Serial.print(F("  Current Total Bytes:"));
     Serial.println(SPIFFS.totalBytes());
-    Serial.print(F("Current Bytes Used:"));
+    Serial.print(F("  Current Bytes Used:"));
     Serial.println(SPIFFS.usedBytes());
 }
+
+#endif
