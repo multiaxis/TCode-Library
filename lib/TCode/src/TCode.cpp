@@ -4,18 +4,29 @@ TCode::TCode()
 {
     firmwareVersion = DEFAULT_FIRMWARE_NAME;
     tcodeVersion = CURRENT_TCODE_VERSION;
+    settingManager.init(DEFAULT_FILE_NAME);
 }
 
 TCode::TCode(const char *firmware)
 {
     firmwareVersion = firmware;
     tcodeVersion = CURRENT_TCODE_VERSION;
+    settingManager.init(DEFAULT_FILE_NAME);
 }
 
 TCode::TCode(const char *firmware, const char *tcode)
 {
     firmwareVersion = firmware;
     tcodeVersion = tcode;
+    settingManager.init(DEFAULT_FILE_NAME);
+}
+
+TCode::TCode(const char *firmware, const char *tcode_version, const char *_filepath)
+{
+    firmwareVersion = firmware;
+    tcodeVersion = tcode_version;
+    filepath = _filepath;
+    settingManager.init(filepath);
 }
 
 void TCode::inputByte(const byte input)
@@ -150,6 +161,11 @@ size_t TCode::getChar(char *buffer, const size_t length)
     return length_to_read;
 }
 
+Settings *TCode::getSettingManager()
+{
+    return &settingManager;
+}
+
 TCodeAxis *TCode::getAxisFromName(const char *name)
 {
     for(size_t i = 0; i < axisBuffer.count(); i++)
@@ -265,7 +281,10 @@ void TCode::runDeviceCommand(TCode_Device_Command &command)
     switch (command.type)
     {
     case TCode_Device_Command_Type::StopDevice:
-        stop();
+        {
+            stop();
+            println("STOP");
+        }
         break;
     case TCode_Device_Command_Type::GetTCodeVersion:
         {
@@ -300,7 +319,7 @@ void TCode::setSaveValues(TCode_ChannelID &id, unsigned int min, unsigned int ma
     TCodeAxis* temp = getAxisFromID(id);
     if(temp != nullptr)
     {
-        String str_id;
+        String str_id = "";
         TCodeParser::getStrfromID(id,str_id);
         String name = "AXIS-MIN-";
         name += str_id;
@@ -351,14 +370,14 @@ void TCode::printSavedAxisValues()
                 settingManager.setSetting(name.c_str(),TCODE_MAX_AXIS);
             }
 
-            name = temp->getName();
-            name += '-';
+            name = "";
             name += str_id;
+            name += '-';
+            name += temp->getName();
             name += '-';
             name += String(min);
             name += '-';
             name += String(max);
-            name += '\n';
 
             println(name);
         }

@@ -126,9 +126,16 @@ public:
     static size_t uintToStr(unsigned long value, unsigned char *buffer, const size_t length, size_t &index)
     {
         const int base = 10;
-        char buf[32] = {0};
+        char buf[30] = {'\0'};
         int i = 30;
-        for (; value && i; --i, value /= base)
+
+        if(value == 0)
+        {
+            i = 29;
+            buf[29] = '0';
+        }
+
+        for (; (value > 0) && (i > 0); --i, value /= base)
         {
             buf[i] = "0123456789abcdef"[value % base];
         }

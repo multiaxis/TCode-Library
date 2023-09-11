@@ -73,15 +73,16 @@ int TCodeParser::getStrfromID(unsigned char *buffer, const size_t length, const 
 
 void TCodeParser::getStrfromID(const TCode_ChannelID& id,String &out)
 {
-    unsigned char buffer[10];
+    unsigned char buffer[10] = {'\0'};
     getStrfromID(buffer,10,id);
     size_t index = 0;
     for(; index < 10; index++)
     {
-        out += buffer[index];
+        if(buffer[index] == '\0')
+            break;
+        out += (char)buffer[index];
     }
 }
-
 
 TCode_ChannelID TCodeParser::constructID(const TCode_Channel_Type type, const uint8_t channel_int)
 {
@@ -217,10 +218,6 @@ bool TCodeParser::parseAxisCommand(unsigned char *buffer, const size_t length, T
         rampType = getRampTypeFromStr(buffer, length, index);
     }
 
-    if (rampType == TCode_Axis_Ramp_Type::None)
-        valid = false;
-    if (extentionType == TCode_Axis_Extention_Type::None)
-        valid = false;
     if (toupper(getCharAt(buffer, length, index)) != '\0') // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
         valid = false;
     if (!idValid(id)) // make sure that the ID is valid if it isnt then the command is not valid

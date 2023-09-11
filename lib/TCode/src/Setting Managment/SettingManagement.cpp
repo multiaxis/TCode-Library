@@ -86,6 +86,13 @@ bool Settings::hasSetting(const char *setting)
     return true;
 }
 
+void Settings::reset()
+{
+    String newConfig;
+    createConfigFile(newConfig);
+    writeFile(newConfig);
+}
+
 bool Settings::getFile(String &out)
 {
     if (!isMounted())

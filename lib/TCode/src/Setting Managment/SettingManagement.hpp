@@ -19,6 +19,7 @@ public:
     bool init(const char *filepath);
     bool isMounted();
     bool hasSetting(const char *setting);
+    void reset();
 
     template <class T>
     bool getSetting(const char *setting, T &setting_value);
