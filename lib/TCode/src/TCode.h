@@ -8,21 +8,10 @@
 #include "Constants and Enums/TCodeConstants.h"
 #include "Constants and Enums/TCodeEnums.h"
 
-/*
 
-TCode -
-    - Input
-    - Buffer
-    - Run Commands
-    - Store Axis
-Axis - Done needs testing
-Setting Management - Done needs testing - tested
-Parser - Done needs testing
-
-*/
-
-#define CURRENT_TCODE_VERSION "TCode v0.4";
-#define DEFAULT_FIRMWARE_NAME "TCode";
+#define CURRENT_TCODE_VERSION "TCode v0.4"
+#define DEFAULT_FIRMWARE_NAME "TCode"
+#define DEFAULT_FILE_NAME "/spiffs/TCode.dat"
 
 const int MAX_AXIS_COUNT = 10;
 const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 127;
@@ -36,6 +25,7 @@ public:
     TCode();
     TCode(const char* firmware);
     TCode(const char* firmware,const char* tcode_version);
+    TCode(const char* firmware,const char* tcode_version, const char* filepath);
 
     void inputByte(const byte input);      // Function to read off individual byte as input to the command buffer
     void inputChar(const char input);      // Function to read off individual char as input to the command buffer
@@ -55,6 +45,8 @@ public:
     size_t available();
     char getChar();
     size_t getChar(char *buffer, const size_t length);
+
+    Settings* getSettingManager();
 
 private:
     const char* filepath;
