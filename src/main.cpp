@@ -1,19 +1,22 @@
 #include <Arduino.h>
 #include <TCode.h>
 
-Settings settingManager;
-TCodeAxis a1("Testing");
+TCodeAxis test_axis("Linear1",{TCode_Channel_Type::Linear,0});
+TCode tcode_manager;
 
 void setup() {
   Serial.begin(115200);
-  a1.set(9999,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
-  a1.set(0,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
-  a1.set(9999,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
-  a1.set(0,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
-  a1.set(9999,TCode_Axis_Extention_Type::Time,100,TCode_Axis_Ramp_Type::EaseInOut);
+  tcode_manager.registerAxis(&test_axis);
 }
 
 void loop() {
-  int position = a1.getPosition();
-  Serial.println(position);
+  while(Serial.available())
+  {
+    tcode_manager.inputChar(Serial.read());
+  }
+  int position = tcode_manager.axisRead("Linear1");
+  if(test_axis.changed())
+  {
+    Serial.println(position);
+  } 
 }

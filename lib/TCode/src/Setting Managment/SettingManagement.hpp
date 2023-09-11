@@ -1,9 +1,12 @@
+// Setting-Management-Class-Hpp v1.0,
+// protocal by TempestMAx (https://www.patreon.com/tempestvr)
+// implemented by Eve 9/09/2023
+// Please copy, share, learn, innovate, give attribution.
 #pragma once
 #ifndef SETTING_MANAGEMENT_HPP
 #define SETTING_MANAGEMENT_HPP
 #include <SPIFFS.h>
 #include <ArduinoJson.h>
-#define DEBUG
 #define JSON_FILE_SIZE 2048
 
 class Settings

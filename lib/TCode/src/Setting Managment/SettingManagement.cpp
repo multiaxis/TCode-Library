@@ -1,3 +1,8 @@
+// Setting-Management-Class-Cpp v1.0,
+// protocal by TempestMAx (https://www.patreon.com/tempestvr)
+// implemented by Eve 9/09/2023
+// Please copy, share, learn, innovate, give attribution.
+
 #ifndef SETTING_MANAGMENT_CPP
 #define SETTING_MANAGEMET_CPP
 #include "SettingManagement.hpp"

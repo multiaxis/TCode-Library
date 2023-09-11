@@ -39,7 +39,7 @@ class TCodeAxis
 {
 public:
     TCodeAxis() = delete;
-    TCodeAxis(const char* name);
+    TCodeAxis(const char* name,TCode_ChannelID channel);
 
     //void addCommand(TCode_Axis_Command command);
 
@@ -49,6 +49,7 @@ public:
 
     bool changed(); // Function to check if an axis has changed since last getPosition
     const char* getName();           // Function to get the name for this axis
+    TCode_ChannelID getChannelID();
 
 private:
     unsigned long getLastMillis();
@@ -60,8 +61,8 @@ private:
     int minInterval; //minimum command interval 
     unsigned long last_command_time; // The last time this Axis was updated represented in millis 
     TCode_Axis_State currentState;
+    TCode_ChannelID channel;
     TCodeBuffer<TCode_Axis_State,TCODE_MAX_AXIS_BUFFER_LENGTH> dataQueue;
-    //TODO: implement queue system for commands to buffer them
 };
 
 #endif
