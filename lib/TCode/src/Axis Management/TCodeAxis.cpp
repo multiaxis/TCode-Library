@@ -3,7 +3,10 @@
 #include "TCodeAxis.h"
 #include <Arduino.h>
 
-TCodeAxis::TCodeAxis(const char* name)
+
+
+
+TCodeAxis::TCodeAxis(const char* name, TCode_ChannelID _channel)
 {
     currentState.ramp_type = TCode_Axis_Ramp_Type::Linear;
     currentState.startTime = 0;
@@ -13,6 +16,7 @@ TCodeAxis::TCodeAxis(const char* name)
     axisName = name;
     last_command_time = 0;
     minInterval = TCODE_MIN_AXIS_SMOOTH_INTERVAL;
+    channel = _channel;
 }
 
 
@@ -204,10 +208,17 @@ void TCodeAxis::stop()
 {
     unsigned long t = millis(); // This is the time now
     bool inRange;
-    currentState.endValue = getPositionMapped(currentState,inRange);
+    currentState.startValue = getPositionMapped(currentState,inRange);
+    currentState.endValue = currentState.startValue;
     currentState.startTime = t;
     currentState.endTime = t;
     dataQueue.clear();
+
+    if(channel.type == TCode_Channel_Type::Vibration)
+    {
+        currentState.endValue = 0;
+        currentState.endTime = t + 100;
+    }
 }
 
 /**
@@ -231,6 +242,11 @@ bool TCodeAxis::changed()
 const char* TCodeAxis::getName()
 {
     return axisName;
+}
+
+TCode_ChannelID TCodeAxis::getChannelID()
+{
+    return channel;
 }
 
 #endif

@@ -14,7 +14,7 @@
  */
 class TCodeParser
 {
-private:
+public:
     /**
      * @brief Converts Lowecase Ascii to Uppercase
      * @param value is the value of the char which needs converting to uppercase
@@ -116,6 +116,13 @@ private:
         return accum;
     }
 
+    static char getCharAt(unsigned char *buffer, const size_t length, size_t index)
+    {
+        if (index >= length)
+            return '\0';
+        return *(buffer + index);
+    }
+
     static size_t uintToStr(unsigned long value, unsigned char *buffer, const size_t length, size_t &index)
     {
         const int base = 10;
@@ -141,14 +148,6 @@ private:
         return count;
     }
 
-    static char getCharAt(unsigned char *buffer, const size_t length, size_t index)
-    {
-        if (index >= length)
-            return '\0';
-        return *(buffer + index);
-    }
-
-public:
     static bool idValidRange(const TCode_Channel_Type type, const int channel_int, int max_channel);
 
     static bool idValidRange(const TCode_ChannelID id, int max_channel);
@@ -175,7 +174,9 @@ public:
      * @param id Is the combined form of TCode_Channel_Type and the channel number
      * @returns The length of chars used in the buffer
      */
-    static int getStrfromID(unsigned char *buffer, const size_t length, const TCode_ChannelID id);
+    static int getStrfromID(unsigned char *buffer, const size_t length, const TCode_ChannelID& id);
+
+    static void getStrfromID(const TCode_ChannelID& id,String &out);
 
     /**
      * @brief Takes a channel type and channel number and creates a Channel ID
@@ -218,7 +219,7 @@ public:
      * @param length length of buffer
      * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
      */
-    static TCode_Command_Type getCommandType(unsigned char *buffer, const size_t length, size_t &start_index);
+    static TCode_Command_Type getCommandType(unsigned char *buffer, const size_t length, size_t start_index);
 
     /**
      * @brief Parses an Axis Command

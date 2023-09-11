@@ -45,7 +45,7 @@ bool TCodeParser::idValid(const TCode_ChannelID id)
     return idValidRange(id.type, id.channel, TCODE_MAX_CHANNEL_COUNT - 1);
 }
 
-int TCodeParser::getStrfromID(unsigned char *buffer, const size_t length, const TCode_ChannelID id)
+int TCodeParser::getStrfromID(unsigned char *buffer, const size_t length, const TCode_ChannelID& id)
 {
     size_t index = 0;
     switch (id.type) // gets the Channel type char and appends to the output string
@@ -70,6 +70,18 @@ int TCodeParser::getStrfromID(unsigned char *buffer, const size_t length, const 
 
     return index;
 }
+
+void TCodeParser::getStrfromID(const TCode_ChannelID& id,String &out)
+{
+    unsigned char buffer[10];
+    getStrfromID(buffer,10,id);
+    size_t index = 0;
+    for(; index < 10; index++)
+    {
+        out += buffer[index];
+    }
+}
+
 
 TCode_ChannelID TCodeParser::constructID(const TCode_Channel_Type type, const uint8_t channel_int)
 {
@@ -150,7 +162,7 @@ TCode_ChannelID TCodeParser::getIDFromStr(unsigned char *buffer, const size_t le
     return {type, channel_int};
 }
 
-TCode_Command_Type TCodeParser::getCommandType(unsigned char *buffer, const size_t length, size_t &startIndex)
+TCode_Command_Type TCodeParser::getCommandType(unsigned char *buffer, const size_t length, size_t startIndex)
 {
     // Switch between command types
     switch (toupper(getCharAt(buffer, length, startIndex)))

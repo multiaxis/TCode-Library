@@ -3,13 +3,6 @@
 // implemented by Eve 04/06/2022
 // usage of this class can be found at (https://github.com/Dreamer2345/Arduino_TCode_Parser)
 // Please copy, share, learn, innovate, give attribution.
-// Decodes T-code commands
-// It can handle:
-//   x linear channels (L0, L1, L2... L9)
-//   x rotation channels (R0, R1, R2... L9)
-//   x vibration channels (V0, V1, V2... V9)
-//   x auxilliary channels (A0, A1, A2... A9)
-// History:
 //
 
 #pragma once
