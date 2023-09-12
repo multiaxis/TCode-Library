@@ -4,7 +4,7 @@ name: Doxygen GitHub Pages Deploy Action
 on:
   push:
     branches: [ main ]
-  
+  workflow_dispatch:
 jobs:
   build-documentation:
     runs-on: ubuntu-latest
@@ -22,7 +22,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/html/
-          enable_jekyll: false
+          enable_jekyll: true
           allow_empty_commit: false
           force_orphan: true
           publish_branch: github-pages
