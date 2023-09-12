@@ -1,16 +1,28 @@
 name: Doxygen GitHub Pages Deploy Action
 
+# Controls when the action will run. 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
-
+    branches: [ main ]
+  
 jobs:
-  deploy:
+  build-documentation:
     runs-on: ubuntu-latest
     steps:
-      - uses: DenverCoder1/doxygen-github-pages-action@v1.3.0
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Doxygen
+        uses: mattnotmitt/doxygen-action@v1.2.1
+        with:
+          # These are default values, but included for clarity
+          doxyfile-path: ./Doxyfile
+          working-directory: .
+      - name: Pages Deployment
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
+          publish_dir: ./docs/html/
+          enable_jekyll: false
+          allow_empty_commit: false
+          force_orphan: true
+          publish_branch: github-pages
