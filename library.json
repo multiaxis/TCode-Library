@@ -1,0 +1,9 @@
+{
+	"name":"TCode Library",
+	"version":"0.0.1",
+	"description":"A library to aid in decoding/using of Toy Code ("T-Code") data.",
+	"dependancys":
+	{
+		"bblanchon/ArduinoJson":"^6.21.3"
+	}
+}

@@ -1,0 +1,165 @@
+\doxysection{TCode\+Parser.\+h}
+\hypertarget{_t_code_parser_8h_source}{}\label{_t_code_parser_8h_source}\index{C:/Users/thoma/Desktop/TCode/source files/src/Parsing/TCodeParser.h@{C:/Users/thoma/Desktop/TCode/source files/src/Parsing/TCodeParser.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00001}00001\ \textcolor{comment}{//\ TCode-\/Parser-\/Class-\/H\ v1.0,}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00002}00002\ \textcolor{comment}{//\ protocal\ by\ TempestMAx\ (https://www.patreon.com/tempestvr)}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00003}00003\ \textcolor{comment}{//\ implemented\ by\ Eve\ 26/06/2022}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00004}00004\ \textcolor{comment}{//\ Please\ copy,\ share,\ learn,\ innovate,\ give\ attribution.}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00005}00005\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00006}00006\ \textcolor{preprocessor}{\#ifndef\ TCODE\_PARSER\_H}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00007}00007\ \textcolor{preprocessor}{\#define\ TCODE\_PARSER\_H}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00008}00008\ \textcolor{preprocessor}{\#include\ "{}../Constants\ and\ Enums/TCodeConstants.h"{}}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00009}00009\ \textcolor{preprocessor}{\#include\ "{}../Constants\ and\ Enums/TCodeEnums.h"{}}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00010}00010\ \textcolor{preprocessor}{\#include\ <Arduino.h>}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00011}00011\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00015}\mbox{\hyperlink{class_t_code_parser}{00015}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_t_code_parser}{TCodeParser}}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00016}00016\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00017}00017\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00023}\mbox{\hyperlink{class_t_code_parser_ad58ac762bee8d4a4f373e27b9b944ecd}{00023}}\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{char}\ \mbox{\hyperlink{class_t_code_parser_ad58ac762bee8d4a4f373e27b9b944ecd}{toupper}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ value)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00024}00024\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00025}00025\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ((value\ >=\ \textcolor{charliteral}{'a'})\ \&\&\ (value\ <=\ \textcolor{charliteral}{'z'}))\ ?\ (\textcolor{charliteral}{'A'}\ +\ (value\ -\/\ \textcolor{charliteral}{'a'}))\ :\ (value);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00026}00026\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00027}00027\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00033}\mbox{\hyperlink{class_t_code_parser_ae8228c3427ece2e46676e5d1b43d0d7e}{00033}}\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_ae8228c3427ece2e46676e5d1b43d0d7e}{isnumber}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ value)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00034}00034\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00035}00035\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (value)\ \textcolor{comment}{//\ Check\ for\ numbers}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00036}00036\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00037}00037\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'0'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00038}00038\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'1'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00039}00039\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'2'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00040}00040\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'3'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00041}00041\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'4'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00042}00042\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'5'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00043}00043\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'6'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00044}00044\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'7'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00045}00045\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'8'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00046}00046\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'9'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00047}00047\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00048}00048\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00049}00049\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00050}00050\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00051}00051\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00052}00052\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00058}\mbox{\hyperlink{class_t_code_parser_af2b4ef43b2b312384282b18e45a189a5}{00058}}\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_af2b4ef43b2b312384282b18e45a189a5}{isextention}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ value)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00059}00059\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00060}00060\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (\mbox{\hyperlink{class_t_code_parser_ad58ac762bee8d4a4f373e27b9b944ecd}{toupper}}(value))\ \textcolor{comment}{//\ checks\ if\ the\ inputted\ char\ is\ used\ as\ an\ extention\ character}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00061}00061\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00062}00062\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'I'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00063}00063\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'S'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00064}00064\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00065}00065\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00066}00066\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00067}00067\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00068}00068\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00069}00069\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00075}\mbox{\hyperlink{class_t_code_parser_a5d145412d30a0470d2d4e0f783708e31}{00075}}\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_a5d145412d30a0470d2d4e0f783708e31}{isramp}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ value)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00076}00076\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00077}00077\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (\mbox{\hyperlink{class_t_code_parser_ad58ac762bee8d4a4f373e27b9b944ecd}{toupper}}(value))\ \textcolor{comment}{//\ checks\ if\ the\ inputted\ char\ is\ used\ as\ an\ extention\ character}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00078}00078\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00079}00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'<'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00080}00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'>'}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00081}00081\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'='}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00082}00082\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00083}00083\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00084}00084\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00085}00085\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00086}00086\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00087}00087\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00095}\mbox{\hyperlink{class_t_code_parser_aabb1f695dac2e6c1251bc8d63ea03267}{00095}}\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{long}\ \mbox{\hyperlink{class_t_code_parser_aabb1f695dac2e6c1251bc8d63ea03267}{getNextInt}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \textcolor{keywordtype}{size\_t}\ \&index)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00096}00096\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00097}00097\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ count\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00098}00098\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{long}\ accum\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00099}00099\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (\mbox{\hyperlink{class_t_code_parser_ae8228c3427ece2e46676e5d1b43d0d7e}{isnumber}}(*(buffer\ +\ index)))\ \textcolor{comment}{//\ while\ there\ is\ a\ number\ at\ the\ index\ we\ are\ at\ in\ the\ string}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00100}00100\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00101}00101\ \ \ \ \ \ \ \ \ \ \ \ \ accum\ *=\ 10;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ multiply\ the\ accumulator\ first\ to\ get\ the\ correct\ output\ value}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00102}00102\ \ \ \ \ \ \ \ \ \ \ \ \ accum\ +=\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{long}\textcolor{keyword}{>}(\mbox{\hyperlink{class_t_code_parser_ad58ac762bee8d4a4f373e27b9b944ecd}{toupper}}(*(buffer\ +\ index))\ -\/\ \textcolor{charliteral}{'0'});\ \textcolor{comment}{//\ get\ next\ int\ value\ '0'\ -\/\ '9'\ subtracting\ '0'\ gets\ the\ integer\ value\ of\ the\ next\ unit}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00103}00103\ \ \ \ \ \ \ \ \ \ \ \ \ index++;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00104}00104\ \ \ \ \ \ \ \ \ \ \ \ \ count++;\ \textcolor{comment}{//\ increase\ the\ indeces\ count\ to\ count\ the\ digits}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00105}00105\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00106}00106\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00107}00107\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (count\ ==\ 0)\ \textcolor{comment}{//\ no\ chars\ were\ found\ with\ 0\ -\/\ 9}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00108}00108\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ -\/1;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00109}00109\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00110}00110\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (count\ <\ 4)\ \textcolor{comment}{//\ if\ less\ than\ 4\ digits\ were\ found\ make\ up\ for\ it\ by\ multiplying\ eg\ 1\ =\ 1000,\ 90\ =\ 9000,\ 001\ =\ 10}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00111}00111\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00112}00112\ \ \ \ \ \ \ \ \ \ \ \ \ accum\ *=\ 10;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00113}00113\ \ \ \ \ \ \ \ \ \ \ \ \ count++;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00114}00114\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00115}00115\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00116}00116\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ accum;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00117}00117\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00118}00118\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00126}\mbox{\hyperlink{class_t_code_parser_a876b2fd5dc3e05d8e23d46c34a0a75b7}{00126}}\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{char}\ \mbox{\hyperlink{class_t_code_parser_a876b2fd5dc3e05d8e23d46c34a0a75b7}{getCharAt}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \textcolor{keywordtype}{size\_t}\ index)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00127}00127\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00128}00128\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (index\ >=\ length)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00129}00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00130}00130\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *(buffer\ +\ index);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00131}00131\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00132}00132\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00141}\mbox{\hyperlink{class_t_code_parser_aeccb3bbebbac86fa2a1882d4807cb318}{00141}}\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{class_t_code_parser_aeccb3bbebbac86fa2a1882d4807cb318}{uintToStr}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ value,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \textcolor{keywordtype}{size\_t}\ \&placeIndex)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00142}00142\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00143}00143\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ base\ =\ 10;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00144}00144\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ buf[30]\ =\ \{\textcolor{charliteral}{'\(\backslash\)0'}\};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00145}00145\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i\ =\ 30;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00146}00146\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00147}00147\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (value\ ==\ 0)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00148}00148\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00149}00149\ \ \ \ \ \ \ \ \ \ \ \ \ i\ =\ 29;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00150}00150\ \ \ \ \ \ \ \ \ \ \ \ \ buf[29]\ =\ \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00151}00151\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00152}00152\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00153}00153\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;\ (value\ >\ 0)\ \&\&\ (i\ >\ 0);\ -\/-\/i,\ value\ /=\ base)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00154}00154\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00155}00155\ \ \ \ \ \ \ \ \ \ \ \ \ buf[i]\ =\ \textcolor{stringliteral}{"{}0123456789abcdef"{}}[value\ \%\ base];}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00156}00156\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00157}00157\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00158}00158\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer\_location\ =\ buffer\ +\ placeIndex;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00159}00159\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ count\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00160}00160\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;\ i\ <\ 30;\ i++,\ count++)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00161}00161\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00162}00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((count\ +\ placeIndex)\ >=\ length\ -\/\ 1)}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00163}00163\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00164}00164\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00165}00165\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00166}00166\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00167}00167\ \ \ \ \ \ \ \ \ \ \ \ \ *buffer\_location\ =\ buf[i];}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00168}00168\ \ \ \ \ \ \ \ \ \ \ \ \ buffer\_location++;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00169}00169\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00170}00170\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ count;}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00171}00171\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00172}00172\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00179}00179\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_abc6fadc96161a22517ea92e4d805973e}{idValidRange}}(\textcolor{keyword}{const}\ TCode\_Channel\_Type\ type,\ \textcolor{keyword}{const}\ uint8\_t\ channel,\ \textcolor{keyword}{const}\ uint8\_t\ maxChannel);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00180}00180\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00186}00186\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_abc6fadc96161a22517ea92e4d805973e}{idValidRange}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\_ChannelID}}\ \textcolor{keywordtype}{id},\ \textcolor{keyword}{const}\ uint8\_t\ maxChannel);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00187}00187\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00194}00194\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_a6a3a5d8a410d0db45bfcc50d0771c2ad}{idValid}}(\textcolor{keyword}{const}\ TCode\_Channel\_Type\ type,\ \textcolor{keyword}{const}\ uint8\_t\ channel);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00195}00195\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00201}00201\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_a6a3a5d8a410d0db45bfcc50d0771c2ad}{idValid}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\_ChannelID}}\ \textcolor{keywordtype}{id});}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00202}00202\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00210}00210\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_t_code_parser_a11ec7f4c21958138ed5c3991724349da}{getStrfromID}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\_ChannelID}}\ \&\textcolor{keywordtype}{id});}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00211}00211\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00217}00217\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_t_code_parser_a11ec7f4c21958138ed5c3991724349da}{getStrfromID}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\_ChannelID}}\ \&\textcolor{keywordtype}{id},\ String\ \&out);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00218}00218\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00225}00225\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\_ChannelID}}\ \mbox{\hyperlink{class_t_code_parser_a1123ca14ef4429f484709a80882b9f43}{constructID}}(\textcolor{keyword}{const}\ TCode\_Channel\_Type\ type,\ \textcolor{keyword}{const}\ uint8\_t\ channel);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00226}00226\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00234}00234\ \ \ \ \ \textcolor{keyword}{static}\ TCode\_Axis\_Extention\_Type\ \mbox{\hyperlink{class_t_code_parser_a9c1e82a5d323582a85a8370467676fa4}{getExtentionTypeFromStr}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \textcolor{keywordtype}{size\_t}\ \&startIndex);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00235}00235\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00243}00243\ \ \ \ \ \textcolor{keyword}{static}\ TCode\_Axis\_Ramp\_Type\ \mbox{\hyperlink{class_t_code_parser_a0da3e199ffae6974640f1cc555486d56}{getRampTypeFromStr}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \textcolor{keywordtype}{size\_t}\ \&startIndex);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00244}00244\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00252}00252\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\_ChannelID}}\ \mbox{\hyperlink{class_t_code_parser_af1b4a0c895e001a7ed58e463c0a08e98}{getIDFromStr}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \textcolor{keywordtype}{size\_t}\ \&startIndex);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00253}00253\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00260}00260\ \ \ \ \ \textcolor{keyword}{static}\ TCode\_Command\_Type\ \mbox{\hyperlink{class_t_code_parser_a6c3f615e8006241db49193ef3f74b8b3}{getCommandType}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \textcolor{keywordtype}{size\_t}\ startIndex);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00261}00261\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00268}00268\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_a209759a5ca311a76ad8eb9ed43ba5d3f}{parseAxisCommand}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \mbox{\hyperlink{struct_t_code___axis___command}{TCode\_Axis\_Command}}\ \&out);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00269}00269\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00277}00277\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_a310531756be9d004c9e946f082378e8f}{parseDeviceCommand}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \mbox{\hyperlink{struct_t_code___device___command}{TCode\_Device\_Command}}\ \&out);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00278}00278\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00285}00285\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_a3ae66814a6db67fcfe258b6a976f4d8f}{parseSetupCommand}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \mbox{\hyperlink{struct_t_code___setup___command}{TCode\_Setup\_Command}}\ \&out);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00286}00286\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00293}00293\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_parser_accecddeb89a25adfedc9d4f68eb3416d}{parseExternalCommand}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *buffer,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ length,\ \mbox{\hyperlink{struct_t_code___external___command}{TCode\_External\_Command}}\ \&out);}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00294}00294\ \};}
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00295}00295\ }
+\DoxyCodeLine{\Hypertarget{_t_code_parser_8h_source_l00296}00296\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

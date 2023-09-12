@@ -1,0 +1,217 @@
+\doxysection{TCode\+Axis.\+cpp}
+\hypertarget{_t_code_axis_8cpp_source}{}\label{_t_code_axis_8cpp_source}\index{C:/Users/thoma/Desktop/TCode/source files/src/Axis Management/TCodeAxis.cpp@{C:/Users/thoma/Desktop/TCode/source files/src/Axis Management/TCodeAxis.cpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00001}00001\ \textcolor{preprocessor}{\#ifndef\ TCODE\_AXIS\_CPP}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00002}00002\ \textcolor{preprocessor}{\#define\ TCODE\_AXIS\_CPP}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00003}00003\ \textcolor{preprocessor}{\#include\ "{}TCodeAxis.h"{}}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00004}00004\ \textcolor{preprocessor}{\#include\ <Arduino.h>}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00005}00005\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00006}\mbox{\hyperlink{class_t_code_axis_a35d053ef51508e2463f5cdb58d0b610d}{00006}}\ TCodeAxis::TCodeAxis(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *name,\ \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\_ChannelID}}\ \_channel)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00007}00007\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00008}00008\ \ \ \ \ currentState.rampType\ =\ TCode\_Axis\_Ramp\_Type::Linear;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00009}00009\ \ \ \ \ currentState.startTime\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00010}00010\ \ \ \ \ currentState.endTime\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00011}00011\ \ \ \ \ currentState.startValue\ =\ TCODE\_DEFAULT\_AXIS\_RETURN\_VALUE;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00012}00012\ \ \ \ \ currentState.endValue\ =\ TCODE\_DEFAULT\_AXIS\_RETURN\_VALUE;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00013}00013\ \ \ \ \ axisName\ =\ name;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00014}00014\ \ \ \ \ lastCommandTime\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00015}00015\ \ \ \ \ minInterval\ =\ TCODE\_MIN\_AXIS\_SMOOTH\_INTERVAL;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00016}00016\ \ \ \ \ channel\ =\ \_channel;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00017}00017\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00018}00018\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00019}00019\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ TCodeAxis::getDeltaTime(\textcolor{keywordtype}{int}\ start\_position,\ \textcolor{keywordtype}{int}\ target\_value,\ TCode\_Axis\_Extention\_Type\ extentionType,\ \textcolor{keywordtype}{long}\ extentionValue,\ TCode\_Axis\_Ramp\_Type\ rampType)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00020}00020\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00021}00021\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ delta\_time\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00022}00022\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00023}00023\ \ \ \ \ \textcolor{keywordflow}{switch}\ (extentionType)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00024}00024\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00025}00025\ \ \ \ \ \textcolor{keywordflow}{case}\ TCode\_Axis\_Extention\_Type::Speed:}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00026}00026\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00027}00027\ \ \ \ \ \ \ \ \ delta\_time\ =\ abs(target\_value\ -\/\ start\_position);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00028}00028\ \ \ \ \ \ \ \ \ delta\_time\ *=\ 100;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00029}00029\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extentionValue\ >\ 0)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00030}00030\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00031}00031\ \ \ \ \ \ \ \ \ \ \ \ \ delta\_time\ /=\ extentionValue;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00032}00032\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00033}00033\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00034}00034\ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00035}00035\ \ \ \ \ \textcolor{keywordflow}{case}\ TCode\_Axis\_Extention\_Type::Time:}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00036}00036\ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00037}00037\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00038}00038\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extentionValue\ >\ 0)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00039}00039\ \ \ \ \ \ \ \ \ \ \ \ \ delta\_time\ =\ extentionValue;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00040}00040\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00041}00041\ \ \ \ \ \ \ \ \ \ \ \ \ delta\_time\ =\ minInterval;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00042}00042\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00043}00043\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00044}00044\ \ \ \ \ \textcolor{keywordflow}{return}\ delta\_time;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00045}00045\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00046}00046\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00047}\mbox{\hyperlink{class_t_code_axis_abeb2b724b394b3e58cad2560f40b6fbe}{00047}}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_t_code_axis_abeb2b724b394b3e58cad2560f40b6fbe}{TCodeAxis::set}}(\textcolor{keywordtype}{int}\ target\_value,\ TCode\_Axis\_Extention\_Type\ extentionType,\ \textcolor{keywordtype}{long}\ extentionValue,\ TCode\_Axis\_Ramp\_Type\ rampType)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00048}00048\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00049}00049\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ t\ =\ getLastMillis();\ \textcolor{comment}{//\ This\ is\ for\ adding\ this\ state}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00050}00050\ \ \ \ \ target\_value\ =\ constrain(target\_value,\ 0,\ TCODE\_MAX\_AXIS);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00051}00051\ \ \ \ \ extentionValue\ =\ constrain(extentionValue,\ 0,\ TCODE\_MAX\_AXIS\_MAGNITUDE);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00052}00052\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00053}00053\ \ \ \ \ \textcolor{keywordtype}{int}\ last\_target\ =\ getLastTargetPosition();}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00054}00054\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ delta\_time\ =\ getDeltaTime(last\_target,\ target\_value,\ extentionType,\ extentionValue,\ rampType);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00055}00055\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00056}00056\ \ \ \ \ \mbox{\hyperlink{struct_t_code___axis___state}{TCode\_Axis\_State}}\ new\_state;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00057}00057\ \ \ \ \ new\_state.startTime\ =\ t;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00058}00058\ \ \ \ \ new\_state.endTime\ =\ t\ +\ delta\_time;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00059}00059\ \ \ \ \ new\_state.startValue\ =\ last\_target;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00060}00060\ \ \ \ \ new\_state.endValue\ =\ target\_value;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00061}00061\ \ \ \ \ new\_state.rampType\ =\ rampType;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00062}00062\ \ \ \ \ dataQueue.push(new\_state);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00063}00063\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00064}00064\ \ \ \ \ \textcolor{keywordtype}{int}\ lastInterval\ =\ millis()\ -\/\ lastCommandTime;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00065}00065\ \ \ \ \ \textcolor{keywordtype}{int}\ difference\ =\ abs(lastInterval\ -\/\ minInterval);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00066}00066\ \ \ \ \ \textcolor{keywordflow}{if}\ ((lastInterval\ >\ minInterval)\ \&\&\ (minInterval\ <\ TCODE\_MAX\_AXIS\_SMOOTH\_INTERVAL))}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00067}00067\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00068}00068\ \ \ \ \ \ \ \ \ minInterval\ +=\ difference\ /\ 2;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00069}00069\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00070}00070\ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ ((lastInterval\ <\ minInterval)\ \&\&\ (minInterval\ >\ TCODE\_MIN\_AXIS\_SMOOTH\_INTERVAL))}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00071}00071\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00072}00072\ \ \ \ \ \ \ \ \ minInterval\ -\/=\ difference\ /\ 2;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00073}00073\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00074}00074\ \ \ \ \ minInterval\ =\ constrain(minInterval,\ TCODE\_MIN\_AXIS\_SMOOTH\_INTERVAL,\ TCODE\_MAX\_AXIS\_SMOOTH\_INTERVAL);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00075}00075\ \ \ \ \ lastCommandTime\ =\ millis();}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00076}00076\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00077}00077\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00078}00078\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ TCodeAxis::getLastMillis()}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00079}00079\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00080}00080\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ currentTime\ =\ millis();}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00081}00081\ \ \ \ \ \textcolor{keywordflow}{if}\ (dataQueue.isEmpty())}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00082}00082\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00083}00083\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (currentTime\ >\ currentState.endTime)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00084}00084\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ currentTime;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00085}00085\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00086}00086\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ currentState.endTime;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00087}00087\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00088}00088\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00089}00089\ \ \ \ \ \mbox{\hyperlink{struct_t_code___axis___state}{TCode\_Axis\_State}}\ backState;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00090}00090\ \ \ \ \ dataQueue.peekBack(backState);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00091}00091\ \ \ \ \ \textcolor{keywordflow}{return}\ backState.endTime;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00092}00092\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00093}00093\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00094}00094\ \textcolor{keywordtype}{int}\ TCodeAxis::getLastTargetPosition()}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00095}00095\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00096}00096\ \ \ \ \ \textcolor{keywordflow}{if}\ (dataQueue.isEmpty())}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00097}00097\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00098}00098\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ currentState.endValue;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00099}00099\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00100}00100\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00101}00101\ \ \ \ \ \mbox{\hyperlink{struct_t_code___axis___state}{TCode\_Axis\_State}}\ backState;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00102}00102\ \ \ \ \ dataQueue.peekBack(backState);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00103}00103\ \ \ \ \ \textcolor{keywordflow}{return}\ backState.endValue;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00104}00104\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00105}00105\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00106}\mbox{\hyperlink{class_t_code_axis_a5d34ed4e31fe76c05712b5631b1b3547}{00106}}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{class_t_code_axis_a5d34ed4e31fe76c05712b5631b1b3547}{TCodeAxis::getPosition}}()}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00107}00107\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00108}00108\ \ \ \ \ \textcolor{keywordtype}{bool}\ isInRange\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00109}00109\ \ \ \ \ \textcolor{keywordtype}{int}\ value\ =\ getPositionMapped(currentState,\ isInRange);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00110}00110\ \ \ \ \ \textcolor{keywordflow}{if}\ (isInRange)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00111}00111\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00112}00112\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00113}00113\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00114}00114\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00115}00115\ \ \ \ \ \textcolor{keywordflow}{if}\ (dataQueue.isEmpty())}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00116}00116\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00117}00117\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00118}00118\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00119}00119\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00120}00120\ \ \ \ \ \textcolor{keywordflow}{while}\ (!isInRange)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00121}00121\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00122}00122\ \ \ \ \ \ \ \ \ dataQueue.pop(currentState);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00123}00123\ \ \ \ \ \ \ \ \ value\ =\ getPositionMapped(currentState,\ isInRange);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00124}00124\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (dataQueue.isEmpty())}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00125}00125\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00126}00126\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00127}00127\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00128}00128\ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00129}00129\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00130}00130\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00131}00131\ \textcolor{keywordtype}{int}\ TCodeAxis::getPositionMapped(\mbox{\hyperlink{struct_t_code___axis___state}{TCode\_Axis\_State}}\ \&state,\ \textcolor{keywordtype}{bool}\ \&inRange)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00132}00132\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00133}00133\ \ \ \ \ \textcolor{keywordtype}{int}\ x;\ \textcolor{comment}{//\ This\ is\ the\ current\ axis\ position,\ 0-\/9999}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00134}00134\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ t\ =\ millis();}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00135}00135\ \ \ \ \ inRange\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00136}00136\ \ \ \ \ \textcolor{keywordflow}{if}\ (t\ >=\ state.endTime)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00137}00137\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00138}00138\ \ \ \ \ \ \ \ \ inRange\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00139}00139\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ state.endValue;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00140}00140\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00141}00141\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00142}00142\ \ \ \ \ \textcolor{keywordflow}{if}\ (t\ <\ state.startTime)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00143}00143\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00144}00144\ \ \ \ \ \ \ \ \ inRange\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00145}00145\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ state.startValue;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00146}00146\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00147}00147\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00148}00148\ \ \ \ \ \textcolor{keywordflow}{switch}\ (state.rampType)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00149}00149\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00150}00150\ \ \ \ \ \textcolor{keywordflow}{case}\ TCode\_Axis\_Ramp\_Type::Linear:}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00151}00151\ \ \ \ \ \ \ \ \ x\ =\ mapQ16(t,\ state.startTime,\ state.endTime,\ state.startValue,\ state.endValue);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00152}00152\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00153}00153\ \ \ \ \ \textcolor{keywordflow}{case}\ TCode\_Axis\_Ramp\_Type::EaseIn:}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00154}00154\ \ \ \ \ \ \ \ \ x\ =\ mapEaseIn(t,\ state.startTime,\ state.endTime,\ state.startValue,\ state.endValue);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00155}00155\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00156}00156\ \ \ \ \ \textcolor{keywordflow}{case}\ TCode\_Axis\_Ramp\_Type::EaseOut:}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00157}00157\ \ \ \ \ \ \ \ \ x\ =\ mapEaseOut(t,\ state.startTime,\ state.endTime,\ state.startValue,\ state.endValue);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00158}00158\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00159}00159\ \ \ \ \ \textcolor{keywordflow}{case}\ TCode\_Axis\_Ramp\_Type::EaseInOut:}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00160}00160\ \ \ \ \ \ \ \ \ x\ =\ mapEaseInOut(t,\ state.startTime,\ state.endTime,\ state.startValue,\ state.endValue);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00161}00161\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00162}00162\ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00163}00163\ \ \ \ \ \ \ \ \ x\ =\ mapQ16(t,\ state.startTime,\ state.endTime,\ state.startValue,\ state.endValue);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00164}00164\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00165}00165\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00166}00166\ \ \ \ \ \textcolor{keywordflow}{if}\ (x\ >\ TCODE\_MAX\_AXIS)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00167}00167\ \ \ \ \ \ \ \ \ x\ =\ TCODE\_MAX\_AXIS;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00168}00168\ \ \ \ \ \textcolor{keywordflow}{if}\ (x\ <\ 0)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00169}00169\ \ \ \ \ \ \ \ \ x\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00170}00170\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00171}00171\ \ \ \ \ \textcolor{keywordflow}{return}\ x;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00172}00172\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00173}00173\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00174}\mbox{\hyperlink{class_t_code_axis_a8ee7bd84b2b1b1732d3d54ca90672abe}{00174}}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_t_code_axis_a8ee7bd84b2b1b1732d3d54ca90672abe}{TCodeAxis::stop}}()}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00175}00175\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00176}00176\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ t\ =\ millis();\ \textcolor{comment}{//\ This\ is\ the\ time\ now}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00177}00177\ \ \ \ \ \textcolor{keywordtype}{bool}\ inRange;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00178}00178\ \ \ \ \ currentState.startValue\ =\ getPositionMapped(currentState,\ inRange);}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00179}00179\ \ \ \ \ currentState.endValue\ =\ currentState.startValue;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00180}00180\ \ \ \ \ currentState.startTime\ =\ t;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00181}00181\ \ \ \ \ currentState.endTime\ =\ t;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00182}00182\ \ \ \ \ dataQueue.clear();}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00183}00183\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00184}00184\ \ \ \ \ \textcolor{keywordflow}{if}\ (channel.type\ ==\ TCode\_Channel\_Type::Vibration)}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00185}00185\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00186}00186\ \ \ \ \ \ \ \ \ currentState.endValue\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00187}00187\ \ \ \ \ \ \ \ \ currentState.endTime\ =\ t\ +\ 100;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00188}00188\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00189}00189\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00190}00190\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00191}\mbox{\hyperlink{class_t_code_axis_aa476635061a54659920b4943faf076d2}{00191}}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_code_axis_aa476635061a54659920b4943faf076d2}{TCodeAxis::changed}}()}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00192}00192\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00193}00193\ \ \ \ \ \textcolor{keywordflow}{if}\ (lastPosition\ !=\ \mbox{\hyperlink{class_t_code_axis_a5d34ed4e31fe76c05712b5631b1b3547}{getPosition}}())}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00194}00194\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00195}00195\ \ \ \ \ \ \ \ \ lastPosition\ =\ \mbox{\hyperlink{class_t_code_axis_a5d34ed4e31fe76c05712b5631b1b3547}{getPosition}}();}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00196}00196\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00197}00197\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00198}00198\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00199}00199\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00200}00200\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00201}\mbox{\hyperlink{class_t_code_axis_a2f8f570d42961c48fb0c186ebba0b232}{00201}}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *\mbox{\hyperlink{class_t_code_axis_a2f8f570d42961c48fb0c186ebba0b232}{TCodeAxis::getName}}()}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00202}00202\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00203}00203\ \ \ \ \ \textcolor{keywordflow}{return}\ axisName;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00204}00204\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00205}00205\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00206}\mbox{\hyperlink{class_t_code_axis_a2dba08da752605d5fd9b6211bacb3df3}{00206}}\ \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\_ChannelID}}\ \mbox{\hyperlink{class_t_code_axis_a2dba08da752605d5fd9b6211bacb3df3}{TCodeAxis::getChannelID}}()}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00207}00207\ \{}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00208}00208\ \ \ \ \ \textcolor{keywordflow}{return}\ channel;}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00209}00209\ \}}
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00210}00210\ }
+\DoxyCodeLine{\Hypertarget{_t_code_axis_8cpp_source_l00211}00211\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}
