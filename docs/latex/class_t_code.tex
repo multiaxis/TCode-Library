@@ -1,0 +1,425 @@
+\doxysection{TCode Class Reference}
+\hypertarget{class_t_code}{}\label{class_t_code}\index{TCode@{TCode}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_t_code_a0a6fdedbeb4c45e08f8f0f67eff40100}{TCode}} ()
+\begin{DoxyCompactList}\small\item\em default constructor for the \doxylink{class_t_code}{TCode} Class \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_t_code_a62026cce2c75895a738dd55e254cdb9a}{TCode}} (const char \texorpdfstring{$\ast$}{*}firmware)
+\begin{DoxyCompactList}\small\item\em constructor for the \doxylink{class_t_code}{TCode} class \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_t_code_a64d52009141140dc3a5923346db90370}{TCode}} (const char \texorpdfstring{$\ast$}{*}firmware, const char \texorpdfstring{$\ast$}{*}tcode\+Version)
+\begin{DoxyCompactList}\small\item\em constructor for the \doxylink{class_t_code}{TCode} class \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_t_code_a677f84c50e370117d0644a65d64f4ded}{TCode}} (const char \texorpdfstring{$\ast$}{*}firmware, const char \texorpdfstring{$\ast$}{*}tcode\+Version, const char \texorpdfstring{$\ast$}{*}filepath)
+\begin{DoxyCompactList}\small\item\em constructor for the \doxylink{class_t_code}{TCode} class \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_a946ee1de017f8c9eda9f09716aec53b5}{input\+Byte}} (const byte input)
+\begin{DoxyCompactList}\small\item\em function to input a byte into the input buffer \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_a3badbe0478fae8a345100fcea01c0665}{input\+Char}} (const char input)
+\begin{DoxyCompactList}\small\item\em function to input a char into the input buffer \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_ad9ca8332f213ab4c7928ecf59f45fe02}{input\+String}} (const String \&input)
+\begin{DoxyCompactList}\small\item\em function to input a string into the input buffer \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_a9d5245bf3782aa72b7bfe96fc7c754c6}{input\+CString}} (const char \texorpdfstring{$\ast$}{*}\&input)
+\begin{DoxyCompactList}\small\item\em function to input a c-\/string into the input buffer \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_a7a284043b9e11613bdf2cee287e4795f}{clear\+Buffer}} ()
+\begin{DoxyCompactList}\small\item\em function to clear the input buffer \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_t_code_a169abed2f50b183a67f20ccda80a381f}{register\+Axis}} (\mbox{\hyperlink{class_t_code_axis}{TCode\+Axis}} \texorpdfstring{$\ast$}{*}axis)
+\begin{DoxyCompactList}\small\item\em function to register a \doxylink{class_t_code_axis}{TCode\+Axis} with the \doxylink{class_t_code}{TCode} class \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_acf8cbeec7e6ee6289645425ab13bb58e}{axis\+Write}} (const \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\+\_\+\+Channel\+ID}} \&id, const int target\+Value, const TCode\+\_\+\+Axis\+\_\+\+Extention\+\_\+\+Type extention\+Value=TCode\+\_\+\+Axis\+\_\+\+Extention\+\_\+\+Type\+::\+Time, const long ext\+Magnitude=0, const TCode\+\_\+\+Axis\+\_\+\+Ramp\+\_\+\+Type ramp\+Type=TCode\+\_\+\+Axis\+\_\+\+Ramp\+\_\+\+Type\+::\+Linear)
+\begin{DoxyCompactList}\small\item\em function to write to a specified axis \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_ab0f31a990cdd8a94036ba15c0bd687d5}{axis\+Write}} (const char \texorpdfstring{$\ast$}{*}name, const int target\+Value, const TCode\+\_\+\+Axis\+\_\+\+Extention\+\_\+\+Type extention\+Value=TCode\+\_\+\+Axis\+\_\+\+Extention\+\_\+\+Type\+::\+Time, const long ext\+Magnitude=0, const TCode\+\_\+\+Axis\+\_\+\+Ramp\+\_\+\+Type ramp\+Type=TCode\+\_\+\+Axis\+\_\+\+Ramp\+\_\+\+Type\+::\+Linear)
+\begin{DoxyCompactList}\small\item\em function to write to a specified axis \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_t_code_a36c60528cab676088c14c206324c26e9}{axis\+Read}} (const \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\+\_\+\+Channel\+ID}} \&channel\+\_\+id)
+\begin{DoxyCompactList}\small\item\em function to read the position of a specified axis \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_t_code_a56abb0a3ca131c343fbf97434ee2c48c}{axis\+Read}} (const char \texorpdfstring{$\ast$}{*}name)
+\begin{DoxyCompactList}\small\item\em function to read the position of a specified axis \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_ae735e3cecc36adf7ac216aa4db29d0f7}{stop}} ()
+\begin{DoxyCompactList}\small\item\em stops all axis movement at its current position (sets vibration channels to 0) \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{class_t_code_a175bf3c6699dcabd74698ac7c3114487}{available}} ()
+\begin{DoxyCompactList}\small\item\em returns current available bytes in output buffer \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{class_t_code_a5937460d3d20202263704df371cd570e}{get\+Char}} ()
+\begin{DoxyCompactList}\small\item\em returns next byte in output buffer (returns \textquotesingle{}\textbackslash{}0\textquotesingle{} if no bytes present) \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{class_t_code_ad2828e82de7d5074a07e200139666364}{get\+Char}} (char \texorpdfstring{$\ast$}{*}buffer, const size\+\_\+t length)
+\begin{DoxyCompactList}\small\item\em returns bytes in output buffer to an external buffer \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_settings}{Settings}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_t_code_aca1fe2a23c49ad3bf909319a813895c1}{get\+Setting\+Manager}} ()
+\begin{DoxyCompactList}\small\item\em gets the current instance of the settings manager \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8h_source_l00024}{24}} of file \mbox{\hyperlink{_t_code_8h_source}{TCode.\+h}}.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_t_code_a0a6fdedbeb4c45e08f8f0f67eff40100}\label{class_t_code_a0a6fdedbeb4c45e08f8f0f67eff40100} 
+\index{TCode@{TCode}!TCode@{TCode}}
+\index{TCode@{TCode}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{TCode()}{TCode()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily TCode\+::\+TCode (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+default constructor for the \doxylink{class_t_code}{TCode} Class 
+
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00007}{7}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a62026cce2c75895a738dd55e254cdb9a}\label{class_t_code_a62026cce2c75895a738dd55e254cdb9a} 
+\index{TCode@{TCode}!TCode@{TCode}}
+\index{TCode@{TCode}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{TCode()}{TCode()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily TCode\+::\+TCode (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{firmware }\end{DoxyParamCaption})}
+
+
+
+constructor for the \doxylink{class_t_code}{TCode} class 
+
+
+\begin{DoxyParams}{Parameters}
+{\em firmware} & the name of firmware \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00014}{14}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a64d52009141140dc3a5923346db90370}\label{class_t_code_a64d52009141140dc3a5923346db90370} 
+\index{TCode@{TCode}!TCode@{TCode}}
+\index{TCode@{TCode}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{TCode()}{TCode()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily TCode\+::\+TCode (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{firmware,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{tcode\+Version }\end{DoxyParamCaption})}
+
+
+
+constructor for the \doxylink{class_t_code}{TCode} class 
+
+
+\begin{DoxyParams}{Parameters}
+{\em firmware} & the name of firmware represented as a c-\/string \\
+\hline
+{\em tcode\+Version} & the name of tcode version represented as a c-\/string \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00021}{21}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a677f84c50e370117d0644a65d64f4ded}\label{class_t_code_a677f84c50e370117d0644a65d64f4ded} 
+\index{TCode@{TCode}!TCode@{TCode}}
+\index{TCode@{TCode}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{TCode()}{TCode()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily TCode\+::\+TCode (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{firmware,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{tcode\+Version,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{filepath }\end{DoxyParamCaption})}
+
+
+
+constructor for the \doxylink{class_t_code}{TCode} class 
+
+
+\begin{DoxyParams}{Parameters}
+{\em firmware} & the name of firmware represented as a c-\/string \\
+\hline
+{\em tcode\+Version} & the name of tcode version represented as a c-\/string \\
+\hline
+{\em filepath} & the filepath used by the settings file in SPIFFS represented by a c-\/string \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00028}{28}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_t_code_a175bf3c6699dcabd74698ac7c3114487}\label{class_t_code_a175bf3c6699dcabd74698ac7c3114487} 
+\index{TCode@{TCode}!available@{available}}
+\index{available@{available}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{available()}{available()}}
+{\footnotesize\ttfamily size\+\_\+t TCode\+::available (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+returns current available bytes in output buffer 
+
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00145}{145}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a56abb0a3ca131c343fbf97434ee2c48c}\label{class_t_code_a56abb0a3ca131c343fbf97434ee2c48c} 
+\index{TCode@{TCode}!axisRead@{axisRead}}
+\index{axisRead@{axisRead}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{axisRead()}{axisRead()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily int TCode\+::axis\+Read (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{name }\end{DoxyParamCaption})}
+
+
+
+function to read the position of a specified axis 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & name of the channel to read the current position from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+current position or -\/1 if position could not be read 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00124}{124}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a36c60528cab676088c14c206324c26e9}\label{class_t_code_a36c60528cab676088c14c206324c26e9} 
+\index{TCode@{TCode}!axisRead@{axisRead}}
+\index{axisRead@{axisRead}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{axisRead()}{axisRead()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily int TCode\+::axis\+Read (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\+\_\+\+Channel\+ID}} \&}]{channel\+\_\+id }\end{DoxyParamCaption})}
+
+
+
+function to read the position of a specified axis 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & channel ID to read the current position from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+current position or -\/1 if position could not be read 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00114}{114}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_ab0f31a990cdd8a94036ba15c0bd687d5}\label{class_t_code_ab0f31a990cdd8a94036ba15c0bd687d5} 
+\index{TCode@{TCode}!axisWrite@{axisWrite}}
+\index{axisWrite@{axisWrite}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{axisWrite()}{axisWrite()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void TCode\+::axis\+Write (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{name,  }\item[{const int}]{target\+Value,  }\item[{const TCode\+\_\+\+Axis\+\_\+\+Extention\+\_\+\+Type}]{extention\+Value = {\ttfamily TCode\+\_\+Axis\+\_\+Extention\+\_\+Type\+:\+:Time},  }\item[{const long}]{ext\+Magnitude = {\ttfamily 0},  }\item[{const TCode\+\_\+\+Axis\+\_\+\+Ramp\+\_\+\+Type}]{ramp\+Type = {\ttfamily TCode\+\_\+Axis\+\_\+Ramp\+\_\+Type\+:\+:Linear} }\end{DoxyParamCaption})}
+
+
+
+function to write to a specified axis 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & name of the channel to write to \\
+\hline
+{\em target\+Value} & the target value for this axis \\
+\hline
+{\em extention\+Value} & the extention type for the axis e.\+g. Time,Speed \\
+\hline
+{\em ext\+Magnitude} & the value for the extention type \\
+\hline
+{\em ramp\+Type} & the ramp type \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00105}{105}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_acf8cbeec7e6ee6289645425ab13bb58e}\label{class_t_code_acf8cbeec7e6ee6289645425ab13bb58e} 
+\index{TCode@{TCode}!axisWrite@{axisWrite}}
+\index{axisWrite@{axisWrite}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{axisWrite()}{axisWrite()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void TCode\+::axis\+Write (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\+\_\+\+Channel\+ID}} \&}]{id,  }\item[{const int}]{target\+Value,  }\item[{const TCode\+\_\+\+Axis\+\_\+\+Extention\+\_\+\+Type}]{extention\+Value = {\ttfamily TCode\+\_\+Axis\+\_\+Extention\+\_\+Type\+:\+:Time},  }\item[{const long}]{ext\+Magnitude = {\ttfamily 0},  }\item[{const TCode\+\_\+\+Axis\+\_\+\+Ramp\+\_\+\+Type}]{ramp\+Type = {\ttfamily TCode\+\_\+Axis\+\_\+Ramp\+\_\+Type\+:\+:Linear} }\end{DoxyParamCaption})}
+
+
+
+function to write to a specified axis 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & channel ID to write to \\
+\hline
+{\em target\+Value} & the target value for this axis \\
+\hline
+{\em extention\+Value} & the extention type for the axis e.\+g. Time,Speed \\
+\hline
+{\em ext\+Magnitude} & the value for the extention type \\
+\hline
+{\em ramp\+Type} & the ramp type \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00096}{96}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a7a284043b9e11613bdf2cee287e4795f}\label{class_t_code_a7a284043b9e11613bdf2cee287e4795f} 
+\index{TCode@{TCode}!clearBuffer@{clearBuffer}}
+\index{clearBuffer@{clearBuffer}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{clearBuffer()}{clearBuffer()}}
+{\footnotesize\ttfamily void TCode\+::clear\+Buffer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+function to clear the input buffer 
+
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00075}{75}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a5937460d3d20202263704df371cd570e}\label{class_t_code_a5937460d3d20202263704df371cd570e} 
+\index{TCode@{TCode}!getChar@{getChar}}
+\index{getChar@{getChar}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{getChar()}{getChar()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily char TCode\+::get\+Char (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+returns next byte in output buffer (returns \textquotesingle{}\textbackslash{}0\textquotesingle{} if no bytes present) 
+
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00150}{150}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_ad2828e82de7d5074a07e200139666364}\label{class_t_code_ad2828e82de7d5074a07e200139666364} 
+\index{TCode@{TCode}!getChar@{getChar}}
+\index{getChar@{getChar}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{getChar()}{getChar()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily size\+\_\+t TCode\+::get\+Char (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{buffer,  }\item[{const size\+\_\+t}]{length }\end{DoxyParamCaption})}
+
+
+
+returns bytes in output buffer to an external buffer 
+
+\begin{DoxyReturn}{Returns}
+returns length of bytes put into the provided buffer 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00157}{157}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_aca1fe2a23c49ad3bf909319a813895c1}\label{class_t_code_aca1fe2a23c49ad3bf909319a813895c1} 
+\index{TCode@{TCode}!getSettingManager@{getSettingManager}}
+\index{getSettingManager@{getSettingManager}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{getSettingManager()}{getSettingManager()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_settings}{Settings}} \texorpdfstring{$\ast$}{*} TCode\+::get\+Setting\+Manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+gets the current instance of the settings manager 
+
+\begin{DoxyReturn}{Returns}
+returns the current \doxylink{class_settings}{Settings} manager 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00168}{168}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a946ee1de017f8c9eda9f09716aec53b5}\label{class_t_code_a946ee1de017f8c9eda9f09716aec53b5} 
+\index{TCode@{TCode}!inputByte@{inputByte}}
+\index{inputByte@{inputByte}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{inputByte()}{inputByte()}}
+{\footnotesize\ttfamily void TCode\+::input\+Byte (\begin{DoxyParamCaption}\item[{const byte}]{input }\end{DoxyParamCaption})}
+
+
+
+function to input a byte into the input buffer 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & byte to be inputted \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00036}{36}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a3badbe0478fae8a345100fcea01c0665}\label{class_t_code_a3badbe0478fae8a345100fcea01c0665} 
+\index{TCode@{TCode}!inputChar@{inputChar}}
+\index{inputChar@{inputChar}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{inputChar()}{inputChar()}}
+{\footnotesize\ttfamily void TCode\+::input\+Char (\begin{DoxyParamCaption}\item[{const char}]{input }\end{DoxyParamCaption})}
+
+
+
+function to input a char into the input buffer 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & char to be inputted \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00041}{41}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a9d5245bf3782aa72b7bfe96fc7c754c6}\label{class_t_code_a9d5245bf3782aa72b7bfe96fc7c754c6} 
+\index{TCode@{TCode}!inputCString@{inputCString}}
+\index{inputCString@{inputCString}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{inputCString()}{inputCString()}}
+{\footnotesize\ttfamily void TCode\+::input\+CString (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}\&}]{input }\end{DoxyParamCaption})}
+
+
+
+function to input a c-\/string into the input buffer 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & c-\/string to be inputted \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00066}{66}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_ad9ca8332f213ab4c7928ecf59f45fe02}\label{class_t_code_ad9ca8332f213ab4c7928ecf59f45fe02} 
+\index{TCode@{TCode}!inputString@{inputString}}
+\index{inputString@{inputString}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{inputString()}{inputString()}}
+{\footnotesize\ttfamily void TCode\+::input\+String (\begin{DoxyParamCaption}\item[{const String \&}]{input }\end{DoxyParamCaption})}
+
+
+
+function to input a string into the input buffer 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & string to be inputted \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00058}{58}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_a169abed2f50b183a67f20ccda80a381f}\label{class_t_code_a169abed2f50b183a67f20ccda80a381f} 
+\index{TCode@{TCode}!registerAxis@{registerAxis}}
+\index{registerAxis@{registerAxis}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{registerAxis()}{registerAxis()}}
+{\footnotesize\ttfamily bool TCode\+::register\+Axis (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_t_code_axis}{TCode\+Axis}} \texorpdfstring{$\ast$}{*}}]{axis }\end{DoxyParamCaption})}
+
+
+
+function to register a \doxylink{class_t_code_axis}{TCode\+Axis} with the \doxylink{class_t_code}{TCode} class 
+
+
+\begin{DoxyParams}{Parameters}
+{\em axis} & \doxylink{class_t_code_axis}{TCode\+Axis} pointer to be added to the \doxylink{class_t_code}{TCode} class to be processed \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+returns false if axis could not be registered 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00080}{80}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+\Hypertarget{class_t_code_ae735e3cecc36adf7ac216aa4db29d0f7}\label{class_t_code_ae735e3cecc36adf7ac216aa4db29d0f7} 
+\index{TCode@{TCode}!stop@{stop}}
+\index{stop@{stop}!TCode@{TCode}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily void TCode\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+stops all axis movement at its current position (sets vibration channels to 0) 
+
+
+
+Definition at line \mbox{\hyperlink{_t_code_8cpp_source_l00134}{134}} of file \mbox{\hyperlink{_t_code_8cpp_source}{TCode.\+cpp}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/thoma/\+Desktop/\+TCode/source files/TCode.\+h\item 
+C\+:/\+Users/thoma/\+Desktop/\+TCode/source files/TCode.\+cpp\end{DoxyCompactItemize}

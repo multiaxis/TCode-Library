@@ -1,9 +1,0 @@
-{
-	"name":"TCode Library",
-	"version":"0.0.1",
-	"description":"a Library to provide functionality to interact with the TCode protocol",
-	"dependancys":
-	{
-		"bblanchon/ArduinoJson":"^6.21.3"
-	}
-}
