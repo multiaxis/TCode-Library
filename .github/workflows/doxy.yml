@@ -1,4 +1,4 @@
-name: publish
+name: Doxygen GitHub Pages Deploy Action
 
 on:
   push:
@@ -10,7 +10,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: DenverCoder1/doxygen-github-pages-action@v1.2.0
+      - uses: DenverCoder1/doxygen-github-pages-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          config_file: Doxyfile
+          branch: gh-pages
+          folder: docs/html
