@@ -17,12 +17,10 @@ jobs:
           # These are default values, but included for clarity
           doxyfile-path: ./Doxyfile
           working-directory: .
-      - name: Pages Deployment
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/html/
-          enable_jekyll: true
-          allow_empty_commit: false
-          force_orphan: true
-          publish_branch: github-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: github-pages
+          folder: ./docs/html/
+          target-folder: .
