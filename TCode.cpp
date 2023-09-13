@@ -165,6 +165,29 @@ size_t TCode::getChar(char *buffer, const size_t length)
     return length_to_read;
 }
 
+size_t TCode::externalAvailable()
+{
+    return externalCommandBuffer.count();
+}
+
+char TCode::getExternalChar()
+{
+    if (externalCommandBuffer.count() == 0)
+        return '\0';
+    return externalCommandBuffer.pop();
+}
+
+size_t TCode::getExternalChar(char *buffer, const size_t length)
+{
+    size_t length_to_read = min(length, externalCommandBuffer.count());
+    for (size_t i = 0; i < length_to_read; i++)
+    {
+        *(buffer) = externalCommandBuffer.pop();
+        buffer++;
+    }
+    return length_to_read;
+}
+
 Settings *TCode::getSettingManager()
 {
     return &settingManager;
@@ -316,6 +339,11 @@ void TCode::runSetupCommand(TCode_Setup_Command &command)
 
 void TCode::runExternalCommand(TCode_External_Command &command)
 {
+    for(int i = 0; i < command.length, command.command[i] != '\0'; i++)
+    {
+        externalCommandBuffer.push(command.command[i]);
+    }
+    externalCommandBuffer.push('\n');
 }
 
 void TCode::setSaveValues(TCode_ChannelID &id, unsigned int min, unsigned int max)

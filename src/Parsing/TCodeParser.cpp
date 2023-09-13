@@ -274,7 +274,7 @@ bool TCodeParser::parseExternalCommand(unsigned char *buffer, const size_t lengt
         *(resizedBuffer + i) = *(buffer + i);
     }
     out.command = resizedBuffer;
-    out.length = length;
+    out.length = strLength;
     return true;
 }
 

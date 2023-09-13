@@ -139,6 +139,25 @@ public:
      */
     size_t getChar(char *buffer, const size_t length);
 
+
+    /**
+     * @brief returns current available bytes in external command output buffer
+     */
+    size_t externalAvailable();
+
+    /**
+     * @brief returns next byte in external command output buffer (returns '\0' if no bytes present)
+     */
+    char getExternalChar();
+
+    /**
+     * @brief returns bytes in external command output buffer to an external buffer
+     * @return returns length of bytes put into the provided buffer
+     */
+    size_t getExternalChar(char *buffer, const size_t length);
+
+
+
     /**
      * @brief gets the current instance of the settings manager
      * @return returns the current Settings manager
@@ -152,6 +171,7 @@ private:
     Settings settingManager;
     TCodeBuffer<TCodeAxis *, MAX_AXIS_COUNT> axisBuffer;
     TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> outputBuffer;
+    TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> externalCommandBuffer;
     TCodeBuffer<char, MAX_INPUT_BUFFER_LENGTH_COUNT> inputBuffer;
 
     TCodeAxis *getAxisFromName(const char *name);
