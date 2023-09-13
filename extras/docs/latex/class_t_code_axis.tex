@@ -1,0 +1,175 @@
+\doxysection{TCode\+Axis Class Reference}
+\hypertarget{class_t_code_axis}{}\label{class_t_code_axis}\index{TCodeAxis@{TCodeAxis}}
+
+
+Class used to represent a \doxylink{class_t_code}{TCode} Axis.  
+
+
+
+
+{\ttfamily \#include $<$TCode\+Axis.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_t_code_axis_a35d053ef51508e2463f5cdb58d0b610d}{TCode\+Axis}} (const char \texorpdfstring{$\ast$}{*}name, \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\+\_\+\+Channel\+ID}} channel)
+\begin{DoxyCompactList}\small\item\em constructor for the \doxylink{class_t_code_axis}{TCode\+Axis} class \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_axis_abeb2b724b394b3e58cad2560f40b6fbe}{set}} (int target\+Value, TCode\+\_\+\+Axis\+\_\+\+Extention\+\_\+\+Type extention\+Type=TCode\+\_\+\+Axis\+\_\+\+Extention\+\_\+\+Type\+::\+Time, long extention\+Value=0, TCode\+\_\+\+Axis\+\_\+\+Ramp\+\_\+\+Type ramp\+Type=TCode\+\_\+\+Axis\+\_\+\+Ramp\+\_\+\+Type\+::\+Linear)
+\begin{DoxyCompactList}\small\item\em sets the axis\textquotesingle{} dynamic parameters \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_t_code_axis_a5d34ed4e31fe76c05712b5631b1b3547}{get\+Position}} ()
+\begin{DoxyCompactList}\small\item\em gets the current position of the axis \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_t_code_axis_a8ee7bd84b2b1b1732d3d54ca90672abe}{stop}} ()
+\begin{DoxyCompactList}\small\item\em stops axis movement at its current position \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_t_code_axis_aa476635061a54659920b4943faf076d2}{changed}} ()
+\begin{DoxyCompactList}\small\item\em stops axis movement at its current position \end{DoxyCompactList}\item 
+const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_t_code_axis_a2f8f570d42961c48fb0c186ebba0b232}{get\+Name}} ()
+\begin{DoxyCompactList}\small\item\em gets the name of the axis \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\+\_\+\+Channel\+ID}} \mbox{\hyperlink{class_t_code_axis_a2dba08da752605d5fd9b6211bacb3df3}{get\+Channel\+ID}} ()
+\begin{DoxyCompactList}\small\item\em gets channel ID of the axis \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Class used to represent a \doxylink{class_t_code}{TCode} Axis. 
+
+Definition at line \mbox{\hyperlink{_t_code_axis_8h_source_l00041}{41}} of file \mbox{\hyperlink{_t_code_axis_8h_source}{TCode\+Axis.\+h}}.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_t_code_axis_a35d053ef51508e2463f5cdb58d0b610d}\label{class_t_code_axis_a35d053ef51508e2463f5cdb58d0b610d} 
+\index{TCodeAxis@{TCodeAxis}!TCodeAxis@{TCodeAxis}}
+\index{TCodeAxis@{TCodeAxis}!TCodeAxis@{TCodeAxis}}
+\doxysubsubsection{\texorpdfstring{TCodeAxis()}{TCodeAxis()}}
+{\footnotesize\ttfamily TCode\+Axis\+::\+TCode\+Axis (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{name,  }\item[{\mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\+\_\+\+Channel\+ID}}}]{channel }\end{DoxyParamCaption})}
+
+
+
+constructor for the \doxylink{class_t_code_axis}{TCode\+Axis} class 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & constant char string name for the axis \\
+\hline
+{\em channel} & channel ID for this axis \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_axis_8cpp_source_l00006}{6}} of file \mbox{\hyperlink{_t_code_axis_8cpp_source}{TCode\+Axis.\+cpp}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_t_code_axis_aa476635061a54659920b4943faf076d2}\label{class_t_code_axis_aa476635061a54659920b4943faf076d2} 
+\index{TCodeAxis@{TCodeAxis}!changed@{changed}}
+\index{changed@{changed}!TCodeAxis@{TCodeAxis}}
+\doxysubsubsection{\texorpdfstring{changed()}{changed()}}
+{\footnotesize\ttfamily bool TCode\+Axis\+::changed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+stops axis movement at its current position 
+
+\begin{DoxyReturn}{Returns}
+returns true if the axis has changed position since last check 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_t_code_axis_8cpp_source_l00191}{191}} of file \mbox{\hyperlink{_t_code_axis_8cpp_source}{TCode\+Axis.\+cpp}}.
+
+\Hypertarget{class_t_code_axis_a2dba08da752605d5fd9b6211bacb3df3}\label{class_t_code_axis_a2dba08da752605d5fd9b6211bacb3df3} 
+\index{TCodeAxis@{TCodeAxis}!getChannelID@{getChannelID}}
+\index{getChannelID@{getChannelID}!TCodeAxis@{TCodeAxis}}
+\doxysubsubsection{\texorpdfstring{getChannelID()}{getChannelID()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_t_code___channel_i_d}{TCode\+\_\+\+Channel\+ID}} TCode\+Axis\+::get\+Channel\+ID (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+gets channel ID of the axis 
+
+\begin{DoxyReturn}{Returns}
+returns the channel ID of the axis 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_t_code_axis_8cpp_source_l00206}{206}} of file \mbox{\hyperlink{_t_code_axis_8cpp_source}{TCode\+Axis.\+cpp}}.
+
+\Hypertarget{class_t_code_axis_a2f8f570d42961c48fb0c186ebba0b232}\label{class_t_code_axis_a2f8f570d42961c48fb0c186ebba0b232} 
+\index{TCodeAxis@{TCodeAxis}!getName@{getName}}
+\index{getName@{getName}!TCodeAxis@{TCodeAxis}}
+\doxysubsubsection{\texorpdfstring{getName()}{getName()}}
+{\footnotesize\ttfamily const char \texorpdfstring{$\ast$}{*} TCode\+Axis\+::get\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+gets the name of the axis 
+
+\begin{DoxyReturn}{Returns}
+returns the c\+\_\+string representation of the name stored 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_t_code_axis_8cpp_source_l00201}{201}} of file \mbox{\hyperlink{_t_code_axis_8cpp_source}{TCode\+Axis.\+cpp}}.
+
+\Hypertarget{class_t_code_axis_a5d34ed4e31fe76c05712b5631b1b3547}\label{class_t_code_axis_a5d34ed4e31fe76c05712b5631b1b3547} 
+\index{TCodeAxis@{TCodeAxis}!getPosition@{getPosition}}
+\index{getPosition@{getPosition}!TCodeAxis@{TCodeAxis}}
+\doxysubsubsection{\texorpdfstring{getPosition()}{getPosition()}}
+{\footnotesize\ttfamily int TCode\+Axis\+::get\+Position (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+gets the current position of the axis 
+
+\begin{DoxyReturn}{Returns}
+current position of this axis as an int 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_t_code_axis_8cpp_source_l00106}{106}} of file \mbox{\hyperlink{_t_code_axis_8cpp_source}{TCode\+Axis.\+cpp}}.
+
+\Hypertarget{class_t_code_axis_abeb2b724b394b3e58cad2560f40b6fbe}\label{class_t_code_axis_abeb2b724b394b3e58cad2560f40b6fbe} 
+\index{TCodeAxis@{TCodeAxis}!set@{set}}
+\index{set@{set}!TCodeAxis@{TCodeAxis}}
+\doxysubsubsection{\texorpdfstring{set()}{set()}}
+{\footnotesize\ttfamily void TCode\+Axis\+::set (\begin{DoxyParamCaption}\item[{int}]{target\+Value,  }\item[{TCode\+\_\+\+Axis\+\_\+\+Extention\+\_\+\+Type}]{extention\+Type = {\ttfamily TCode\+\_\+Axis\+\_\+Extention\+\_\+Type\+:\+:Time},  }\item[{long}]{extention\+Value = {\ttfamily 0},  }\item[{TCode\+\_\+\+Axis\+\_\+\+Ramp\+\_\+\+Type}]{ramp\+Type = {\ttfamily TCode\+\_\+Axis\+\_\+Ramp\+\_\+Type\+:\+:Linear} }\end{DoxyParamCaption})}
+
+
+
+sets the axis\textquotesingle{} dynamic parameters 
+
+
+\begin{DoxyParams}{Parameters}
+{\em target\+\_\+value} & the target value for this axis \\
+\hline
+{\em extention\+Type} & the extention type for the axis e.\+g. Time,Speed \\
+\hline
+{\em extention\+Value} & the extention value \\
+\hline
+{\em ramp\+Type} & the ramp type \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_t_code_axis_8cpp_source_l00047}{47}} of file \mbox{\hyperlink{_t_code_axis_8cpp_source}{TCode\+Axis.\+cpp}}.
+
+\Hypertarget{class_t_code_axis_a8ee7bd84b2b1b1732d3d54ca90672abe}\label{class_t_code_axis_a8ee7bd84b2b1b1732d3d54ca90672abe} 
+\index{TCodeAxis@{TCodeAxis}!stop@{stop}}
+\index{stop@{stop}!TCodeAxis@{TCodeAxis}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily void TCode\+Axis\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+stops axis movement at its current position 
+
+
+
+Definition at line \mbox{\hyperlink{_t_code_axis_8cpp_source_l00174}{174}} of file \mbox{\hyperlink{_t_code_axis_8cpp_source}{TCode\+Axis.\+cpp}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+tcode\+\_\+library/src/\+Axis Management/TCode\+Axis.\+h\item 
+tcode\+\_\+library/src/\+Axis Management/TCode\+Axis.\+cpp\end{DoxyCompactItemize}
