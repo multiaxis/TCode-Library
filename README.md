@@ -13,6 +13,10 @@ Created by [Tempest For the OSR-2, SR-6, and other DIY toys](https://patreon.com
 
 ---
 
+## Build Info
+
+[![Build CI Status](https://github.com/multiaxis/TCode-Library/actions/workflows/Compile%20Library.yml/badge.svg)](https://github.com/multiaxis/TCode-Library/actions/workflows/Compile%20Library.yml)
+
 ## Introduction
 
 T-code is a protocol for implementing UART serial communications to an adult toy. It is partly influenced by G-code, which is an alphanumeric format used to drive CNC machines, including 3D-printers.
