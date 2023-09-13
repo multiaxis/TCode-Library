@@ -16,7 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         board: 
-          - "nodemcuv2"
           - "lolin32"
 
     steps:
@@ -27,7 +26,7 @@ jobs:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: ${{ runner.os }}-pip-
-          
+
     - name: Cache PlatformIO
       uses: actions/cache@v2
       with:
