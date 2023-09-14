@@ -5,7 +5,17 @@
 #pragma once
 #ifndef SETTING_MANAGEMENT_HPP
 #define SETTING_MANAGEMENT_HPP
-#include <SPIFFS.h>
+
+#if defined(ESP8266) || defined(ESP32)
+#endif
+
+#ifdef ESP8266
+    #include <FS.h>
+#elif defined(ESP32)
+    #include <SPIFFS.h>
+#endif
+
+
 #include <ArduinoJson.h>
 #define JSON_FILE_SIZE 2048
 
