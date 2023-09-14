@@ -5,12 +5,12 @@
 #pragma once
 #ifndef TCODE_HPP
 #define TCODE_HPP
-#include "src/Setting Managment/SettingManagement.h"
-#include "src/Parsing/TCodeParser.h"
-#include "src/Axis Management/TCodeAxis.h"
-#include "src/Utils/TCodeBuffer.h"
-#include "src/Constants and Enums/TCodeConstants.h"
-#include "src/Constants and Enums/TCodeEnums.h"
+#include "Setting Managment/SettingManagement.h"
+#include "Parsing/TCodeParser.h"
+#include "Axis Management/TCodeAxis.h"
+#include "Utils/TCodeBuffer.h"
+#include "Constants and Enums/TCodeConstants.h"
+#include "Constants and Enums/TCodeEnums.h"
 
 #define CURRENT_TCODE_VERSION "TCode v0.4"
 #define DEFAULT_FIRMWARE_NAME "TCode"
