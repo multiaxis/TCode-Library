@@ -82,6 +82,12 @@ public:
      */
     TCode_ChannelID getChannelID();
 
+    /**
+     * @brief gets last time a command was inputted for this axis
+     * @returns last time in millis since command was inputted
+     */
+    unsigned long getLastCommandTime();
+
 private:
     unsigned long getLastMillis();
     int getLastTargetPosition();

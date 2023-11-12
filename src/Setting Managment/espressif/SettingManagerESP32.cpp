@@ -1,13 +1,10 @@
-// Setting-Management-Class-Cpp v1.0,
+// Setting-Management-Class-Hpp v1.0,
 // protocal by TempestMAx (https://www.patreon.com/tempestvr)
-// implemented by Eve 9/09/2023
+// implemented by Eve 12/11/2023
 // Please copy, share, learn, innovate, give attribution.
+#include "SettingManagerESP32.h"
 
-#ifndef SETTING_MANAGMENT_CPP
-#define SETTING_MANAGEMET_CPP
-#include "SettingManagement.h"
-
-bool Settings::init(const char *filepath)
+bool SettingManagerESP32::init()
 {
     if (!SPIFFS.begin(true))
     {
@@ -36,8 +33,7 @@ bool Settings::init(const char *filepath)
     if (!foundFile)
     {
         foundFile = true;
-        String newConfig;
-        createConfigFile(newConfig);
+        String newConfig = "{}";
         writeFile(newConfig);
 #ifdef DEBUG
         Serial.println(F("SM: file not found creating settings file"));
@@ -53,14 +49,14 @@ bool Settings::init(const char *filepath)
     return true;
 }
 
-bool Settings::isMounted()
+bool SettingManagerESP32::isMounted()
 {
     return fileSystemMounted && foundFile;
 }
 
-bool Settings::hasSetting(const char *setting)
+bool SettingManagerESP32::hasSetting(const char *setting)
 {
-    StaticJsonDocument<JSON_FILE_SIZE> doc;
+    StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
     String fileData;
     if (!getFile(fileData))
     {
@@ -85,24 +81,13 @@ bool Settings::hasSetting(const char *setting)
     return true;
 }
 
-void Settings::reset()
+void SettingManagerESP32::reset()
 {
-    String newConfig;
-    createConfigFile(newConfig);
+    String newConfig = "{}";
     writeFile(newConfig);
 }
 
-bool Settings::getSystemUsage(SettingsUsage &out)
-{
-    if (!isMounted())
-        return false;
-    out.sizeOfFile = getFileSize();
-    out.spaceAvailable = SPIFFS.totalBytes();
-    out.spaceUsed = SPIFFS.usedBytes();
-    return true;
-}
-
-bool Settings::getFile(String &out)
+bool SettingManagerESP32::getFile(String &out)
 {
     if (!isMounted())
         return false;
@@ -125,7 +110,7 @@ bool Settings::getFile(String &out)
         if (current_byte == '\n')
             continue;
         out += (char)current_byte;
-        if (out.length() >= JSON_FILE_SIZE)
+        if (out.length() >= DEFAULT_JSON_FILE_SIZE)
         {
 #ifdef DEBUG
             Serial.print(F("SM: File larger than "));
@@ -139,7 +124,7 @@ bool Settings::getFile(String &out)
     return true;
 }
 
-bool Settings::writeFile(const String &fileData)
+bool SettingManagerESP32::writeFile(const String &fileData)
 {
 #ifdef DEBUG
     Serial.print(F("SM: writing file \""));
@@ -175,12 +160,17 @@ bool Settings::writeFile(const String &fileData)
     return true;
 }
 
-void Settings::createConfigFile(String &out)
+bool SettingManagerESP32::getSystemUsage(SettingsUsage &out)
 {
-    out = "{\"DEFAULT CONFIG\":\"TESTING\"}";
+    if (!isMounted())
+        return false;
+    out.sizeOfFile = getFileSize();
+    out.spaceAvailable = SPIFFS.totalBytes();
+    out.spaceUsed = SPIFFS.usedBytes();
+    return true;
 }
 
-unsigned long Settings::getFileSize()
+unsigned long SettingManagerESP32::getFileSize()
 {
     if (!isMounted())
         return 0;
@@ -205,5 +195,3 @@ unsigned long Settings::getFileSize()
     file.close();
     return size;
 }
-
-#endif
