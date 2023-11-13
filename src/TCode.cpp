@@ -4,15 +4,11 @@
 // Please copy, share, learn, innovate, give attribution.
 #include "TCode.h"
 
-TCode::TCode(const char *firmware, const char *tcode_version) :
-                                                                                     firmwareVersion(firmware),
-                                                                                     tcodeVersion(tcode_version), 
-                                                                                     filepath(DEFAULT_FILE_NAME)
+TCode::TCode(const char *firmware, const char *tcode_version) : firmwareVersion(firmware),
+                                                                tcodeVersion(tcode_version),
+                                                                filepath(DEFAULT_FILE_NAME)
 {
-    
 }
-
-
 
 void TCode::inputByte(const byte input)
 {
@@ -60,6 +56,11 @@ void TCode::clearBuffer()
 
 bool TCode::registerAxis(TCodeAxis *axis)
 {
+    if(axis == nullptr)
+    {
+        return false;
+    }
+
     if (getAxisFromName(axis->getName()) != nullptr)
     {
         return false;
@@ -70,8 +71,7 @@ bool TCode::registerAxis(TCodeAxis *axis)
         return false;
     }
 
-    bool success = axisBuffer.push(axis);
-    return success;
+    return axisBuffer.push(axis);
 }
 
 void TCode::axisWrite(const TCode_ChannelID &id, const int magnitude, const TCode_Axis_Extention_Type extentionValue, const long extMagnitude, const TCode_Axis_Ramp_Type rampType)
@@ -130,6 +130,36 @@ unsigned long TCode::axisLastTime(const char *name)
         return axis->getLastCommandTime();
     }
     return -1;
+}
+
+void TCode::update()
+{
+    for(int i = 0; i < buttonBuffer.count(); i++)
+    {
+        TCodeButton *temp = nullptr;
+        if(buttonBuffer.get(i,temp))
+        {
+            if(temp->update())
+            {
+                String out = "#";
+                out += temp->name;
+                out += ":";
+                if(temp->getState())
+                    out += "1";
+                else
+                    out += "0";
+                println(out);
+            }
+        }
+    }
+}
+
+bool TCode::registerButton(TCodeButton *button)
+{
+    if(button == nullptr)
+        return false;
+
+    return buttonBuffer.push(button);
 }
 
 void TCode::stop()
@@ -191,7 +221,7 @@ size_t TCode::getExternalChar(char *buffer, const size_t length)
 
 void TCode::setSettingManager(ISettings *settings)
 {
-    if(settings == nullptr)
+    if (settings == nullptr)
         return;
 
     settingManager = settings;
@@ -426,12 +456,12 @@ void TCode::printSavedAxisValues()
 
             name = "";
             name += str_id;
-            name += '-';
-            name += temp->getName();
-            name += '-';
+            name += ' ';
             name += String(min);
-            name += '-';
+            name += ' ';
             name += String(max);
+            name += ' ';
+            name += temp->getName();
 
             println(name);
         }

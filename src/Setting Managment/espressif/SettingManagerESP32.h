@@ -5,7 +5,7 @@
 #pragma once
 #ifndef SETTING_MANAGER_ESP32_HPP
 #define SETTING_MANAGER_ESP32_HPP
-#include "../SettingManagementInterface.h"
+#include "..\SettingManagementInterface.h"
 #include <SPIFFS.h>
 #include <ArduinoJson.h>
 #define DEFAULT_JSON_FILE_SIZE 512

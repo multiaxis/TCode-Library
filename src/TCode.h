@@ -12,12 +12,14 @@
 #include "Utils/TCodeBuffer.h"
 #include "Constants and Enums/TCodeConstants.h"
 #include "Constants and Enums/TCodeEnums.h"
+#include "Button Management/Button.h"
 
 #define CURRENT_TCODE_VERSION "TCode v0.4"
 #define DEFAULT_FIRMWARE_NAME "TCode"
 #define DEFAULT_FILE_NAME "/spiffs/TCode.dat"
 
 const int MAX_AXIS_COUNT = 10;
+const int MAX_BUTTON_COUNT = 10;
 const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 127;
 const int MAX_INPUT_BUFFER_LENGTH_COUNT = 127;
 const int MAX_OUTPUT_BUFFER_LENGTH_COUNT = 127;
@@ -102,10 +104,16 @@ public:
      */
     int axisRead(const char *name);
 
-    //[TODO] : Implement
     unsigned long axisLastTime(const TCode_ChannelID &channel_id);
-    //[TODO] : Implement
+    
     unsigned long axisLastTime(const char *name);
+
+    /**
+     * @brief Main update function for handling buttons
+     */
+    void update();
+
+    bool registerButton(TCodeButton* button);
 
     /**
      * @brief stops all axis movement at its current position (sets vibration channels to 0)
@@ -161,6 +169,7 @@ private:
     const char *tcodeVersion;
     ISettings *settingManager;
     TCodeBuffer<TCodeAxis *, MAX_AXIS_COUNT> axisBuffer;
+    TCodeBuffer<TCodeButton *, MAX_BUTTON_COUNT> buttonBuffer;
     TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> outputBuffer;
     TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> externalCommandBuffer;
     TCodeBuffer<char, MAX_INPUT_BUFFER_LENGTH_COUNT> inputBuffer;
