@@ -8,6 +8,6 @@
 #ifndef SETTING_MANAGEMENT_BOARDS_HPP
 #define SETTING_MANAGEMENT_BOARDS_HPP
 
-//#include "espressif/SettingManagerESP32.h"
+#include "espressif/SettingManagerESP32.h"
 
 #endif
