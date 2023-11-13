@@ -75,6 +75,11 @@ void TCodeAxis::set(int target_value, TCode_Axis_Extention_Type extentionType, l
     lastCommandTime = millis();
 }
 
+unsigned long TCodeAxis::getLastCommandTime()
+{
+    return lastCommandTime;
+}
+
 unsigned long TCodeAxis::getLastMillis()
 {
     unsigned long currentTime = millis();

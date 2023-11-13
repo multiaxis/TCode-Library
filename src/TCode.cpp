@@ -4,34 +4,15 @@
 // Please copy, share, learn, innovate, give attribution.
 #include "TCode.h"
 
-TCode::TCode()
+TCode::TCode(const char *firmware, const char *tcode_version) :
+                                                                                     firmwareVersion(firmware),
+                                                                                     tcodeVersion(tcode_version), 
+                                                                                     filepath(DEFAULT_FILE_NAME)
 {
-    firmwareVersion = DEFAULT_FIRMWARE_NAME;
-    tcodeVersion = CURRENT_TCODE_VERSION;
-    settingManager.init(DEFAULT_FILE_NAME);
+    
 }
 
-TCode::TCode(const char *firmware)
-{
-    firmwareVersion = firmware;
-    tcodeVersion = CURRENT_TCODE_VERSION;
-    settingManager.init(DEFAULT_FILE_NAME);
-}
 
-TCode::TCode(const char *firmware, const char *tcode)
-{
-    firmwareVersion = firmware;
-    tcodeVersion = tcode;
-    settingManager.init(DEFAULT_FILE_NAME);
-}
-
-TCode::TCode(const char *firmware, const char *tcode_version, const char *_filepath)
-{
-    firmwareVersion = firmware;
-    tcodeVersion = tcode_version;
-    filepath = _filepath;
-    settingManager.init(filepath);
-}
 
 void TCode::inputByte(const byte input)
 {
@@ -131,6 +112,26 @@ int TCode::axisRead(const char *name)
     return -1;
 }
 
+unsigned long TCode::axisLastTime(const TCode_ChannelID &channel_id)
+{
+    TCodeAxis *axis = getAxisFromID(channel_id);
+    if (axis != nullptr)
+    {
+        return axis->getLastCommandTime();
+    }
+    return -1;
+}
+
+unsigned long TCode::axisLastTime(const char *name)
+{
+    TCodeAxis *axis = getAxisFromName(name);
+    if (axis != nullptr)
+    {
+        return axis->getLastCommandTime();
+    }
+    return -1;
+}
+
 void TCode::stop()
 {
     for (size_t i = 0; i < axisBuffer.count(); i++)
@@ -188,9 +189,18 @@ size_t TCode::getExternalChar(char *buffer, const size_t length)
     return length_to_read;
 }
 
-Settings *TCode::getSettingManager()
+void TCode::setSettingManager(ISettings *settings)
 {
-    return &settingManager;
+    if(settings == nullptr)
+        return;
+
+    settingManager = settings;
+    settingManager->init();
+}
+
+ISettings *TCode::getSettingManager()
+{
+    return settingManager;
 }
 
 TCodeAxis *TCode::getAxisFromName(const char *name)
@@ -339,7 +349,7 @@ void TCode::runSetupCommand(TCode_Setup_Command &command)
 
 void TCode::runExternalCommand(TCode_External_Command &command)
 {
-    for(int i = 0; i < command.length, command.command[i] != '\0'; i++)
+    for (int i = 0; i < command.length, command.command[i] != '\0'; i++)
     {
         externalCommandBuffer.push(command.command[i]);
     }
@@ -348,6 +358,12 @@ void TCode::runExternalCommand(TCode_External_Command &command)
 
 void TCode::setSaveValues(TCode_ChannelID &id, unsigned int min, unsigned int max)
 {
+    if (settingManager == nullptr)
+    {
+        print(F("TCODE : Setting Manager Is Null"));
+        return;
+    }
+
     TCodeAxis *temp = getAxisFromID(id);
     if (temp != nullptr)
     {
@@ -355,30 +371,36 @@ void TCode::setSaveValues(TCode_ChannelID &id, unsigned int min, unsigned int ma
         TCodeParser::getStrfromID(id, str_id);
         String name = "AXIS-MIN-";
         name += str_id;
-        if (!settingManager.hasSetting(name.c_str()))
+        if (!settingManager->hasSetting(name.c_str()))
         {
-            settingManager.setSetting(name.c_str(), 0);
+            settingManager->setSetting(name.c_str(), 0);
         }
         else
         {
-            settingManager.setSetting(name.c_str(), min);
+            settingManager->setSetting(name.c_str(), min);
         }
 
         name = "AXIS-MAX-";
         name += str_id;
-        if (!settingManager.hasSetting(name.c_str()))
+        if (!settingManager->hasSetting(name.c_str()))
         {
-            settingManager.setSetting(name.c_str(), TCODE_MAX_AXIS);
+            settingManager->setSetting(name.c_str(), TCODE_MAX_AXIS);
         }
         else
         {
-            settingManager.setSetting(name.c_str(), max);
+            settingManager->setSetting(name.c_str(), max);
         }
     }
 }
 
 void TCode::printSavedAxisValues()
 {
+    if (settingManager == nullptr)
+    {
+        print(F("TCODE : Setting Manager Is Null"));
+        return;
+    }
+
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
         TCodeAxis *temp = nullptr;
@@ -389,17 +411,17 @@ void TCode::printSavedAxisValues()
             String name = "AXIS-MIN-";
             name += str_id;
             unsigned int min = 0;
-            if (!settingManager.getSetting(name.c_str(), min))
+            if (!settingManager->getSetting(name.c_str(), min))
             {
-                settingManager.setSetting(name.c_str(), 0);
+                settingManager->setSetting(name.c_str(), 0);
             }
 
             name = "AXIS-MAX-";
             name += str_id;
             unsigned int max = TCODE_MAX_AXIS;
-            if (!settingManager.getSetting(name.c_str(), max))
+            if (!settingManager->getSetting(name.c_str(), max))
             {
-                settingManager.setSetting(name.c_str(), TCODE_MAX_AXIS);
+                settingManager->setSetting(name.c_str(), TCODE_MAX_AXIS);
             }
 
             name = "";

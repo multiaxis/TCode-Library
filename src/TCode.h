@@ -5,7 +5,8 @@
 #pragma once
 #ifndef TCODE_HPP
 #define TCODE_HPP
-#include "Setting Managment/SettingManagement.h"
+#include "Setting Managment/SettingManagementInterface.h"
+#include "Setting Managment/SettingManagers.h"
 #include "Parsing/TCodeParser.h"
 #include "Axis Management/TCodeAxis.h"
 #include "Utils/TCodeBuffer.h"
@@ -24,29 +25,12 @@ const int MAX_OUTPUT_BUFFER_LENGTH_COUNT = 127;
 class TCode
 {
 public:
-
-    /**
-     * @brief default constructor for the TCode Class
-     */
-    TCode();
-    /**
-     * @brief constructor for the TCode class
-     * @param firmware the name of firmware
-     */
-    TCode(const char *firmware);
-     /**
-     * @brief constructor for the TCode class
-     * @param firmware the name of firmware represented as a c-string
-     * @param tcodeVersion the name of tcode version represented as a c-string
-     */
-    TCode(const char *firmware, const char *tcodeVersion);
     /**
      * @brief constructor for the TCode class
      * @param firmware the name of firmware represented as a c-string
      * @param tcodeVersion the name of tcode version represented as a c-string
-     * @param filepath the filepath used by the settings file in SPIFFS represented by a c-string
      */
-    TCode(const char *firmware, const char *tcodeVersion, const char *filepath);
+    TCode(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = CURRENT_TCODE_VERSION);
 
     /**
      * @brief function to input a byte into the input buffer
@@ -93,7 +77,7 @@ public:
      * @param rampType the ramp type
      */
     void axisWrite(const TCode_ChannelID &id, const int targetValue, const TCode_Axis_Extention_Type extentionValue = TCode_Axis_Extention_Type::Time, const long extMagnitude = 0, const TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
-    
+
     /**
      * @brief function to write to a specified axis
      * @param name name of the channel to write to
@@ -103,7 +87,7 @@ public:
      * @param rampType the ramp type
      */
     void axisWrite(const char *name, const int targetValue, const TCode_Axis_Extention_Type extentionValue = TCode_Axis_Extention_Type::Time, const long extMagnitude = 0, const TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
-    
+
     /**
      * @brief function to read the position of a specified axis
      * @param id channel ID to read the current position from
@@ -117,6 +101,11 @@ public:
      * @returns current position or -1 if position could not be read
      */
     int axisRead(const char *name);
+
+    //[TODO] : Implement
+    unsigned long axisLastTime(const TCode_ChannelID &channel_id);
+    //[TODO] : Implement
+    unsigned long axisLastTime(const char *name);
 
     /**
      * @brief stops all axis movement at its current position (sets vibration channels to 0)
@@ -139,7 +128,6 @@ public:
      */
     size_t getChar(char *buffer, const size_t length);
 
-
     /**
      * @brief returns current available bytes in external command output buffer
      */
@@ -156,19 +144,22 @@ public:
      */
     size_t getExternalChar(char *buffer, const size_t length);
 
-
-
     /**
      * @brief gets the current instance of the settings manager
      * @return returns the current Settings manager
      */
-    Settings *getSettingManager();
+    ISettings *getSettingManager();
+
+    /**
+     * @brief sets the current instance of the settings manager and initialises it
+     */
+    void setSettingManager(ISettings *settings);
 
 private:
     const char *filepath;
     const char *firmwareVersion;
     const char *tcodeVersion;
-    Settings settingManager;
+    ISettings *settingManager;
     TCodeBuffer<TCodeAxis *, MAX_AXIS_COUNT> axisBuffer;
     TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> outputBuffer;
     TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> externalCommandBuffer;
