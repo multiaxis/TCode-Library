@@ -60,6 +60,11 @@ void TCode::clearBuffer()
 
 bool TCode::registerAxis(TCodeAxis *axis)
 {
+	if(axis == nullptr)
+	{
+		return false;
+	}
+	
     if (getAxisFromName(axis->getName()) != nullptr)
     {
         return false;
@@ -112,7 +117,7 @@ int TCode::axisRead(const char *name)
     return -1;
 }
 
-unsigned long TCode::axisLastTime(const TCode_ChannelID &channel_id)
+unsigned long TCode::axisLastCommandTime(const TCode_ChannelID &channel_id)
 {
     TCodeAxis *axis = getAxisFromID(channel_id);
     if (axis != nullptr)
@@ -122,7 +127,7 @@ unsigned long TCode::axisLastTime(const TCode_ChannelID &channel_id)
     return -1;
 }
 
-unsigned long TCode::axisLastTime(const char *name)
+unsigned long TCode::axisLastCommandTime(const char *name)
 {
     TCodeAxis *axis = getAxisFromName(name);
     if (axis != nullptr)

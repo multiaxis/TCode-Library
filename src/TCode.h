@@ -103,9 +103,9 @@ public:
     int axisRead(const char *name);
 
     //[TODO] : Implement
-    unsigned long axisLastTime(const TCode_ChannelID &channel_id);
+    unsigned long axisLastCommandTime(const TCode_ChannelID &channel_id);
     //[TODO] : Implement
-    unsigned long axisLastTime(const char *name);
+    unsigned long axisLastCommandTime(const char *name);
 
     /**
      * @brief stops all axis movement at its current position (sets vibration channels to 0)
