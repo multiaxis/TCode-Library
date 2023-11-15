@@ -79,7 +79,6 @@ void TCode::axisWrite(const TCode_ChannelID &id, const int magnitude, const TCod
     TCodeAxis *axis = getAxisFromID(id);
     if (axis != nullptr)
     {
-        Serial.print("RUNNING AXIS");
         axis->set(magnitude, extentionValue, extMagnitude, rampType);
     }
 }
@@ -170,7 +169,10 @@ void TCode::stop()
         TCodeAxis *temp;
         if (!axisBuffer.get(i, temp))
             break;
-        temp->stop();
+        if(temp->getChannelID().type == TCode_Channel_Type::Vibration)
+            temp->set(0);
+        else
+            temp->stop();
     }
 }
 
