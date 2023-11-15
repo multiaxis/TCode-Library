@@ -54,8 +54,25 @@ bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::get(const unsigned &index, Bu
     {
         return false;
     }
+    /*
+    Serial.print("Get:");
+    Serial.print(index);
+    Serial.print(":");
+    Serial.print(TCODE_BUFFER_LENGTH);
+    Serial.print(":");
+    Serial.print(front);
+    Serial.print(":");
+    Serial.print(back);
+    */
 
     unsigned correctedIndex = (front + index) % TCODE_BUFFER_LENGTH;
+    /*
+    Serial.print(":");
+    Serial.print(correctedIndex);
+    Serial.print(":");
+    Serial.println((long long int)buffer[correctedIndex]);
+    */
+
     success = buffer[correctedIndex];
     return true;
 }
@@ -82,6 +99,16 @@ bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::push(BufferType obj)
     {
         return false;
     }
+    
+    /*
+    Serial.print("PUSH:");
+    Serial.print(TCODE_BUFFER_LENGTH);
+    Serial.print(":");
+    Serial.print(front);
+    Serial.print(":");
+    Serial.println(back);
+    */
+
     buffer[back] = obj;
     back = (back + 1) % TCODE_BUFFER_LENGTH;
     return true;

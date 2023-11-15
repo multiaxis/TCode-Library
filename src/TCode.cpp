@@ -84,6 +84,7 @@ void TCode::axisWrite(const TCode_ChannelID &id, const int magnitude, const TCod
     TCodeAxis *axis = getAxisFromID(id);
     if (axis != nullptr)
     {
+        Serial.print("RUNNING AXIS");
         axis->set(magnitude, extentionValue, extMagnitude, rampType);
     }
 }
@@ -216,14 +217,15 @@ TCodeAxis *TCode::getAxisFromName(const char *name)
         if (!axisBuffer.get(i, temp))
             break;
         if (strcmp(temp->getName(), name) == 0)
+        {
             return temp;
-        return temp;
+        }
     }
 
     return nullptr;
 }
 
-TCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &id)
+TCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
 {
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
@@ -231,9 +233,7 @@ TCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &id)
         if (!axisBuffer.get(i, temp))
             break;
         TCode_ChannelID id = temp->getChannelID();
-        if (id.channel != id.channel)
-            continue;
-        if (id.type != id.type)
+        if ((id.channel != _id.channel) || (id.type != _id.type))
             continue;
         return temp;
     }
@@ -405,13 +405,13 @@ void TCode::printSavedAxisValues()
         print(F("TCODE : Setting Manager Is Null"));
         return;
     }
-
+    //Serial.println(axisBuffer.count());
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
         TCodeAxis *temp = nullptr;
         if (axisBuffer.get(i, temp))
         {
-            String str_id;
+            String str_id = "";
             TCodeParser::getStrfromID(temp->getChannelID(), str_id);
             String name = "AXIS-MIN-";
             name += str_id;
@@ -431,12 +431,12 @@ void TCode::printSavedAxisValues()
 
             name = "";
             name += str_id;
-            name += '-';
-            name += temp->getName();
-            name += '-';
+            name += ' ';
             name += String(min);
-            name += '-';
+            name += ' ';
             name += String(max);
+            name += ' ';
+            name += temp->getName();
 
             println(name);
         }

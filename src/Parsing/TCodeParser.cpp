@@ -52,19 +52,19 @@ int TCodeParser::getStrfromID(unsigned char *buffer, const size_t length, const 
     switch (id.type) // gets the Channel type char and appends to the output string
     {
     case TCode_Channel_Type::Auxiliary:
-        *(buffer + index) = 'A';
+        buffer[index] = 'A';
         break;
     case TCode_Channel_Type::Linear:
-        *(buffer + index) = 'L';
+        buffer[index] = 'L';
         break;
     case TCode_Channel_Type::Rotation:
-        *(buffer + index) = 'R';
+        buffer[index] = 'R';
         break;
     case TCode_Channel_Type::Vibration:
-        *(buffer + index) = 'V';
+        buffer[index] = 'V';
         break;
     default:
-        *(buffer + index) = '?';
+        buffer[index] = '?';
     }
     index++;
     index += uintToStr(id.channel, buffer, length, index);
@@ -74,7 +74,10 @@ int TCodeParser::getStrfromID(unsigned char *buffer, const size_t length, const 
 
 void TCodeParser::getStrfromID(const TCode_ChannelID &id, String &out)
 {
-    unsigned char buffer[10] = {'\0'};
+    unsigned char buffer[10];
+    for(int i = 0; i < 10; i++)
+        buffer[i] = '\0';
+
     getStrfromID(buffer, 10, id);
     size_t index = 0;
     for (; index < 10; index++)
