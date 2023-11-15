@@ -188,9 +188,11 @@ private:
 
     void printSavedAxisValues();
 
+    void print(const char value);
     void print(const char *value);
     void print(const __FlashStringHelper *value);
     void print(const String &value);
+    void println(const char value);
     void println(const char *value);
     void println(const __FlashStringHelper *value);
     void println(const String &value);

@@ -455,17 +455,20 @@ void TCode::printSavedAxisValues()
             }
 
             name = "";
-            name += str_id;
-            name += ' ';
-            name += String(min);
-            name += ' ';
-            name += String(max);
-            name += ' ';
-            name += temp->getName();
-
-            println(name);
+            print(str_id);
+            print(' ');
+            print(String(min));
+            print(' ');
+            print(String(max));
+            print(' ');
+            println(temp->getName());
         }
     }
+}
+
+void TCode::print(const char value)
+{
+    outputBuffer.push(value);
 }
 
 void TCode::print(const char *value)
@@ -490,6 +493,12 @@ void TCode::print(const String &value)
     {
         outputBuffer.push(value.charAt(i));
     }
+}
+
+void TCode::println(const char value)
+{
+    outputBuffer.push(value);
+    outputBuffer.push('\n');
 }
 
 void TCode::println(const char *value)
