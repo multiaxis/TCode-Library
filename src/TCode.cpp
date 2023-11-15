@@ -79,6 +79,7 @@ void TCode::axisWrite(const TCode_ChannelID &id, const int magnitude, const TCod
     TCodeAxis *axis = getAxisFromID(id);
     if (axis != nullptr)
     {
+        Serial.print("RUNNING AXIS");
         axis->set(magnitude, extentionValue, extMagnitude, rampType);
     }
 }
@@ -112,7 +113,7 @@ int TCode::axisRead(const char *name)
     return -1;
 }
 
-unsigned long TCode::axisLastTime(const TCode_ChannelID &channel_id)
+unsigned long TCode::axisLastCommandTime(const TCode_ChannelID &channel_id)
 {
     TCodeAxis *axis = getAxisFromID(channel_id);
     if (axis != nullptr)
@@ -122,7 +123,7 @@ unsigned long TCode::axisLastTime(const TCode_ChannelID &channel_id)
     return -1;
 }
 
-unsigned long TCode::axisLastTime(const char *name)
+unsigned long TCode::axisLastCommandTime(const char *name)
 {
     TCodeAxis *axis = getAxisFromName(name);
     if (axis != nullptr)
@@ -241,14 +242,15 @@ TCodeAxis *TCode::getAxisFromName(const char *name)
         if (!axisBuffer.get(i, temp))
             break;
         if (strcmp(temp->getName(), name) == 0)
+        {
             return temp;
-        return temp;
+        }
     }
 
     return nullptr;
 }
 
-TCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &id)
+TCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
 {
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
@@ -256,9 +258,7 @@ TCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &id)
         if (!axisBuffer.get(i, temp))
             break;
         TCode_ChannelID id = temp->getChannelID();
-        if (id.channel != id.channel)
-            continue;
-        if (id.type != id.type)
+        if ((id.channel != _id.channel) || (id.type != _id.type))
             continue;
         return temp;
     }
@@ -430,13 +430,13 @@ void TCode::printSavedAxisValues()
         print(F("TCODE : Setting Manager Is Null"));
         return;
     }
-
+    //Serial.println(axisBuffer.count());
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
         TCodeAxis *temp = nullptr;
         if (axisBuffer.get(i, temp))
         {
-            String str_id;
+            String str_id = "";
             TCodeParser::getStrfromID(temp->getChannelID(), str_id);
             String name = "AXIS-MIN-";
             name += str_id;
@@ -454,7 +454,6 @@ void TCode::printSavedAxisValues()
                 settingManager->setSetting(name.c_str(), TCODE_MAX_AXIS);
             }
 
-            name = "";
             print(str_id);
             print(' ');
             print(String(min));

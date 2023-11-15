@@ -141,8 +141,12 @@ public:
     static size_t uintToStr(unsigned long value, unsigned char *buffer, const size_t length, size_t &placeIndex)
     {
         const int base = 10;
-        char buf[30] = {'\0'};
+        char buf[31];
         int i = 30;
+
+        for(int k = 0; k < 30; k++)
+            buf[k] = '\0';
+
 
         if (value == 0)
         {
@@ -152,20 +156,17 @@ public:
 
         for (; (value > 0) && (i > 0); --i, value /= base)
         {
-            buf[i] = "0123456789abcdef"[value % base];
+            buf[i-1] = "0123456789abcdef"[value % base];
         }
 
-        unsigned char *buffer_location = buffer + placeIndex;
         size_t count = 0;
         for (; i < 30; i++, count++)
         {
-            if ((count + placeIndex) >= length - 1)
+            if ((count + placeIndex) > length)
             {
                 break;
             }
-
-            *buffer_location = buf[i];
-            buffer_location++;
+            buffer[count + placeIndex] = buf[i];
         }
         return count;
     }

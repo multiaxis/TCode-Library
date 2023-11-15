@@ -18,11 +18,12 @@
 #define DEFAULT_FIRMWARE_NAME "TCode"
 #define DEFAULT_FILE_NAME "/spiffs/TCode.dat"
 
-const int MAX_AXIS_COUNT = 10;
+
 const int MAX_BUTTON_COUNT = 10;
-const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 127;
-const int MAX_INPUT_BUFFER_LENGTH_COUNT = 127;
-const int MAX_OUTPUT_BUFFER_LENGTH_COUNT = 127;
+const int MAX_AXIS_COUNT = 20;
+const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 512;
+const int MAX_INPUT_BUFFER_LENGTH_COUNT = 512;
+const int MAX_OUTPUT_BUFFER_LENGTH_COUNT = 512;
 
 class TCode
 {
@@ -104,9 +105,19 @@ public:
      */
     int axisRead(const char *name);
 
-    unsigned long axisLastTime(const TCode_ChannelID &channel_id);
+    /**
+     * @brief function to read the last command time of a specified axis
+     * @param channel_id id of the channel to read the last command time from
+     * @returns last command time or -1 if position could not be read
+     */
+    unsigned long axisLastCommandTime(const TCode_ChannelID &channel_id);
     
-    unsigned long axisLastTime(const char *name);
+    /**
+     * @brief function to read the last command time of a specified axis
+     * @param name name of the channel to read the last command time from
+     * @returns last command time or -1 if position could not be read
+     */
+    unsigned long axisLastCommandTime(const char *name);
 
     /**
      * @brief Main update function for handling buttons
