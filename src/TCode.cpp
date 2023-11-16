@@ -79,7 +79,7 @@ void TCode::axisWrite(const TCode_ChannelID &id, const int magnitude, const TCod
     TCodeAxis *axis = getAxisFromID(id);
     if (axis != nullptr)
     {
-        Serial.print("RUNNING AXIS");
+        //Serial.print("RUNNING AXIS");
         axis->set(magnitude, extentionValue, extMagnitude, rampType);
     }
 }
