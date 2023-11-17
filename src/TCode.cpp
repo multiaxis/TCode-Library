@@ -28,6 +28,19 @@ void TCode::inputChar(const char input)
     {
         while (!inputBuffer.isEmpty())
             executeNextBufferCommand();
+        
+        if(useOverwrite)
+        {
+            while(!axisCommandBuffer.isEmpty())
+            {
+                TCode_Axis_Command result;
+                if(axisCommandBuffer.pop(result))
+                {
+                    runAxisCommand(result);
+                }
+            }
+            axisCommandBuffer.clear();
+        }
         inputBuffer.clear();
     }
 }
@@ -268,12 +281,12 @@ TCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
     return nullptr;
 }
 
-void TCode::executeNextBufferCommand()
+size_t TCode::getNextCommand(unsigned char* buffer, size_t &buffer_length)
 {
-    unsigned char command[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
     size_t index = 0;
     int blevel = 0;
-    while (!inputBuffer.isEmpty() && (index < MAX_COMMAND_BUFFER_LENGTH_COUNT - 1))
+    isLast = false;
+    while (!inputBuffer.isEmpty() && (index < buffer_length - 1))
     {
         if (inputBuffer.peek() == '[')
             blevel += 1;
@@ -288,6 +301,7 @@ void TCode::executeNextBufferCommand()
 
         if (inputBuffer.peek() == '\n')
         {
+            isLast = true;
             inputBuffer.pop();
             break;
         }
@@ -295,10 +309,16 @@ void TCode::executeNextBufferCommand()
         if (blevel < 0)
             break;
 
-        command[index++] = inputBuffer.pop();
+        buffer[index++] = inputBuffer.pop();
     }
+    return index;
+}
 
-    readCommand(command, index + 1);
+void TCode::executeNextBufferCommand()
+{
+    unsigned char command[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
+    size_t length = getNextCommand(command,MAX_COMMAND_BUFFER_LENGTH_COUNT);
+    readCommand(command, length + 1);
 }
 
 void TCode::readCommand(unsigned char *command, size_t length)
@@ -310,8 +330,33 @@ void TCode::readCommand(unsigned char *command, size_t length)
     case TCode_Command_Type::Axis:
     {
         TCode_Axis_Command result;
-        if (TCodeParser::parseAxisCommand(command, length, result))
-            runAxisCommand(result);
+        if (TCodeParser::parseAxisCommand(command, length, result)) 
+        {
+            if(!useOverwrite)
+            {
+                runAxisCommand(result);
+            }
+            else
+            {
+                bool found = false;
+                for(int i = 0; i < axisCommandBuffer.count(); i++)
+                {
+                    TCode_Axis_Command check;
+                    if(axisCommandBuffer.get(i,check))
+                    {
+                        if((check.ID.channel == result.ID.channel)&&(check.ID.type == result.ID.type))
+                        {
+                            found = true;
+                            axisCommandBuffer.set(i,result);
+                            break;
+                        }
+                    }
+                }
+
+                if(!found)
+                    axisCommandBuffer.push(result);
+            }
+        }
         break;
     }
     case TCode_Command_Type::Device:
