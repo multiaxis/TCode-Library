@@ -174,6 +174,10 @@ public:
      */
     void setSettingManager(ISettings *settings);
 
+	const char * getFirmwareID() { return firmwareVersion; }
+    const char * getTCodeVersion() { return tcodeVersion; }
+
+
 private:
     const char *filepath;
     const char *firmwareVersion;
