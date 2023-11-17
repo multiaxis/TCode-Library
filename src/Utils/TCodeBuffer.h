@@ -33,6 +33,7 @@ public:
     bool peekBack(BufferType &obj);
 
     bool get(const unsigned &index, BufferType &success);
+    bool set(const unsigned &index, const BufferType &obj);
 };
 
 template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
@@ -54,26 +55,22 @@ bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::get(const unsigned &index, Bu
     {
         return false;
     }
-    /*
-    Serial.print("Get:");
-    Serial.print(index);
-    Serial.print(":");
-    Serial.print(TCODE_BUFFER_LENGTH);
-    Serial.print(":");
-    Serial.print(front);
-    Serial.print(":");
-    Serial.print(back);
-    */
 
     unsigned correctedIndex = (front + index) % TCODE_BUFFER_LENGTH;
-    /*
-    Serial.print(":");
-    Serial.print(correctedIndex);
-    Serial.print(":");
-    Serial.println((long long int)buffer[correctedIndex]);
-    */
-
     success = buffer[correctedIndex];
+    return true;
+}
+
+template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
+inline bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::set(const unsigned &index, const BufferType &obj)
+{
+    if (index >= count())
+    {
+        return false;
+    }
+
+    unsigned correctedIndex = (front + index) % TCODE_BUFFER_LENGTH;
+    buffer[correctedIndex] = obj;
     return true;
 }
 
@@ -122,7 +119,7 @@ bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::peekBack(BufferType &obj)
         return false;
     }
 
-    if ((int)back - 1 < 0)
+    if (back == 0)
         obj = buffer[TCODE_BUFFER_LENGTH-1];
     else
         obj = buffer[back - 1];

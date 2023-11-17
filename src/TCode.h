@@ -21,9 +21,12 @@
 
 const int MAX_BUTTON_COUNT = 10;
 const int MAX_AXIS_COUNT = 20;
+
+const int MAX_AXIS_COMMAND_BUFFER_COUNT = 20;
 const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 512;
 const int MAX_INPUT_BUFFER_LENGTH_COUNT = 512;
 const int MAX_OUTPUT_BUFFER_LENGTH_COUNT = 512;
+
 
 class TCode
 {
@@ -171,10 +174,30 @@ public:
 
     /**
      * @brief sets the current instance of the settings manager and initialises it
+     * @param settings pointer to the settings object
      */
     void setSettingManager(ISettings *settings);
 
+    /**
+     * @brief gets the current firmware ID
+     */
+	const char * getFirmwareID() { return firmwareVersion; }
+
+    /**
+     * @brief gets the current TCode Version
+     */
+    const char * getTCodeVersion() { return tcodeVersion; }
+
+    /**
+     * @brief sets the current overwrite method
+     * @param set bool value for is overwrite method should be used default is true
+     */
+    void useOverwriteMethod(bool set) { useOverwrite = set; }
+
 private:
+    bool useOverwrite = true;
+    TCodeBuffer<TCode_Axis_Command, MAX_AXIS_COMMAND_BUFFER_COUNT> axisCommandBuffer;
+
     const char *filepath;
     const char *firmwareVersion;
     const char *tcodeVersion;
@@ -188,6 +211,7 @@ private:
     TCodeAxis *getAxisFromName(const char *name);
     TCodeAxis *getAxisFromID(const TCode_ChannelID &id);
     void executeNextBufferCommand();
+    size_t getNextCommand(unsigned char *buffer, size_t buffer_length);
     void readCommand(unsigned char *buffer, size_t length);
 
     void runAxisCommand(TCode_Axis_Command &command);

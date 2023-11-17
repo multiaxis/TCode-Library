@@ -28,6 +28,19 @@ void TCode::inputChar(const char input)
     {
         while (!inputBuffer.isEmpty())
             executeNextBufferCommand();
+
+        if (useOverwrite)
+        {
+            while (!axisCommandBuffer.isEmpty())
+            {
+                TCode_Axis_Command result;
+                if (axisCommandBuffer.pop(result))
+                {
+                    runAxisCommand(result);
+                }
+            }
+            axisCommandBuffer.clear();
+        }
         inputBuffer.clear();
     }
 }
@@ -56,7 +69,7 @@ void TCode::clearBuffer()
 
 bool TCode::registerAxis(TCodeAxis *axis)
 {
-    if(axis == nullptr)
+    if (axis == nullptr)
     {
         return false;
     }
@@ -79,7 +92,6 @@ void TCode::axisWrite(const TCode_ChannelID &id, const int magnitude, const TCod
     TCodeAxis *axis = getAxisFromID(id);
     if (axis != nullptr)
     {
-        //Serial.print("RUNNING AXIS");
         axis->set(magnitude, extentionValue, extMagnitude, rampType);
     }
 }
@@ -135,17 +147,17 @@ unsigned long TCode::axisLastCommandTime(const char *name)
 
 void TCode::update()
 {
-    for(int i = 0; i < buttonBuffer.count(); i++)
+    for (int i = 0; i < buttonBuffer.count(); i++)
     {
         TCodeButton *temp = nullptr;
-        if(buttonBuffer.get(i,temp))
+        if (buttonBuffer.get(i, temp))
         {
-            if(temp->update())
+            if (temp->update())
             {
                 String out = "#";
                 out += temp->name;
                 out += ":";
-                if(temp->getState())
+                if (temp->getState())
                     out += "1";
                 else
                     out += "0";
@@ -157,7 +169,7 @@ void TCode::update()
 
 bool TCode::registerButton(TCodeButton *button)
 {
-    if(button == nullptr)
+    if (button == nullptr)
         return false;
 
     return buttonBuffer.push(button);
@@ -170,7 +182,10 @@ void TCode::stop()
         TCodeAxis *temp;
         if (!axisBuffer.get(i, temp))
             break;
-        temp->stop();
+        if (temp->getChannelID().type == TCode_Channel_Type::Vibration)
+            temp->set(0);
+        else
+            temp->stop();
     }
 }
 
@@ -266,12 +281,12 @@ TCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
     return nullptr;
 }
 
-void TCode::executeNextBufferCommand()
+size_t TCode::getNextCommand(unsigned char *buffer, size_t buffer_length)
 {
-    unsigned char command[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
     size_t index = 0;
     int blevel = 0;
-    while (!inputBuffer.isEmpty() && (index < MAX_COMMAND_BUFFER_LENGTH_COUNT - 1))
+    bool isLast = false;
+    while (!inputBuffer.isEmpty() && (index < buffer_length - 1))
     {
         if (inputBuffer.peek() == '[')
             blevel += 1;
@@ -286,6 +301,7 @@ void TCode::executeNextBufferCommand()
 
         if (inputBuffer.peek() == '\n')
         {
+            isLast = true;
             inputBuffer.pop();
             break;
         }
@@ -293,10 +309,16 @@ void TCode::executeNextBufferCommand()
         if (blevel < 0)
             break;
 
-        command[index++] = inputBuffer.pop();
+        buffer[index++] = inputBuffer.pop();
     }
+    return index;
+}
 
-    readCommand(command, index + 1);
+void TCode::executeNextBufferCommand()
+{
+    unsigned char command[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
+    size_t length = getNextCommand(command, MAX_COMMAND_BUFFER_LENGTH_COUNT);
+    readCommand(command, length + 1);
 }
 
 void TCode::readCommand(unsigned char *command, size_t length)
@@ -309,7 +331,32 @@ void TCode::readCommand(unsigned char *command, size_t length)
     {
         TCode_Axis_Command result;
         if (TCodeParser::parseAxisCommand(command, length, result))
-            runAxisCommand(result);
+        {
+            if (!useOverwrite)
+            {
+                runAxisCommand(result);
+            }
+            else
+            {
+                bool found = false;
+                for (int i = 0; i < axisCommandBuffer.count(); i++)
+                {
+                    TCode_Axis_Command check;
+                    if (axisCommandBuffer.get(i, check))
+                    {
+                        if ((check.ID.channel == result.ID.channel) && (check.ID.type == result.ID.type))
+                        {
+                            found = true;
+                            axisCommandBuffer.set(i, result);
+                            break;
+                        }
+                    }
+                }
+
+                if (!found)
+                    axisCommandBuffer.push(result);
+            }
+        }
         break;
     }
     case TCode_Command_Type::Device:
@@ -430,7 +477,7 @@ void TCode::printSavedAxisValues()
         print(F("TCODE : Setting Manager Is Null"));
         return;
     }
-    //Serial.println(axisBuffer.count());
+    // Serial.println(axisBuffer.count());
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
         TCodeAxis *temp = nullptr;
