@@ -80,12 +80,12 @@ int TCodeAxis::getPosition()
     unsigned long t = millis();
 
 
-    if(t > currentState.endTime)
+    if(t >= currentState.endTime)
     {
         return currentState.endValue;
     }
 
-    if(t < currentState.startTime)
+    if(t <= currentState.startTime)
     {
         return currentState.startValue;
     }
