@@ -67,7 +67,7 @@ void TCode::clearBuffer()
     inputBuffer.clear();
 }
 
-bool TCode::registerAxis(TCodeAxis *axis)
+bool TCode::registerAxis(ITCodeAxis *axis)
 {
     if (axis == nullptr)
     {
@@ -89,7 +89,7 @@ bool TCode::registerAxis(TCodeAxis *axis)
 
 void TCode::axisWrite(const TCode_ChannelID &id, const int magnitude, const TCode_Axis_Extention_Type extentionValue, const long extMagnitude, const TCode_Axis_Ramp_Type rampType)
 {
-    TCodeAxis *axis = getAxisFromID(id);
+    ITCodeAxis *axis = getAxisFromID(id);
     if (axis != nullptr)
     {
         axis->set(magnitude, extentionValue, extMagnitude, rampType);
@@ -98,7 +98,7 @@ void TCode::axisWrite(const TCode_ChannelID &id, const int magnitude, const TCod
 
 void TCode::axisWrite(const char *name, const int magnitude, const TCode_Axis_Extention_Type extentionValue, const long extMagnitude, const TCode_Axis_Ramp_Type rampType)
 {
-    TCodeAxis *axis = getAxisFromName(name);
+    ITCodeAxis *axis = getAxisFromName(name);
     if (axis != nullptr)
     {
         axis->set(magnitude, extentionValue, extMagnitude, rampType);
@@ -107,7 +107,7 @@ void TCode::axisWrite(const char *name, const int magnitude, const TCode_Axis_Ex
 
 int TCode::axisRead(const TCode_ChannelID &channel_id)
 {
-    TCodeAxis *axis = getAxisFromID(channel_id);
+    ITCodeAxis *axis = getAxisFromID(channel_id);
     if (axis != nullptr)
     {
         return axis->getPosition();
@@ -117,7 +117,7 @@ int TCode::axisRead(const TCode_ChannelID &channel_id)
 
 int TCode::axisRead(const char *name)
 {
-    TCodeAxis *axis = getAxisFromName(name);
+    ITCodeAxis *axis = getAxisFromName(name);
     if (axis != nullptr)
     {
         return axis->getPosition();
@@ -127,7 +127,7 @@ int TCode::axisRead(const char *name)
 
 unsigned long TCode::axisLastCommandTime(const TCode_ChannelID &channel_id)
 {
-    TCodeAxis *axis = getAxisFromID(channel_id);
+    ITCodeAxis *axis = getAxisFromID(channel_id);
     if (axis != nullptr)
     {
         return axis->getLastCommandTime();
@@ -137,7 +137,7 @@ unsigned long TCode::axisLastCommandTime(const TCode_ChannelID &channel_id)
 
 unsigned long TCode::axisLastCommandTime(const char *name)
 {
-    TCodeAxis *axis = getAxisFromName(name);
+    ITCodeAxis *axis = getAxisFromName(name);
     if (axis != nullptr)
     {
         return axis->getLastCommandTime();
@@ -179,7 +179,7 @@ void TCode::stop()
 {
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
-        TCodeAxis *temp;
+        ITCodeAxis *temp;
         if (!axisBuffer.get(i, temp))
             break;
         if (temp->getChannelID().type == TCode_Channel_Type::Vibration)
@@ -249,11 +249,11 @@ ISettings *TCode::getSettingManager()
     return settingManager;
 }
 
-TCodeAxis *TCode::getAxisFromName(const char *name)
+ITCodeAxis *TCode::getAxisFromName(const char *name)
 {
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
-        TCodeAxis *temp;
+        ITCodeAxis *temp;
         if (!axisBuffer.get(i, temp))
             break;
         if (strcmp(temp->getName(), name) == 0)
@@ -265,11 +265,11 @@ TCodeAxis *TCode::getAxisFromName(const char *name)
     return nullptr;
 }
 
-TCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
+ITCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
 {
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
-        TCodeAxis *temp;
+        ITCodeAxis *temp;
         if (!axisBuffer.get(i, temp))
             break;
         TCode_ChannelID id = temp->getChannelID();
@@ -441,7 +441,7 @@ void TCode::setSaveValues(TCode_ChannelID &id, unsigned int min, unsigned int ma
         return;
     }
 
-    TCodeAxis *temp = getAxisFromID(id);
+    ITCodeAxis *temp = getAxisFromID(id);
     if (temp != nullptr)
     {
         String str_id = "";
@@ -477,10 +477,10 @@ void TCode::printSavedAxisValues()
         print(F("TCODE : Setting Manager Is Null"));
         return;
     }
-    // Serial.println(axisBuffer.count());
+
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
-        TCodeAxis *temp = nullptr;
+        ITCodeAxis *temp = nullptr;
         if (axisBuffer.get(i, temp))
         {
             String str_id = "";

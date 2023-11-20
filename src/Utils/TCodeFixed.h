@@ -10,11 +10,10 @@
 #ifndef TCODE_FIXED_POINT_H
 #define TCODE_FIXED_POINT_H
 
-
 using InputType = long;
-using Q16Fixed = long;
+using Q16Fixed = long long;
 using Q16FixedL = long long;  
-const Q16Fixed Q = 16;
+const Q16Fixed Q = 8;
 
 /*
 int32_t sat_Q16(int64_t x)

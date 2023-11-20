@@ -5,14 +5,17 @@
 #pragma once
 #ifndef TCODE_HPP
 #define TCODE_HPP
+#include "Constants and Enums/TCodeConstants.h"
+#include "Constants and Enums/TCodeEnums.h"
+#include "Utils/TCodeBuffer.h"
 #include "Setting Managment/SettingManagementInterface.h"
 #include "Setting Managment/SettingManagers.h"
 #include "Parsing/TCodeParser.h"
-#include "Axis Management/TCodeAxis.h"
-#include "Utils/TCodeBuffer.h"
-#include "Constants and Enums/TCodeConstants.h"
-#include "Constants and Enums/TCodeEnums.h"
+#include "Axis Management/TCodeAxisClasses.h"
 #include "Button Management/Button.h"
+
+
+
 
 #define CURRENT_TCODE_VERSION "TCode v0.4"
 #define DEFAULT_FIRMWARE_NAME "TCode"
@@ -72,7 +75,7 @@ public:
      * @param axis TCodeAxis pointer to be added to the TCode class to be processed
      * @return returns false if axis could not be registered
      */
-    bool registerAxis(TCodeAxis *axis);
+    bool registerAxis(ITCodeAxis *axis);
 
     /**
      * @brief function to write to a specified axis
@@ -202,14 +205,14 @@ private:
     const char *firmwareVersion;
     const char *tcodeVersion;
     ISettings *settingManager;
-    TCodeBuffer<TCodeAxis *, MAX_AXIS_COUNT> axisBuffer;
+    TCodeBuffer<ITCodeAxis *, MAX_AXIS_COUNT> axisBuffer;
     TCodeBuffer<TCodeButton *, MAX_BUTTON_COUNT> buttonBuffer;
     TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> outputBuffer;
     TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> externalCommandBuffer;
     TCodeBuffer<char, MAX_INPUT_BUFFER_LENGTH_COUNT> inputBuffer;
 
-    TCodeAxis *getAxisFromName(const char *name);
-    TCodeAxis *getAxisFromID(const TCode_ChannelID &id);
+    ITCodeAxis *getAxisFromName(const char *name);
+    ITCodeAxis *getAxisFromID(const TCode_ChannelID &id);
     void executeNextBufferCommand();
     size_t getNextCommand(unsigned char *buffer, size_t buffer_length);
     void readCommand(unsigned char *buffer, size_t length);

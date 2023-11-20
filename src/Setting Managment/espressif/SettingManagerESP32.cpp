@@ -89,8 +89,23 @@ void SettingManagerESP32::reset()
 
 bool SettingManagerESP32::getFile(String &out)
 {
+    #ifdef DEBUG
+    Serial.print(F("SM: reading file \""));
+    Serial.print(filepath);
+    Serial.println(F("\""));
+    #endif
+
     if (!isMounted())
+    {
+        #ifdef DEBUG
+        Serial.println(F("SM: Filesystem not mounted"));
+        Serial.print(F("Mounted Status:"));
+        Serial.println(fileSystemMounted);
+        Serial.print(F("File Status:"));
+        Serial.println(foundFile);
+        #endif
         return false;
+    }
     out = "";
     File file = SPIFFS.open(filepath);
 
@@ -134,9 +149,14 @@ bool SettingManagerESP32::writeFile(const String &fileData)
 
     if (!isMounted())
     {
-#ifdef DEBUG
-        Serial.println(F("SM: file system not mounted"));
-#endif
+        #ifdef DEBUG
+        Serial.print(F("SM: Filesystem not mounted\""));
+        Serial.print(filepath);
+        Serial.print(F("\"\n Mounted Status:"));
+        Serial.println(fileSystemMounted);
+        Serial.print(F("\"\n File Status:"));
+        Serial.println(foundFile);
+        #endif
         return false;
     }
 
