@@ -19,16 +19,16 @@
 /**
  * @brief Class used to represent a TCode Axis
  */
-class TCodeAxisUnbuffered : public ITCodeAxis
+class TCodeAxis : public ITCodeAxis
 {
 public:
-    TCodeAxisUnbuffered() = delete;
+    TCodeAxis() = delete;
     /**
      * @brief constructor for the TCodeAxisBuffered class
      * @param name constant char string name for the axis
      * @param channel channel ID for this axis
      */
-    TCodeAxisUnbuffered(const char *name, TCode_ChannelID _channel);
+    TCodeAxis(const char *name, TCode_ChannelID _channel);
 
     /**
      * @brief sets the axis' dynamic parameters
