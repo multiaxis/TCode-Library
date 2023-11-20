@@ -8,7 +8,7 @@
 #include "../SettingManagementInterface.h"
 #include <SPIFFS.h>
 #include <ArduinoJson.h>
-#define DEFAULT_JSON_FILE_SIZE 512
+#define DEFAULT_JSON_FILE_SIZE 2048
 
 class SettingManagerESP32 : public ISettings
 {
