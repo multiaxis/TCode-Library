@@ -79,6 +79,16 @@ int TCodeAxis::getPosition()
     int x; // This is the current axis position, 0-9999
     unsigned long t = millis();
 
+
+    if(t > currentState.endTime)
+    {
+        return currentState.endValue;
+    }
+
+    if(t < currentState.startTime)
+    {
+        return currentState.startValue;
+    }
     //Serial.print("Test:");
     //Serial.println(t);
     //Serial.print("SV:");
