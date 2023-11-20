@@ -116,18 +116,22 @@ Q16Fixed easeOut(Q16Fixed t)
     return subQ16(Q16fromInt(1), t);
 }
 
+Q16Fixed Q16Abs(Q16Fixed t)
+{
+    if(t < 0)
+        t = -t;
+    return t;
+}
+
 long mapQ16(long in, long inStart, long inEnd, long outStart, long outEnd)
 {
-    Q16Fixed t = Q16fromInt(in);
-    t = constrainQ16(t, Q16fromInt(inStart), Q16fromInt(inEnd));
-    t = t - Q16fromInt(inStart);                                      // Find the distance of the in value from inStart
-    t = divQ16(t, subQ16(Q16fromInt(inEnd), Q16fromInt(inStart)));    // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
+    Q16Fixed t = Q16fromInt(in - inStart);         // Find the distance of the in value from inStart
+    t = divQ16(t, Q16fromInt(inEnd - inStart));    // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
     t = constrainQ16(t, 0, Q16fromInt(1));                            // constrain the value from 0.0 to 1.0
     t = multQ16(t, subQ16(Q16fromInt(outEnd), Q16fromInt(outStart))); // multiply the value of how far along the range between outStart and outEnd
     t = addQ16(t, Q16fromInt(outStart));                              // Get the value to lie between outStart and outEnd
     t = constrainQ16(t, Q16fromInt(outStart), Q16fromInt(outEnd));    // Constrain the value so it does not go out of bounds
-    t = IntfromQ16(t);
-    return t; // Convert the value back to an int
+    return IntfromQ16(t); // Convert the value back to an int
 }
 
 long mapEaseIn(long in, long inStart, long inEnd, long outStart, long outEnd)

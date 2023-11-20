@@ -71,14 +71,14 @@ public:
      * @param settingValue setting being stored
      * @return true if setting is set
      */
-    virtual bool setSetting(const char *setting, const bool &settingValue) = 0;
-    virtual bool setSetting(const char *setting, const int &settingValue) = 0;
-    virtual bool setSetting(const char *setting, const long &settingValue) = 0;
-    virtual bool setSetting(const char *setting, const unsigned int &settingValue) = 0;
-    virtual bool setSetting(const char *setting, const unsigned long &settingValue) = 0;
-    virtual bool setSetting(const char *setting, const float &settingValue) = 0;
-    virtual bool setSetting(const char *setting, const char *settingValue, const size_t &length) = 0;
-    virtual bool setSetting(const char *setting, const String &settingValue) = 0;
+    virtual bool setSetting(const char *setting, const bool settingValue) = 0;
+    virtual bool setSetting(const char *setting, const int settingValue) = 0;
+    virtual bool setSetting(const char *setting, const long settingValue) = 0;
+    virtual bool setSetting(const char *setting, const unsigned int settingValue) = 0;
+    virtual bool setSetting(const char *setting, const unsigned long settingValue) = 0;
+    virtual bool setSetting(const char *setting, const float settingValue) = 0;
+    virtual bool setSetting(const char *setting, const char *settingValue, const size_t length) = 0;
+    virtual bool setSetting(const char *setting, const String settingValue) = 0;
 
     /**
      * @brief gets the system usage of the Settings system

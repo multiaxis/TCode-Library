@@ -38,4 +38,24 @@
  */
 #define TCODE_CHANNEL_TYPES 4
 
+/**
+ * @brief Value used to define the default value for a TCode Axis
+ */
+#define TCODE_DEFAULT_AXIS_RETURN_VALUE 5000;
+
+/**
+ * @brief Value used to define the auto-smooth interval minimum range used in live commands (ms)
+ */
+#define TCODE_MIN_AXIS_SMOOTH_INTERVAL 3 // Minimum auto-smooth ramp interval for live commands (ms)
+
+/**
+ * @brief Value used to define the auto-smooth interval maximum range used in live commands (ms)
+ */
+#define TCODE_MAX_AXIS_SMOOTH_INTERVAL 100 // Maximum auto-smooth ramp interval for live commands (ms)
+
+/**
+ * @brief Value used to define the length the buffer used in the TCode Axis class
+ */
+#define TCODE_MAX_AXIS_BUFFER_LENGTH 10
+
 #endif

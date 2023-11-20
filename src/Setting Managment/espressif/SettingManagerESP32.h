@@ -30,14 +30,14 @@ public:
     bool getSetting(const char *setting, char *settingValue, size_t &length) { return false; }
     bool getSetting(const char *setting, String &settingValue) { return false; }
 
-    bool setSetting(const char *setting, const bool &settingValue) { return setSettingTemplated<bool>(setting, settingValue); }
-    bool setSetting(const char *setting, const int &settingValue) { return setSettingTemplated<int>(setting, settingValue); }
-    bool setSetting(const char *setting, const long &settingValue) { return setSettingTemplated<long>(setting, settingValue); }
-    bool setSetting(const char *setting, const unsigned int &settingValue) { return setSettingTemplated<unsigned int>(setting, settingValue); }
-    bool setSetting(const char *setting, const unsigned long &settingValue) { return setSettingTemplated<unsigned long>(setting, settingValue); }
-    bool setSetting(const char *setting, const float &settingValue) { return setSettingTemplated<float>(setting, settingValue); }
-    bool setSetting(const char *setting, const char *settingValue, const size_t &length) { return false; }
-    bool setSetting(const char *setting, const String &settingValue) { return false; }
+    bool setSetting(const char *setting, const bool settingValue) { return setSettingTemplated<bool>(setting, settingValue); }
+    bool setSetting(const char *setting, const int settingValue) { return setSettingTemplated<int>(setting, settingValue); }
+    bool setSetting(const char *setting, const long settingValue) { return setSettingTemplated<long>(setting, settingValue); }
+    bool setSetting(const char *setting, const unsigned int settingValue) { return setSettingTemplated<unsigned int>(setting, settingValue); }
+    bool setSetting(const char *setting, const unsigned long settingValue) { return setSettingTemplated<unsigned long>(setting, settingValue); }
+    bool setSetting(const char *setting, const float settingValue) { return setSettingTemplated<float>(setting, settingValue); }
+    bool setSetting(const char *setting, const char *settingValue, const size_t length) { return false; }
+    bool setSetting(const char *setting, const String settingValue) { return false; }
 
     bool getSystemUsage(SettingsUsage &out);
     //=================================================
