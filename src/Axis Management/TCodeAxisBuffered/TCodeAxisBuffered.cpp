@@ -6,8 +6,8 @@
 // Container for TCode Axis's
 // History:
 //
-#ifndef TCODE_AXIS_CPP
-#define TCODE_AXIS_CPP
+#ifndef TCODE_AXIS_BUFFERED_CPP
+#define TCODE_AXIS_BUFFERED_CPP
 #include "TCodeAxisBuffered.h"
 #include <Arduino.h>
 
