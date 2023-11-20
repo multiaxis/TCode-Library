@@ -43,7 +43,18 @@ bool SettingManagerESP32::init()
 
 #ifdef DEBUG
     Serial.println(F("SM: initialised"));
-    outputSystemUsage();
+    SettingsUsage usage;
+    getSystemUsage(usage);
+    Serial.println("================");
+    Serial.println("    File Sys    ");
+    Serial.println("================");
+    Serial.print("Space Available:");
+    Serial.println(usage.spaceAvailable);
+    Serial.print("Size:");
+    Serial.println(usage.sizeOfFile);
+    Serial.print("Used:");
+    Serial.println(usage.spaceUsed);
+    Serial.println("================");
 #endif
 
     return true;
@@ -129,11 +140,14 @@ bool SettingManagerESP32::getFile(String &out)
         {
 #ifdef DEBUG
             Serial.print(F("SM: File larger than "));
-            Serial.println(JSON_FILE_SIZE);
+            Serial.println(DEFAULT_JSON_FILE_SIZE);
 #endif
             file.close();
             return false;
         }
+        #ifdef DEBUG
+        Serial.print((char)current_byte);
+        #endif
     }
     file.close();
     return true;
@@ -172,9 +186,23 @@ bool SettingManagerESP32::writeFile(const String &fileData)
         return false;
     }
 
+    if(fileData.length() > DEFAULT_JSON_FILE_SIZE)
+    {
+        #ifdef DEBUG
+        Serial.print(F("SM: Could not write file \""));
+        Serial.print(filepath);
+        Serial.print(F("\" "));
+        Serial.println("Input value was too long");
+        #endif
+        return false;
+    }
+
     for (unsigned int i = 0; i < fileData.length(); i++)
     {
         file.write(fileData[i]);
+        #ifdef DEBUG
+        Serial.print(fileData[i]);
+        #endif
     }
     file.close();
     return true;
