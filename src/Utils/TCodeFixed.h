@@ -13,7 +13,7 @@
 using InputType = long;
 using Q16Fixed = long long;
 using Q16FixedL = long long;  
-const Q16Fixed Q = 8;
+const Q16Fixed Q = 16;
 
 /*
 int32_t sat_Q16(int64_t x)
