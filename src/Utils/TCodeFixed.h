@@ -11,7 +11,7 @@
 #define TCODE_FIXED_POINT_H
 
 using InputType = long;
-using Q16Fixed = long;
+using Q16Fixed = long long;
 using Q16FixedL = long long;  
 const Q16Fixed Q = 16;
 
