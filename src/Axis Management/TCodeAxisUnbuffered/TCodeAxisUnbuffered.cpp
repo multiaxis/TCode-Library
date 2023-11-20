@@ -7,8 +7,8 @@
 // History:
 //
 
-#ifndef TCODE_AXIS_CPP
-#define TCODE_AXIS_CPP
+#ifndef TCODE_AXIS_UNBUFFERED_CPP
+#define TCODE_AXIS_UNBUFFERED_CPP
 #include "TCodeAxisUnbuffered.h"
 #include <Arduino.h>
 
@@ -72,23 +72,12 @@ void TCodeAxis::set(int targetValue, TCode_Axis_Extention_Type extentionType, lo
     currentState.startValue = startPosition;
     currentState.endValue = targetValue;
     lastCommandTime = t;
-    lastPosition = -1;
 }
 
 int TCodeAxis::getPosition()
 {
     int x; // This is the current axis position, 0-9999
     unsigned long t = millis();
-    
-    if (t > currentState.endTime)
-    {
-        return currentState.endValue;
-    }
-
-    if (t < currentState.startTime)
-    {
-        return currentState.startValue;
-    }
 
     //Serial.print("Test:");
     //Serial.println(t);
@@ -136,8 +125,6 @@ void TCodeAxis::stop()
         currentState.endValue = 0;
         currentState.endTime = t + TCODE_MIN_AXIS_SMOOTH_INTERVAL;
     }
-
-    lastPosition = -1;
 }
 
 bool TCodeAxis::changed()
