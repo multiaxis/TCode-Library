@@ -102,10 +102,10 @@ int TCodeAxis::getPosition()
         x = fixedPointMap(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseIn:
-        x = fixedPointEaseIn(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = fixedPointMapEaseIn(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseOut:
-        x = fixedPointEaseOut(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = fixedPointMapEaseOut(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseInOut:
         x = fixedPointMapEaseInOut(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);

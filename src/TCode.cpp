@@ -18,7 +18,7 @@ void TCode::inputByte(const byte input)
 void TCode::inputChar(const char input)
 {
     bool success = inputBuffer.push(input); // pushes the inputted char to the buffer
-    if (!success && inputBuffer.isFull())   // if the buffer is full then execute the first command and then push the char to the buffer
+    if (!success && inputBuffer.full())   // if the buffer is full then execute the first command and then push the char to the buffer
     {
         executeNextBufferCommand();
         inputBuffer.push(input);
@@ -26,12 +26,12 @@ void TCode::inputChar(const char input)
 
     if (input == '\n') // if a newline is encountered run all commands till the buffer is empty
     {
-        while (!inputBuffer.isEmpty())
+        while (!inputBuffer.empty())
             executeNextBufferCommand();
 
         if (useOverwrite)
         {
-            while (!axisCommandBuffer.isEmpty())
+            while (!axisCommandBuffer.empty())
             {
                 TCode_Axis_Command result;
                 if (axisCommandBuffer.pop(result))
@@ -198,7 +198,10 @@ char TCode::getChar()
 {
     if (outputBuffer.count() == 0)
         return '\0';
-    return outputBuffer.pop();
+    char charValue;
+    if (!outputBuffer.pop(charValue))
+        return '\0';
+    return charValue;
 }
 
 size_t TCode::getChar(char *buffer, const size_t length)
@@ -206,8 +209,11 @@ size_t TCode::getChar(char *buffer, const size_t length)
     size_t length_to_read = min(length, outputBuffer.count());
     for (size_t i = 0; i < length_to_read; i++)
     {
-        *(buffer) = outputBuffer.pop();
-        buffer++;
+        char charValue;
+        if(outputBuffer.pop(charValue)){
+            *(buffer) = charValue;
+            buffer++;
+        }
     }
     return length_to_read;
 }
@@ -221,7 +227,10 @@ char TCode::getExternalChar()
 {
     if (externalCommandBuffer.count() == 0)
         return '\0';
-    return externalCommandBuffer.pop();
+    char charValue;
+    if (!externalCommandBuffer.pop(charValue))
+        return '\0';
+    return charValue;
 }
 
 size_t TCode::getExternalChar(char *buffer, const size_t length)
@@ -229,8 +238,11 @@ size_t TCode::getExternalChar(char *buffer, const size_t length)
     size_t length_to_read = min(length, externalCommandBuffer.count());
     for (size_t i = 0; i < length_to_read; i++)
     {
-        *(buffer) = externalCommandBuffer.pop();
-        buffer++;
+        char charValue;
+        if(outputBuffer.pop(charValue)){
+            *(buffer) = charValue;
+            buffer++;
+        }
     }
     return length_to_read;
 }
@@ -286,20 +298,24 @@ size_t TCode::getNextCommand(unsigned char *buffer, size_t buffer_length)
     size_t index = 0;
     int blevel = 0;
     bool isLast = false;
-    while (!inputBuffer.isEmpty() && (index < buffer_length - 1))
+    while (!inputBuffer.empty() && (index < buffer_length - 1))
     {
-        if (inputBuffer.peek() == '[')
+        char charValue;
+        if(!inputBuffer.peek(charValue))
+            break;
+
+        if (charValue == '[')
             blevel += 1;
-        if (inputBuffer.peek() == ']')
+        if (charValue == ']')
             blevel -= 1;
 
-        if (inputBuffer.peek() == ' ' && (blevel == 0))
+        if (charValue == ' ' && (blevel == 0))
         {
             inputBuffer.pop();
             break;
         }
 
-        if (inputBuffer.peek() == '\n')
+        if (charValue == '\n')
         {
             isLast = true;
             inputBuffer.pop();

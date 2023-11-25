@@ -199,17 +199,17 @@ public:
 
 private:
     bool useOverwrite = true;
-    TCodeBuffer<TCode_Axis_Command, MAX_AXIS_COMMAND_BUFFER_COUNT> axisCommandBuffer;
+    TCodeBuffer<TCode_Axis_Command> axisCommandBuffer {MAX_AXIS_COMMAND_BUFFER_COUNT};
 
     const char *filepath;
     const char *firmwareVersion;
     const char *tcodeVersion;
     ISettings *settingManager;
-    TCodeBuffer<ITCodeAxis *, MAX_AXIS_COUNT> axisBuffer;
-    TCodeBuffer<TCodeButton *, MAX_BUTTON_COUNT> buttonBuffer;
-    TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> outputBuffer;
-    TCodeBuffer<char, MAX_OUTPUT_BUFFER_LENGTH_COUNT> externalCommandBuffer;
-    TCodeBuffer<char, MAX_INPUT_BUFFER_LENGTH_COUNT> inputBuffer;
+    TCodeBuffer<ITCodeAxis *> axisBuffer {MAX_AXIS_COUNT};
+    TCodeBuffer<TCodeButton *> buttonBuffer {MAX_BUTTON_COUNT};
+    TCodeBuffer<char> outputBuffer{MAX_OUTPUT_BUFFER_LENGTH_COUNT};
+    TCodeBuffer<char> externalCommandBuffer{MAX_OUTPUT_BUFFER_LENGTH_COUNT};
+    TCodeBuffer<char> inputBuffer{MAX_INPUT_BUFFER_LENGTH_COUNT};
 
     ITCodeAxis *getAxisFromName(const char *name);
     ITCodeAxis *getAxisFromID(const TCode_ChannelID &id);

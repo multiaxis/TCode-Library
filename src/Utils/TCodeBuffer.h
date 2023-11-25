@@ -4,7 +4,6 @@
 // usage of this class can be found at (https://github.com/Dreamer2345/Arduino_TCode_Parser)
 // Please copy, share, learn, innovate, give attribution.
 //
-
 #pragma once
 #ifndef TCODE_BUFFER_H
 #define TCODE_BUFFER_H
@@ -33,11 +32,16 @@ public:
     bool pop(BufferType &success);
     bool peek(BufferType &success);
 
+    BufferType pop();
+    BufferType peek();
+    BufferType peekBack();
+
     bool peekBack(BufferType &obj);
 
     bool get(const size_t index, BufferType &success);
     bool set(const size_t index, const BufferType &obj);
 };
+
 
 template <class BufferType>
 bool TCodeBuffer<BufferType>::empty() const
@@ -145,6 +149,44 @@ bool TCodeBuffer<BufferType>::peek(BufferType &success)
 
     success = buffer[front];
     return true;
+}
+
+
+template <class BufferType>
+BufferType TCodeBuffer<BufferType>::pop()
+{
+    if (empty())
+    {
+        return BufferType();
+    }
+
+    BufferType success = buffer[front];
+    front = (front + 1) % capacity;
+    size--;
+    return success;
+}
+
+template <class BufferType>
+BufferType TCodeBuffer<BufferType>::peek()
+{
+    if (empty())
+    {
+        return BufferType();
+    }
+
+    BufferType success = buffer[front];
+    return success;
+}
+
+template <class BufferType>
+BufferType TCodeBuffer<BufferType>::peekBack()
+{
+    if (empty())
+    {
+        return BufferType();
+    }
+
+    return buffer[(back == 0) ? (capacity - 1) : (back - 1)];
 }
 
 #endif
