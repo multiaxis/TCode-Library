@@ -161,19 +161,19 @@ int TCodeAxisBuffered::getPositionMapped(TCode_Axis_State &state, bool &inRange)
     switch (state.rampType)
     {
     case TCode_Axis_Ramp_Type::Linear:
-        x = mapQ16(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointMap(t, state.startTime, state.endTime, state.startValue, state.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseIn:
-        x = mapEaseIn(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointEaseIn(t, state.startTime, state.endTime, state.startValue, state.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseOut:
-        x = mapEaseOut(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointEaseOut(t, state.startTime, state.endTime, state.startValue, state.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseInOut:
-        x = mapEaseInOut(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointMapEaseInOut(t, state.startTime, state.endTime, state.startValue, state.endValue);
         break;
     default:
-        x = mapQ16(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointMap(t, state.startTime, state.endTime, state.startValue, state.endValue);
     }
 
     if (x > TCODE_MAX_AXIS)
