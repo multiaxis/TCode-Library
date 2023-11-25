@@ -362,8 +362,8 @@ fixed_point_t lerpFixedPoint(fixed_point_t start, fixed_point_t stop, fixed_poin
     }
 
     fixed_point_t et = subtractFixedPoint(FIXED_POINT_ONE, t);
-    fixed_point_t a = multiplyFixedPoint(start, t);
-    fixed_point_t b = multiplyFixedPoint(stop, et);
+    fixed_point_t a = multiplyFixedPoint(start, et);
+    fixed_point_t b = multiplyFixedPoint(stop, t);
     return addFixedPoint(a, b);
 }
 
@@ -394,18 +394,11 @@ fixed_point_t fixedPointEaseIn(fixed_point_t t)
  */
 fixed_point_t fixedPointEaseOut(fixed_point_t t)
 {
-    if (t > FIXED_POINT_ONE)
-    {
-        t = FIXED_POINT_ONE;
-    }
-
-    if (t < 0)
-    {
-        t = 0;
-    }
-
-    fixed_point_t invertedt = subtractFixedPoint(FIXED_POINT_ONE, t);
-    return multiplyFixedPoint(invertedt, invertedt);
+    t = constrainFixedPoint(t, 0, FIXED_POINT_ONE);
+    t = subtractFixedPoint(FIXED_POINT_ONE, t);
+    t = multiplyFixedPoint(t, t);
+    t = subtractFixedPoint(FIXED_POINT_ONE, t);
+    return t;
 }
 
 /**
