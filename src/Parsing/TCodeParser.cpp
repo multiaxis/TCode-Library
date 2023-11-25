@@ -203,7 +203,7 @@ bool TCodeParser::parseAxisCommand(unsigned char *buffer, const size_t length, T
     if (id.type == TCode_Channel_Type::None)
         valid = false;
 
-    command_value = getNextInt(buffer, length, index);
+    command_value = getNextTCodeInt(buffer, length, index);
     if (command_value == -1)
         valid = false;
     command_value = constrain(command_value, 0, TCODE_MAX_AXIS);
@@ -250,12 +250,12 @@ bool TCodeParser::parseSetupCommand(unsigned char *buffer, const size_t length, 
     if (toupper(getCharAt(buffer, length, index++)) != '-')
         valid = false;
 
-    long minValue = getNextInt(buffer, length, index); // Get the first minimum value
+    long minValue = getNextTCodeInt(buffer, length, index); // Get the first minimum value
 
     if (toupper(getCharAt(buffer, length, index++)) != '-')
         valid = false;
 
-    long maxValue = getNextInt(buffer, length, index); // Get the seccond maximum value
+    long maxValue = getNextTCodeInt(buffer, length, index); // Get the seccond maximum value
     if ((toupper(getCharAt(buffer, length, index)) != '\0') || (minValue == -1) || (maxValue == -1) || (!idValid(id)))
         valid = false;
     minValue = constrain(minValue, 0, TCODE_MAX_AXIS); // constrain the values to the maximum axis constraint

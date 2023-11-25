@@ -10,6 +10,7 @@
 
 void reportError(OverflowError e)
 {
+    
     switch (e)
     {
     case OverflowError::DIV_BY_ZERO:
@@ -38,20 +39,18 @@ void reportError(OverflowError e)
 fixed_point_t saturateAddFixedPoint(fixed_point_t a, fixed_point_t b, OverflowError &error)
 {
     fixed_point_t result = a + b;
-
     if ((a > 0 && b > 0 && result < a) || (a < 0 && b < 0 && result > a))
     {
         // Overflow detected, saturate the result to the maximum representable value
         error = OverflowError::POSITIVE_OVERFLOW;
         result = std::numeric_limits<fixed_point_t>::max();
     }
-    else if ((a > 0 && b < 0 && result < 0) || (a < 0 && b > 0 && result > 0))
+    else if ((a < 0 && b < 0 && result >= 0) || (a > 0 && b > 0 && result < 0))
     {
         error = OverflowError::NEGATIVE_OVERFLOW;
         // Underflow detected, saturate the result to the minimum representable value
         result = std::numeric_limits<fixed_point_t>::min();
     }
-
     error = OverflowError::NO_OVERFLOW;
     return result;
 }
@@ -134,7 +133,7 @@ fixed_point_t saturateDivideFixedPoint(fixed_point_t a, fixed_point_t b, Overflo
     }
 
     // Calculate the result of division
-    fixed_point_t result = (a * FIXED_POINT_ONE) / b;
+    fixed_point_t result = (a << FIXED_POINT_SHIFT) / b;
 
     // Check for overflow (MIN_INT / -1)
     if (a == std::numeric_limits<fixed_point_t>::min() && b == -1)

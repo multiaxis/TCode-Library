@@ -13,8 +13,8 @@
 #include <cstdint>
 #include <limits>
 
-#define FIXED_POINT_TAG "Fixed Point Library"
-#define FIXED_POINT_SHIFT 32
+#define FIXED_POINT_TAG "TCodeFixedPoint"
+#define FIXED_POINT_SHIFT 16
 #define FIXED_POINT_ONE (1LL << FIXED_POINT_SHIFT)
 typedef int64_t fixed_point_t;
 
