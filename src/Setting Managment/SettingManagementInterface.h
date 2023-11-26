@@ -5,7 +5,11 @@
 #pragma once
 #ifndef SETTING_MANAGEMENT_INTERFACE_HPP
 #define SETTING_MANAGEMENT_INTERFACE_HPP
+#include "esp_log.h"
 #include <Arduino.h>
+
+
+#define SETTING_MANAGMENT_TAG "TCodeSettingManagment"
 
 /**
  * @brief Struct for getting size data on the file system

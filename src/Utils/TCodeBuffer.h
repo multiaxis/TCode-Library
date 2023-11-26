@@ -4,176 +4,189 @@
 // usage of this class can be found at (https://github.com/Dreamer2345/Arduino_TCode_Parser)
 // Please copy, share, learn, innovate, give attribution.
 //
-
 #pragma once
 #ifndef TCODE_BUFFER_H
 #define TCODE_BUFFER_H
+#include <vector>
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH = 127>
+template <class BufferType>
 class TCodeBuffer
 {
 private:
-    unsigned front = 0;
-    unsigned back = 0;
-    BufferType buffer[TCODE_BUFFER_LENGTH];
+    size_t size;
+    size_t capacity;
+    size_t front;
+    size_t back;
+    std::vector<BufferType> buffer;
 
 public:
-    bool isFull();
-    bool isEmpty();
+    TCodeBuffer(size_t capacity) : buffer(capacity),capacity(capacity),size(0),front(0),back(0) {}
+
+    bool full() const;
+    bool empty() const;
     void clear();
 
-    unsigned count();
+    size_t count() const;
 
     bool push(BufferType obj);
     bool pop(BufferType &success);
     bool peek(BufferType &success);
+
     BufferType pop();
     BufferType peek();
+    BufferType peekBack();
 
     bool peekBack(BufferType &obj);
 
-    bool get(const unsigned &index, BufferType &success);
-    bool set(const unsigned &index, const BufferType &obj);
+    bool get(const size_t index, BufferType &success);
+    bool set(const size_t index, const BufferType &obj);
 };
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::isEmpty()
+
+template <class BufferType>
+bool TCodeBuffer<BufferType>::empty() const
 {
-    return front == back;
+    return size == 0;
 }
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-void TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::clear()
+
+template <class BufferType>
+bool TCodeBuffer<BufferType>::full() const
 {
-    front = back;
+    return size == capacity;
 }
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::get(const unsigned &index, BufferType &success)
+template <class BufferType>
+size_t TCodeBuffer<BufferType>::count() const
 {
-    if (index >= count())
+    return size;
+}
+
+
+template <class BufferType>
+void TCodeBuffer<BufferType>::clear()
+{
+    size = 0;
+    front = 0;
+    back = 0;
+}
+
+template <class BufferType>
+bool TCodeBuffer<BufferType>::get(const size_t index, BufferType &success)
+{
+    if (index >= size)
     {
         return false;
     }
 
-    unsigned correctedIndex = (front + index) % TCODE_BUFFER_LENGTH;
+    unsigned correctedIndex = (front + index) % capacity;
     success = buffer[correctedIndex];
     return true;
 }
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-inline bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::set(const unsigned &index, const BufferType &obj)
+template <class BufferType>
+inline bool TCodeBuffer<BufferType>::set(const size_t index, const BufferType &obj)
 {
-    if (index >= count())
+    if (index >= size)
     {
         return false;
     }
 
-    unsigned correctedIndex = (front + index) % TCODE_BUFFER_LENGTH;
+    unsigned correctedIndex = (front + index) % capacity;
     buffer[correctedIndex] = obj;
     return true;
 }
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::isFull()
-{
-    return (front == ((back + 1) % TCODE_BUFFER_LENGTH));
-}
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-unsigned TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::count()
-{
-    if (back >= front)
-        return back - front;
 
-    return TCODE_BUFFER_LENGTH - (front - back);
-}
-
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::push(BufferType obj)
+template <class BufferType>
+bool TCodeBuffer<BufferType>::push(BufferType obj)
 {
-    if (isFull())
+    if (full())
     {
         return false;
     }
-    
-    /*
-    Serial.print("PUSH:");
-    Serial.print(TCODE_BUFFER_LENGTH);
-    Serial.print(":");
-    Serial.print(front);
-    Serial.print(":");
-    Serial.println(back);
-    */
 
     buffer[back] = obj;
-    back = (back + 1) % TCODE_BUFFER_LENGTH;
+    back = (back + 1) % capacity;
+    size++;
     return true;
 }
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::peekBack(BufferType &obj)
+template <class BufferType>
+bool TCodeBuffer<BufferType>::peekBack(BufferType &obj)
 {
-    if (isEmpty())
+    if (empty())
     {
         return false;
     }
 
-    if (back == 0)
-        obj = buffer[TCODE_BUFFER_LENGTH-1];
-    else
-        obj = buffer[back - 1];
+    obj = buffer[(back == 0) ? (capacity - 1) : (back - 1)];
     return true;
 }
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::pop(BufferType &success)
+template <class BufferType>
+bool TCodeBuffer<BufferType>::pop(BufferType &success)
 {
-    if (isEmpty())
-    {
-        return false;
-    }
-
-    success = buffer[front];
-    front = (front + 1) % TCODE_BUFFER_LENGTH;
-    return true;
-}
-
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-bool TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::peek(BufferType &success)
-{
-    if (isEmpty())
+    if (empty())
     {
         return false;
     }
 
     success = buffer[front];
+    front = (front + 1) % capacity;
+    size--;
     return true;
 }
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-BufferType TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::pop()
+template <class BufferType>
+bool TCodeBuffer<BufferType>::peek(BufferType &success)
 {
-    if (isEmpty())
+    if (empty())
     {
-        return 0;
+        return false;
     }
 
-    BufferType headItem = buffer[front];
-    front = (front + 1) % TCODE_BUFFER_LENGTH;
-    return headItem;
+    success = buffer[front];
+    return true;
 }
 
-template <class BufferType, unsigned TCODE_BUFFER_LENGTH>
-BufferType TCodeBuffer<BufferType, TCODE_BUFFER_LENGTH>::peek()
+
+template <class BufferType>
+BufferType TCodeBuffer<BufferType>::pop()
 {
-    if (isEmpty())
+    if (empty())
     {
-        return 0;
+        return BufferType();
     }
 
-    BufferType headItem = buffer[front];
-    return headItem;
+    BufferType success = buffer[front];
+    front = (front + 1) % capacity;
+    size--;
+    return success;
+}
+
+template <class BufferType>
+BufferType TCodeBuffer<BufferType>::peek()
+{
+    if (empty())
+    {
+        return BufferType();
+    }
+
+    BufferType success = buffer[front];
+    return success;
+}
+
+template <class BufferType>
+BufferType TCodeBuffer<BufferType>::peekBack()
+{
+    if (empty())
+    {
+        return BufferType();
+    }
+
+    return buffer[(back == 0) ? (capacity - 1) : (back - 1)];
 }
 
 #endif

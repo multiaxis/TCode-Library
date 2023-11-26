@@ -203,7 +203,7 @@ bool TCodeParser::parseAxisCommand(unsigned char *buffer, const size_t length, T
     if (id.type == TCode_Channel_Type::None)
         valid = false;
 
-    command_value = getNextInt(buffer, length, index);
+    command_value = getNextTCodeInt(buffer, length, index);
     if (command_value == -1)
         valid = false;
     command_value = constrain(command_value, 0, TCODE_MAX_AXIS);

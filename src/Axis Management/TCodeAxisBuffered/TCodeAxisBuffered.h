@@ -78,7 +78,7 @@ private:
     int lastPosition;
     int minInterval;               // minimum command interval
     TCode_Axis_State currentState;
-    TCodeBuffer<TCode_Axis_State, TCODE_MAX_AXIS_BUFFER_LENGTH> dataQueue;
+    TCodeBuffer<TCode_Axis_State> dataQueue {TCODE_MAX_AXIS_BUFFER_LENGTH};
 };
 
 #endif

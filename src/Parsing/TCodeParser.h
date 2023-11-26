@@ -5,6 +5,7 @@
 #pragma once
 #ifndef TCODE_PARSER_H
 #define TCODE_PARSER_H
+#include "esp_log.h"
 #include "../Constants and Enums/TCodeConstants.h"
 #include "../Constants and Enums/TCodeEnums.h"
 #include <Arduino.h>
@@ -93,6 +94,31 @@ public:
      * @return returns a long the integer found in the string represented as base 10 unsigned if a integer string is found which is less than 4 characters long then it will be multiplied til it reaches that minimum e.g. "1" = 1000 ,"01" = 100
      */
     static long getNextInt(unsigned char *buffer, const size_t length, size_t &index)
+    {
+        size_t count = 0;
+        long accum = 0;
+        while (isnumber(*(buffer + index))) // while there is a number at the index we are at in the string
+        {
+            accum *= 10;                                                  // multiply the accumulator first to get the correct output value
+            accum += static_cast<long>(toupper(*(buffer + index)) - '0'); // get next int value '0' - '9' subtracting '0' gets the integer value of the next unit
+            index++;
+            count++; // increase the indeces count to count the digits
+        }
+
+        if (count == 0) // no chars were found with 0 - 9
+            return -1;
+
+        return accum;
+    }
+
+    /**
+     * @brief In a string at the index pointed to by the index paramater gets the Integer contained at and after incrementing the index value
+     * @param buffer string to be processed
+     * @param length length of buffer
+     * @param index the index pointing to a position in the string
+     * @return returns a long the integer found in the string represented as base 10 unsigned if a integer string is found which is less than 4 characters long then it will be multiplied til it reaches that minimum e.g. "1" = 1000 ,"01" = 100
+     */
+    static long getNextTCodeInt(unsigned char *buffer, const size_t length, size_t &index)
     {
         size_t count = 0;
         long accum = 0;

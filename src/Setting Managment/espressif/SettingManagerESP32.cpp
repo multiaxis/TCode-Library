@@ -8,55 +8,37 @@ bool SettingManagerESP32::init()
 {
     if (!SPIFFS.begin(true))
     {
-#ifdef DEBUG
-        Serial.println(F("SM: an Error has occurred while mounting SPIFFS"));
-#endif
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"an Error has occurred while mounting SPIFFS\n");
         return false;
     }
     else
     {
-#ifdef DEBUG
-        Serial.println(F("SM: SPIFFS mounted correctly"));
-#endif
+        ESP_LOGI(SETTING_MANAGMENT_TAG,"SPIFFS mounted correctly\n");
     }
     fileSystemMounted = true;
     foundFile = SPIFFS.exists(filepath);
     this->filepath = filepath;
 
-#ifdef DEBUG
+
     if (foundFile)
-        Serial.println(F("SM: setting's file found"));
-    else
-        Serial.println(F("SM: setting's file not found"));
-#endif
+        
+
+
 
     if (!foundFile)
     {
         foundFile = true;
         String newConfig = "{}";
         writeFile(newConfig);
-#ifdef DEBUG
-        Serial.println(F("SM: file not found creating settings file"));
-
-#endif
+        ESP_LOGI(SETTING_MANAGMENT_TAG,"setting's file not found creating settings file\n");
     }
-
-#ifdef DEBUG
-    Serial.println(F("SM: initialised"));
+    else
+    {
+        ESP_LOGI(SETTING_MANAGMENT_TAG,"setting's file found\n");
+    }
     SettingsUsage usage;
     getSystemUsage(usage);
-    Serial.println("================");
-    Serial.println("    File Sys    ");
-    Serial.println("================");
-    Serial.print("Space Available:");
-    Serial.println(usage.spaceAvailable);
-    Serial.print("Size:");
-    Serial.println(usage.sizeOfFile);
-    Serial.print("Used:");
-    Serial.println(usage.spaceUsed);
-    Serial.println("================");
-#endif
-
+    ESP_LOGI(SETTING_MANAGMENT_TAG,"File System Initialised:\n================\n   System Info\n================\nSpace Available:%d\nSize of file:%d\nSize of SPIFFS:%d\n================\n",usage.spaceAvailable,usage.sizeOfFile,usage.spaceUsed);
     return true;
 }
 
@@ -71,21 +53,20 @@ bool SettingManagerESP32::hasSetting(const char *setting)
     String fileData;
     if (!getFile(fileData))
     {
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"could not load Settings file\n");
         return false;
     }
 
     DeserializationError error = deserializeJson(doc, fileData);
     if (error)
     {
-#ifdef DEBUG
-        Serial.print(F("SM: deserializeJson() failed: "));
-        Serial.println(error.f_str());
-#endif
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"an Error has occurred with the json deserialisation Error Code:%s\n",error.f_str());
         return false;
     }
 
     if (!doc.containsKey(setting))
     {
+        ESP_LOGI(SETTING_MANAGMENT_TAG,"setting \"%s\" not found\n",setting);
         return false;
     }
 
@@ -100,21 +81,11 @@ void SettingManagerESP32::reset()
 
 bool SettingManagerESP32::getFile(String &out)
 {
-    #ifdef DEBUG
-    Serial.print(F("SM: reading file \""));
-    Serial.print(filepath);
-    Serial.println(F("\""));
-    #endif
+    ESP_LOGI(SETTING_MANAGMENT_TAG,"reading setting file \"%s\"\n",filepath);
 
     if (!isMounted())
     {
-        #ifdef DEBUG
-        Serial.println(F("SM: Filesystem not mounted"));
-        Serial.print(F("Mounted Status:"));
-        Serial.println(fileSystemMounted);
-        Serial.print(F("File Status:"));
-        Serial.println(foundFile);
-        #endif
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"failed to read.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
         return false;
     }
     out = "";
@@ -122,11 +93,7 @@ bool SettingManagerESP32::getFile(String &out)
 
     if (!file)
     {
-#ifdef DEBUG
-        Serial.print(F("SM: Could not find file \""));
-        Serial.print(filepath);
-        Serial.println(F("\""));
-#endif
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"file could not be opened.\n");
         return false;
     }
 
@@ -138,39 +105,23 @@ bool SettingManagerESP32::getFile(String &out)
         out += (char)current_byte;
         if (out.length() >= DEFAULT_JSON_FILE_SIZE)
         {
-#ifdef DEBUG
-            Serial.print(F("SM: File larger than "));
-            Serial.println(DEFAULT_JSON_FILE_SIZE);
-#endif
+            ESP_LOGE(SETTING_MANAGMENT_TAG,"file is larger than %d cannot be parsed.\n",DEFAULT_JSON_FILE_SIZE);
             file.close();
             return false;
         }
-        #ifdef DEBUG
-        Serial.print((char)current_byte);
-        #endif
     }
+    ESP_LOGI(SETTING_MANAGMENT_TAG,"file read successfully.\n");
     file.close();
     return true;
 }
 
 bool SettingManagerESP32::writeFile(const String &fileData)
 {
-#ifdef DEBUG
-    Serial.print(F("SM: writing file \""));
-    Serial.print(filepath);
-    Serial.println(F("\""));
-#endif
+    ESP_LOGI(SETTING_MANAGMENT_TAG,"writing setting file \"%s\"\n",filepath);
 
     if (!isMounted())
     {
-        #ifdef DEBUG
-        Serial.print(F("SM: Filesystem not mounted\""));
-        Serial.print(filepath);
-        Serial.print(F("\"\n Mounted Status:"));
-        Serial.println(fileSystemMounted);
-        Serial.print(F("\"\n File Status:"));
-        Serial.println(foundFile);
-        #endif
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"failed to write.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
         return false;
     }
 
@@ -178,60 +129,56 @@ bool SettingManagerESP32::writeFile(const String &fileData)
 
     if (!file)
     {
-#ifdef DEBUG
-        Serial.print(F("SM: Could not write file \""));
-        Serial.print(filepath);
-        Serial.println(F("\""));
-#endif
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"file could not be opened.\n");
         return false;
     }
 
     if(fileData.length() > DEFAULT_JSON_FILE_SIZE)
     {
-        #ifdef DEBUG
-        Serial.print(F("SM: Could not write file \""));
-        Serial.print(filepath);
-        Serial.print(F("\" "));
-        Serial.println("Input value was too long");
-        #endif
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"file is larger than %d cannot be serialised.\n",DEFAULT_JSON_FILE_SIZE);
         return false;
     }
 
     for (unsigned int i = 0; i < fileData.length(); i++)
     {
         file.write(fileData[i]);
-        #ifdef DEBUG
-        Serial.print(fileData[i]);
-        #endif
     }
+
+    ESP_LOGI(SETTING_MANAGMENT_TAG,"file written successfully.\n");
     file.close();
     return true;
 }
 
 bool SettingManagerESP32::getSystemUsage(SettingsUsage &out)
 {
-    if (!isMounted())
+    ESP_LOGI(SETTING_MANAGMENT_TAG,"getting system usage.\n");
+    if (!isMounted()) 
+    {
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"failed to get system usage.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
         return false;
+    }
     out.sizeOfFile = getFileSize();
     out.spaceAvailable = SPIFFS.totalBytes();
     out.spaceUsed = SPIFFS.usedBytes();
+    ESP_LOGI(SETTING_MANAGMENT_TAG,"got system usage.\n");
     return true;
 }
 
 unsigned long SettingManagerESP32::getFileSize()
 {
+    ESP_LOGI(SETTING_MANAGMENT_TAG,"getting file size.\n");
     if (!isMounted())
+    {
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"failed to get file size.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
         return 0;
+    }
+
     int size = 0;
     File file = SPIFFS.open(filepath);
 
     if (!file)
     {
-#ifdef DEBUG
-        Serial.print(F("SM: Could not find file \""));
-        Serial.print(filepath);
-        Serial.println(F("\""));
-#endif
+        ESP_LOGE(SETTING_MANAGMENT_TAG,"file could not be opened.\n");
         return 0;
     }
 

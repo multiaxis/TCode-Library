@@ -91,7 +91,7 @@ unsigned long TCodeAxisBuffered::getLastCommandTime()
 unsigned long TCodeAxisBuffered::getLastMillis()
 {
     unsigned long currentTime = millis();
-    if (dataQueue.isEmpty())
+    if (dataQueue.empty())
     {
         if (currentTime > currentState.endTime)
             return currentTime;
@@ -106,7 +106,7 @@ unsigned long TCodeAxisBuffered::getLastMillis()
 
 int TCodeAxisBuffered::getLastTargetPosition()
 {
-    if (dataQueue.isEmpty())
+    if (dataQueue.empty())
     {
         return currentState.endValue;
     }
@@ -125,7 +125,7 @@ int TCodeAxisBuffered::getPosition()
         return value;
     }
 
-    if (dataQueue.isEmpty())
+    if (dataQueue.empty())
     {
         return value;
     }
@@ -134,7 +134,7 @@ int TCodeAxisBuffered::getPosition()
     {
         dataQueue.pop(currentState);
         value = getPositionMapped(currentState, isInRange);
-        if (dataQueue.isEmpty())
+        if (dataQueue.empty())
             break;
     }
 
@@ -161,19 +161,19 @@ int TCodeAxisBuffered::getPositionMapped(TCode_Axis_State &state, bool &inRange)
     switch (state.rampType)
     {
     case TCode_Axis_Ramp_Type::Linear:
-        x = mapQ16(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointMap(t, state.startTime, state.endTime, state.startValue, state.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseIn:
-        x = mapEaseIn(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointMapEaseIn(t, state.startTime, state.endTime, state.startValue, state.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseOut:
-        x = mapEaseOut(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointMapEaseOut(t, state.startTime, state.endTime, state.startValue, state.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseInOut:
-        x = mapEaseInOut(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointMapEaseInOut(t, state.startTime, state.endTime, state.startValue, state.endValue);
         break;
     default:
-        x = mapQ16(t, state.startTime, state.endTime, state.startValue, state.endValue);
+        x = fixedPointMap(t, state.startTime, state.endTime, state.startValue, state.endValue);
     }
 
     if (x > TCODE_MAX_AXIS)

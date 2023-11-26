@@ -3,171 +3,484 @@
 // implemented by Eve 05/02/2022
 // usage of this class can be found at (https://github.com/Dreamer2345/Arduino_TCode_Parser)
 // Please copy, share, learn, innovate, give attribution.
-// Q16 Implementation for fractional calculations on hardware without an FPU
+// fixed point Implementation for fractional calculations on hardware without an FPU
 // History:
 //
-#ifndef TCODE_FIXED_POINT_CPP
-#define TCODE_FIXED_POINT_CPP
 #include "TCodeFixed.h"
-#include <Arduino.h>
 
-Q16Fixed addQ16(Q16Fixed a, Q16Fixed b)
+void reportError(OverflowError e)
 {
-    Q16FixedL tmp = static_cast<Q16FixedL>(a) + static_cast<Q16FixedL>(b);
-    return tmp;
+    
+    switch (e)
+    {
+    case OverflowError::DIV_BY_ZERO:
+        ESP_LOGE(FIXED_POINT_TAG, "Error message: %s", "Divide by 0 error occured");
+        break;
+    case OverflowError::POSITIVE_OVERFLOW:
+        ESP_LOGE(FIXED_POINT_TAG, "Error message: %s", "Positive overflow occured");
+        break;
+    case OverflowError::NEGATIVE_OVERFLOW:
+        ESP_LOGE(FIXED_POINT_TAG, "Error message: %s", "Negative overflow occured");
+        break;
+    case OverflowError::MIN_INT_DIVIDED_BY_NEG_ONE_OVERFLOW:
+        ESP_LOGE(FIXED_POINT_TAG, "Error message: %s", "Min-Int Divided by 1 overflow occured");
+        break;
+    default : break;
+    }
 }
 
-Q16Fixed subQ16(Q16Fixed a, Q16Fixed b)
+/**
+ * @brief Adds two fixed point Values Together a + b
+ * @param a
+ * @param b
+ * @param error refrence value if there is an overflow error with the function
+ * @return The addition sum of those to values
+ */
+fixed_point_t saturateAddFixedPoint(fixed_point_t a, fixed_point_t b, OverflowError &error)
 {
-    return a - b;
+    fixed_point_t result = a + b;
+    if ((a > 0 && b > 0 && result < a) || (a < 0 && b < 0 && result > a))
+    {
+        // Overflow detected, saturate the result to the maximum representable value
+        error = OverflowError::POSITIVE_OVERFLOW;
+        result = std::numeric_limits<fixed_point_t>::max();
+    }
+    else if ((a < 0 && b < 0 && result >= 0) || (a > 0 && b > 0 && result < 0))
+    {
+        error = OverflowError::NEGATIVE_OVERFLOW;
+        // Underflow detected, saturate the result to the minimum representable value
+        result = std::numeric_limits<fixed_point_t>::min();
+    }
+    error = OverflowError::NO_OVERFLOW;
+    return result;
 }
 
-Q16Fixed multQ16(Q16Fixed a, Q16Fixed b)
+/**
+ * @brief Subtracts one fixed point Value from another a - b
+ * @param a
+ * @param b
+ * @param error refrence value if there is an overflow error with the function
+ * @return The subtraction of b from a
+ */
+fixed_point_t saturateSubtractFixedPoint(fixed_point_t a, fixed_point_t b, OverflowError &error)
 {
-    Q16FixedL tmp = (static_cast<Q16FixedL>(a) * static_cast<Q16FixedL>(b)) >> static_cast<Q16FixedL>(Q);
-    return tmp;
+    fixed_point_t result = a - b;
+
+    if ((a >= 0 && b < 0 && result < a) || (a < 0 && b >= 0 && result > a))
+    {
+        // Overflow detected, saturate the result to the maximum representable value
+        error = OverflowError::POSITIVE_OVERFLOW;
+        return std::numeric_limits<fixed_point_t>::max();
+    }
+    else if ((a >= 0 && b > 0 && result > a) || (a < 0 && b <= 0 && result < a))
+    {
+        // Overflow detected, saturate the result to the minimum representable value
+        error = OverflowError::NEGATIVE_OVERFLOW;
+        return std::numeric_limits<fixed_point_t>::min();
+    }
+
+    error = OverflowError::NO_OVERFLOW;
+    return result;
 }
 
-Q16Fixed divQ16(Q16Fixed a, Q16Fixed b)
+/**
+ * @brief Multiplies two fixed point Values together
+ * @param a
+ * @param b
+ * @param error refrence value if there is an overflow error with the function
+ * @return The multiplicative sum of a and b
+ */
+fixed_point_t saturateMultiplyFixedPoint(fixed_point_t a, fixed_point_t b, OverflowError &error)
 {
-    return (((static_cast<Q16FixedL>(a)) << static_cast<Q16FixedL>(Q)) / static_cast<Q16FixedL>(b));
+    fixed_point_t result = (a * b) >> FIXED_POINT_SHIFT;
+
+    // Check for overflow
+    if (a != 0 && b != 0)
+    {
+        if ((a > 0 && b > 0 && result < 0) || (a < 0 && b < 0 && result < 0))
+        {
+            // Overflow detected, saturate the result to the maximum representable value
+            error = OverflowError::POSITIVE_OVERFLOW;
+            return (a > 0) ? std::numeric_limits<fixed_point_t>::max() : std::numeric_limits<fixed_point_t>::min();
+        }
+        else if ((a > 0 && b < 0 && result > 0) || (a < 0 && b > 0 && result > 0))
+        {
+            // Overflow detected, saturate the result to the minimum representable value
+            error = OverflowError::NEGATIVE_OVERFLOW;
+            return (a > 0) ? std::numeric_limits<fixed_point_t>::max() : std::numeric_limits<fixed_point_t>::min();
+        }
+    }
+
+    error = OverflowError::NO_OVERFLOW;
+    return result;
 }
 
-Q16Fixed constrainQ16(Q16Fixed v, Q16Fixed min, Q16Fixed max)
+/**
+ * @brief Divides two fixed point Values a / b
+ * @param a
+ * @param b
+ * @param error refrence value if there is an overflow error with the function
+ * @return The division output of a / b
+ */
+fixed_point_t saturateDivideFixedPoint(fixed_point_t a, fixed_point_t b, OverflowError &error)
+{
+    // Check for division by zero
+    if (b == 0)
+    {
+        // Handle division by zero, return the maximum representable value
+        error = OverflowError::DIV_BY_ZERO;
+        return (a > 0) ? std::numeric_limits<fixed_point_t>::max() : std::numeric_limits<fixed_point_t>::min();
+    }
+
+    // Calculate the result of division
+    fixed_point_t result = (a << FIXED_POINT_SHIFT) / b;
+
+    // Check for overflow (MIN_INT / -1)
+    if (a == std::numeric_limits<fixed_point_t>::min() && b == -1)
+    {
+        // Overflow detected, saturate the result
+        error = OverflowError::MIN_INT_DIVIDED_BY_NEG_ONE_OVERFLOW;
+        return std::numeric_limits<fixed_point_t>::max();
+    }
+
+    error = OverflowError::NO_OVERFLOW;
+    return result;
+}
+
+/**
+ * @brief Adds two fixed point Values Together a + b
+ * @param a
+ * @param b
+ * @return The addition sum of those to values
+ */
+fixed_point_t addFixedPoint(fixed_point_t a, fixed_point_t b)
+{
+    OverflowError error;
+    fixed_point_t result = saturateAddFixedPoint(a, b, error);
+    reportError(error);
+    return result;
+}
+
+/**
+ * @brief Subtracts one fixed point Value from another a - b
+ * @param a
+ * @param b
+ * @return The subtraction of b from a
+ */
+fixed_point_t subtractFixedPoint(fixed_point_t a, fixed_point_t b)
+{
+    OverflowError error;
+    fixed_point_t result = saturateSubtractFixedPoint(a, b, error);
+    reportError(error);
+    return result;
+}
+
+/**
+ * @brief Multiplies two fixed point Values together
+ * @param a
+ * @param b
+ * @return The multiplicative sum of a and b
+ */
+fixed_point_t multiplyFixedPoint(fixed_point_t a, fixed_point_t b)
+{
+    OverflowError error;
+    fixed_point_t result = saturateMultiplyFixedPoint(a, b, error);
+    reportError(error);
+    return result;
+}
+
+/**
+ * @brief Divides two fixed point Values a / b
+ * @param a
+ * @param b
+ * @return The division output of a / b
+ */
+fixed_point_t divideFixedPoint(fixed_point_t a, fixed_point_t b)
+{
+    OverflowError error;
+    fixed_point_t result = saturateDivideFixedPoint(a, b, error);
+    reportError(error);
+    return result;
+}
+
+/**
+ * @brief constrains a fixed point to between two fixed point values min, max
+ * @param fixedPointValue value to be contrained
+ * @param min minimum threshold
+ * @param max maximum threshold
+ * @return the constrained value (if min is larger than max the values are swapped)
+ */
+fixed_point_t constrainFixedPoint(fixed_point_t fixedPointValue, fixed_point_t min, fixed_point_t max)
 {
     if (min > max)
     {
-        Q16Fixed temp = min;
+        fixed_point_t temp = min;
         min = max;
         max = temp;
     }
 
-    if (v < min)
+    if (fixedPointValue < min)
         return min;
-    if (v > max)
+    if (fixedPointValue > max)
         return max;
-    return v;
+    return fixedPointValue;
 }
 
-Q16Fixed clipQ16(Q16Fixed v, Q16Fixed min, Q16Fixed max)
+/**
+ * @brief functions the same as constrain however min can be larger than max
+ * @param fixedPointValue value to be clipped
+ * @param min minimum threshold
+ * @param max maximum threshold
+ * @return the clipped value
+ */
+fixed_point_t clipFixedPoint(fixed_point_t fixedPointValue, fixed_point_t min, fixed_point_t max)
 {
-    if (v < min)
+    if (fixedPointValue < min)
         return min;
-    if (v > max)
+    if (fixedPointValue > max)
         return max;
-    return v;
+    return fixedPointValue;
 }
 
-Q16Fixed Q16fromInt(long i)
+/**
+ * @brief Converts an integer to a fixed point
+ * @param intValue Value to be converted
+ * @return The fixed point representation of the integer passed
+ */
+fixed_point_t intToFixedPoint(int intValue)
 {
-    return (static_cast<Q16FixedL>(i)) << static_cast<Q16FixedL>(Q);
+    return static_cast<fixed_point_t>(intValue) << FIXED_POINT_SHIFT;
 }
 
-Q16Fixed Q16fromFloat(float i)
+/**
+ * @brief Converts an integer to a fixed point
+ * @param longValue Value to be converted
+ * @return The fixed point representation of the integer passed
+ */
+fixed_point_t longToFixedPoint(long longValue)
 {
-    float newValuef = i * (static_cast<Q16FixedL>(1) << static_cast<Q16FixedL>(Q));
-    return static_cast<Q16Fixed>(newValuef);
+    return static_cast<fixed_point_t>(longValue) << FIXED_POINT_SHIFT;
 }
 
-Q16Fixed Q16fromDouble(double i)
+/**
+ * @brief Converts an integer to a fixed point
+ * @param longlongValue Value to be converted
+ * @return The fixed point representation of the integer passed
+ */
+fixed_point_t longlongToFixedPoint(long long longlongValue)
 {
-    double newValued = i * (static_cast<Q16FixedL>(1) << static_cast<Q16FixedL>(Q));
-    return static_cast<Q16Fixed>(newValued);
+    return static_cast<fixed_point_t>(longlongValue) << FIXED_POINT_SHIFT;
 }
 
-Q16Fixed IntfromQ16(Q16Fixed i)
+/**
+ * @brief Converts an float to a fixed point
+ * @param floatValue Value to be converted
+ * @return The fixed point representation of the float passed
+ */
+fixed_point_t floatToFixedPoint(float floatValue)
 {
-    i = addQ16(i, Q16fromDouble(0.5));
-    return static_cast<Q16Fixed>(i >> static_cast<Q16FixedL>(Q));
+    return static_cast<fixed_point_t>(floatValue * FIXED_POINT_ONE);
 }
 
-float FloatfromQ16(Q16Fixed i)
+/**
+ * @brief Converts an double to a fixed point
+ * @param doubleValue Value to be converted
+ * @return The fixed point representation of the double passed
+ */
+fixed_point_t doubleToFixedPoint(double doubleValue)
 {
-    return ((static_cast<float>(i)) / (static_cast<Q16FixedL>(1) << static_cast<Q16FixedL>(Q)));
+    return static_cast<fixed_point_t>(doubleValue * FIXED_POINT_ONE);
 }
 
-double DoublefromQ16(Q16Fixed i)
+/**
+ * @brief Converts an fixed point to an int
+ * @param fixedPointValue Value to be converted
+ * @return The Integer Value of the fixed point rounded
+ */
+int fixedPointToInt(fixed_point_t fixedPointValue)
 {
-    return ((static_cast<double>(i)) / (static_cast<Q16FixedL>(1) << static_cast<Q16FixedL>(Q)));
+    return static_cast<int>(fixedPointValue >> FIXED_POINT_SHIFT);
 }
 
-Q16Fixed lerpQ16(Q16Fixed start, Q16Fixed stop, Q16Fixed t)
+/**
+ * @brief Converts an fixed point to a long
+ * @param fixedPointValue Value to be converted
+ * @return The Integer Value of the fixed point rounded
+ */
+long fixedPointToLong(fixed_point_t fixedPointValue)
 {
-    // lerp is defined as mixed = ((1.0 - t) * a) + (t * b)
-    t = constrainQ16(t, 0, Q16fromInt(1));
-    Q16Fixed tn = subQ16(Q16fromInt(1), t);
-    Q16Fixed a = multQ16(tn, start);
-    Q16Fixed b = multQ16(t, stop);
-    return addQ16(a, b);
+    return static_cast<long>(fixedPointValue >> FIXED_POINT_SHIFT);
 }
 
-Q16Fixed easeIn(Q16Fixed t)
+/**
+ * @brief Converts an fixed point to a long long
+ * @param fixedPointValue Value to be converted
+ * @return The Integer Value of the fixed point rounded
+ */
+long long fixedPointToLongLong(fixed_point_t fixedPointValue)
 {
-    t = constrainQ16(t, 0, Q16fromInt(1));
-    t = multQ16(t, t);
+    return static_cast<long long>(fixedPointValue >> FIXED_POINT_SHIFT);
+}
+
+/**
+ * @brief Converts an fixed point to a Float
+ * @param fixedPointValue Value to be converted
+ * @return The Float Value of the fixed point rounded
+ */
+float fixedPointToFloat(fixed_point_t fixedPointValue)
+{
+    return static_cast<float>(fixedPointValue) / FIXED_POINT_ONE;
+}
+
+/**
+ * @brief Converts an fixed point to an Double
+ * @param fixedPointValue Value to be converted
+ * @return The Double Value of the fixed point rounded
+ */
+double fixedPointToDouble(fixed_point_t fixedPointValue)
+{
+    return static_cast<double>(fixedPointValue) / FIXED_POINT_ONE;
+}
+
+/**
+ * @brief Linearly interpolates between two fixed point values based on a third fixed point value which is from 0.0 to 1.0
+ * @param start the starting value
+ * @param stop the targer value
+ * @param t the position between the start and stop values
+ * @return The mixed values based on the t variable represented as a fixed point
+ */
+fixed_point_t lerpFixedPoint(fixed_point_t start, fixed_point_t stop, fixed_point_t t)
+{
+    if (t >= FIXED_POINT_ONE)
+    {
+        return stop;
+    }
+
+    if (t <= 0)
+    {
+        return start;
+    }
+
+    fixed_point_t et = subtractFixedPoint(FIXED_POINT_ONE, t);
+    fixed_point_t a = multiplyFixedPoint(start, et);
+    fixed_point_t b = multiplyFixedPoint(stop, t);
+    return addFixedPoint(a, b);
+}
+
+/**
+ * @brief Gives an eased value based on an input t value which is from 0.0 to 1.0
+ * @param t the position value to be converted to an exponential curve
+ * @return the interpolated value of t from 0.0 to 1.0
+ */
+fixed_point_t fixedPointEaseIn(fixed_point_t t)
+{
+    if (t > FIXED_POINT_ONE)
+    {
+        t = FIXED_POINT_ONE;
+    }
+
+    if (t < 0)
+    {
+        t = 0;
+    }
+
+    return multiplyFixedPoint(t, t);
+}
+
+/**
+ * @brief Gives an inverse eased value based on an input t value which is from 0.0 to 1.0
+ * @param t the position value to be converted to an exponential curve
+ * @return the inverse interpolated value of t from 0.0 to 1.0
+ */
+fixed_point_t fixedPointEaseOut(fixed_point_t t)
+{
+    t = constrainFixedPoint(t, 0, FIXED_POINT_ONE);
+    t = subtractFixedPoint(FIXED_POINT_ONE, t);
+    t = multiplyFixedPoint(t, t);
+    t = subtractFixedPoint(FIXED_POINT_ONE, t);
     return t;
 }
 
-Q16Fixed easeOut(Q16Fixed t)
+/**
+ * @brief Maps a given range of values to an output range based on a linear method
+ * @param in value to be mapped
+ * @param inStart the starting min range
+ * @param inEnd the starting max range
+ * @param outStart the ending min range
+ * @param outEnd the ending max range
+ * @return the mapped value from the in range to out range based on the Ease in Curve
+ */
+long fixedPointMap(long in, long inStart, long inEnd, long outStart, long outEnd)
 {
-    t = constrainQ16(t, 0, Q16fromInt(1));
-    t = subQ16(Q16fromInt(1), t);
-    t = multQ16(t, t);
-    return subQ16(Q16fromInt(1), t);
+    fixed_point_t t = longToFixedPoint(in - inStart);                                 // Find the distance of the in value from inStart
+    t = divideFixedPoint(t, longToFixedPoint(inEnd - inStart));                       // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
+    t = constrainFixedPoint(t, 0, FIXED_POINT_ONE);                                   // constrain the value from 0.0 to 1.0
+    t = multiplyFixedPoint(t, longToFixedPoint(outEnd - outStart));                   // multiply the value of how far along the range between outStart and outEnd
+    t = addFixedPoint(t, longToFixedPoint(outStart));                                 // Get the value to lie between outStart and outEnd
+    t = constrainFixedPoint(t, longToFixedPoint(outStart), longToFixedPoint(outEnd)); // Constrain the value so it does not go out of bounds
+    return fixedPointToLong(t);                                                       // Convert the value back to an int
 }
 
-Q16Fixed Q16Abs(Q16Fixed t)
+/**
+ * @brief Maps a given range of values to an output range based on the ease in curve
+ * @param in value to be mapped
+ * @param inStart the starting min range
+ * @param inEnd the starting max range
+ * @param outStart the ending min range
+ * @param outEnd the ending max range
+ * @return the mapped value from the in range to out range based on the Ease in Curve
+ */
+long fixedPointMapEaseIn(long in, long inStart, long inEnd, long outStart, long outEnd)
 {
-    if(t < 0)
-        t = -t;
-    return t;
+    fixed_point_t t = longToFixedPoint(in - inStart);                                 // Find the distance of the in value from inStart
+    t = divideFixedPoint(t, longToFixedPoint(inEnd - inStart));                       // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
+    t = fixedPointEaseIn(t);                                                          // get the ease in curve value
+    t = constrainFixedPoint(t, 0, FIXED_POINT_ONE);                                   // constrain the value from 0.0 to 1.0
+    t = multiplyFixedPoint(t, longToFixedPoint(outEnd - outStart));                   // multiply the value of how far along the range between outStart and outEnd
+    t = addFixedPoint(t, longToFixedPoint(outStart));                                 // Get the value to lie between outStart and outEnd
+    t = constrainFixedPoint(t, longToFixedPoint(outStart), longToFixedPoint(outEnd)); // Constrain the value so it does not go out of bounds
+    return fixedPointToLong(t);                                                       // Convert the value back to an int
 }
 
-long mapQ16(long in, long inStart, long inEnd, long outStart, long outEnd)
+/**
+ * @brief Maps a given range of values to an output range based on the ease out curve
+ * @param in value to be mapped
+ * @param inStart the starting min range
+ * @param inEnd the starting max range
+ * @param outStart the ending min range
+ * @param outEnd the ending max range
+ * @return the mapped value from the in range to out range based on the Ease out Curve
+ */
+long fixedPointMapEaseOut(long in, long inStart, long inEnd, long outStart, long outEnd)
 {
-    Q16Fixed t = Q16fromInt(in - inStart);         // Find the distance of the in value from inStart
-    t = divQ16(t, Q16fromInt(inEnd - inStart));    // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
-    t = constrainQ16(t, 0, Q16fromInt(1));                            // constrain the value from 0.0 to 1.0
-    t = multQ16(t, subQ16(Q16fromInt(outEnd), Q16fromInt(outStart))); // multiply the value of how far along the range between outStart and outEnd
-    t = addQ16(t, Q16fromInt(outStart));                              // Get the value to lie between outStart and outEnd
-    t = constrainQ16(t, Q16fromInt(outStart), Q16fromInt(outEnd));    // Constrain the value so it does not go out of bounds
-    return IntfromQ16(t); // Convert the value back to an int
+    fixed_point_t t = longToFixedPoint(in - inStart);                                 // Find the distance of the in value from inStart
+    t = divideFixedPoint(t, longToFixedPoint(inEnd - inStart));                       // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
+    t = fixedPointEaseOut(t);                                                         // get the ease out curve value
+    t = constrainFixedPoint(t, 0, FIXED_POINT_ONE);                                   // constrain the value from 0.0 to 1.0
+    t = multiplyFixedPoint(t, longToFixedPoint(outEnd - outStart));                   // multiply the value of how far along the range between outStart and outEnd
+    t = addFixedPoint(t, longToFixedPoint(outStart));                                 // Get the value to lie between outStart and outEnd
+    t = constrainFixedPoint(t, longToFixedPoint(outStart), longToFixedPoint(outEnd)); // Constrain the value so it does not go out of bounds
+    return fixedPointToLong(t);
 }
 
-long mapEaseIn(long in, long inStart, long inEnd, long outStart, long outEnd)
+/**
+ * @brief Maps a given range of values to an output range based on the ease in out curve
+ * @param in value to be mapped
+ * @param inStart the starting min range
+ * @param inEnd the starting max range
+ * @param outStart the ending min range
+ * @param outEnd the ending max range
+ * @return the mapped value from the in range to out range based on the Ease in out Curve
+ */
+long fixedPointMapEaseInOut(long in, long inStart, long inEnd, long outStart, long outEnd)
 {
-    Q16Fixed t = Q16fromInt(in - inStart);                         // Find the distance of the in value from inStart
-    t = divQ16(t, Q16fromInt(inEnd - inStart));                    // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
-    t = easeIn(t);                                                 // get the ease in curve value
-    t = constrainQ16(t, 0, Q16fromInt(1));                         // constrain the value from 0.0 to 1.0
-    t = multQ16(t, Q16fromInt(outEnd - outStart));                 // multiply the value of how far along the range between outStart and outEnd
-    t = addQ16(t, Q16fromInt(outStart));                           // Get the value to lie between outStart and outEnd
-    t = constrainQ16(t, Q16fromInt(outStart), Q16fromInt(outEnd)); // Constrain the value so it does not go out of bounds
-    return IntfromQ16(t);                                          // Convert the value back to an int
+    fixed_point_t t = longToFixedPoint(in - inStart);                                 // Find the distance of the in value from inStart
+    t = divideFixedPoint(t, longToFixedPoint(inEnd - inStart));                       // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
+    t = constrainFixedPoint(t, 0, FIXED_POINT_ONE);                                   // Constrain the curve value between 0.0 and 1.0
+    t = lerpFixedPoint(fixedPointEaseIn(t), fixedPointEaseOut(t), t);                 // Find the lerped value of the curve based on where the in value lies
+    t = constrainFixedPoint(t, 0, FIXED_POINT_ONE);                                   // Constrain the curve value between 0.0 and 1.0
+    t = multiplyFixedPoint(t, longToFixedPoint(outEnd - outStart));                   // multiply the value of how far along the range between outStart and outEnd
+    t = addFixedPoint(t, longToFixedPoint(outStart));                                 // Get the value to lie between outStart and outEnd
+    t = constrainFixedPoint(t, longToFixedPoint(outStart), longToFixedPoint(outEnd)); // Constrain the value so it does not go out of bounds
+    return fixedPointToLong(t);                                                       // Convert the value back to an int
 }
-
-long mapEaseOut(long in, long inStart, long inEnd, long outStart, long outEnd)
-{
-    Q16Fixed t = Q16fromInt(in - inStart);                         // Find the distance of the in value from inStart
-    t = divQ16(t, Q16fromInt(inEnd - inStart));                    // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
-    t = easeOut(t);                                                // get the ease out curve value
-    t = constrainQ16(t, 0, Q16fromInt(1));                         // constrain the value from 0.0 to 1.0
-    t = multQ16(Q16fromInt(outEnd - outStart), t);                 // multiply the value of how far along the range between outStart and outEnd
-    t = addQ16(t, Q16fromInt(outStart));                           // Get the value to lie between outStart and outEnd
-    t = constrainQ16(t, Q16fromInt(outStart), Q16fromInt(outEnd)); // Constrain the value so it does not go out of bounds
-    return IntfromQ16(t);                                          // Convert the value back to an int
-}
-
-long mapEaseInOut(long in, long inStart, long inEnd, long outStart, long outEnd)
-{
-    Q16Fixed t = Q16fromInt(in - inStart);                         // Find the distance of the in value from inStart
-    t = divQ16(t, Q16fromInt(inEnd - inStart));                    // Find where the inValue lies within the range between inStart and inEnd should be (0.0 - 1.0) for values where in is in the range specified
-    t = lerpQ16(easeIn(t), easeOut(t), t);                         // Find the lerped value of the curve based on where the in value lies
-    t = constrainQ16(t, 0, Q16fromInt(1));                         // Constrain the curve value between 0.0 and 1.0
-    t = multQ16(Q16fromInt(outEnd - outStart), t);                 // multiply the value of how far along the range between outStart and outEnd
-    t = addQ16(t, Q16fromInt(outStart));                           // Get the value to lie between outStart and outEnd
-    t = constrainQ16(t, Q16fromInt(outStart), Q16fromInt(outEnd)); // Constrain the value so it does not go out of bounds
-    return IntfromQ16(t);                                          // Convert the value back to an int
-}
-
-#endif
