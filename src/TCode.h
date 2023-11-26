@@ -130,6 +130,9 @@ public:
      */
     void update();
 
+    /**
+     * @brief Registers a button to the  
+     */
     bool registerButton(TCodeButton* button);
 
     /**
