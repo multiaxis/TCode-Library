@@ -99,19 +99,19 @@ int TCodeAxis::getPosition()
     switch (currentState.rampType)
     {
     case TCode_Axis_Ramp_Type::Linear:
-        x = fixedPointMap(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMap(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseIn:
-        x = fixedPointMapEaseIn(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMapEaseIn(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseOut:
-        x = fixedPointMapEaseOut(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMapEaseOut(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseInOut:
-        x = fixedPointMapEaseInOut(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMapEaseInOut(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     default:
-        x = fixedPointMap(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMap(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
     }
 
     if (x > TCODE_MAX_AXIS)

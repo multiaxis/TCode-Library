@@ -10,5 +10,4 @@
 #pragma once
 //Includes for different Axis Interfaces
 #include "ITCodeAxis.h"
-#include "TCodeAxisBuffered/TCodeAxisBuffered.h"
 #include "TCodeAxisUnbuffered/TCodeAxisUnbuffered.h"
