@@ -25,7 +25,7 @@
 /**
  * @brief Value used to define the max range for an axis magnitude command input
  */
-#define TCODE_MAX_AXIS_MAGNITUDE 9999999
+#define TCODE_MAX_AXIS_MAGNITUDE 9999999LL
 #endif
 
 /**
