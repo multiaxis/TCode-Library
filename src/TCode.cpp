@@ -293,47 +293,10 @@ ITCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
     return nullptr;
 }
 
-size_t TCode::getNextCommand(unsigned char *buffer, size_t buffer_length)
-{
-    size_t index = 0;
-    int blevel = 0;
-    bool isLast = false;
-    while (!inputBuffer.empty() && (index < buffer_length - 1))
-    {
-        char charValue;
-        if(!inputBuffer.peek(charValue))
-            break;
-
-        if (charValue == '[')
-            blevel += 1;
-        if (charValue == ']')
-            blevel -= 1;
-
-        if (charValue == ' ' && (blevel == 0))
-        {
-            inputBuffer.pop();
-            break;
-        }
-
-        if (charValue == '\n')
-        {
-            isLast = true;
-            inputBuffer.pop();
-            break;
-        }
-
-        if (blevel < 0)
-            break;
-
-        buffer[index++] = inputBuffer.pop();
-    }
-    return index;
-}
-
 void TCode::executeNextBufferCommand()
 {
     unsigned char command[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
-    size_t length = getNextCommand(command, MAX_COMMAND_BUFFER_LENGTH_COUNT);
+    size_t length = TCodeParser::getNextCommand(inputBuffer,command, MAX_COMMAND_BUFFER_LENGTH_COUNT);
     readCommand(command, length + 1);
 }
 

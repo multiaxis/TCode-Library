@@ -40,6 +40,8 @@ public:
 
     bool get(const size_t index, BufferType &success);
     bool set(const size_t index, const BufferType &obj);
+
+    bool resize(size_t newSize);
 };
 
 
@@ -97,7 +99,13 @@ inline bool TCodeBuffer<BufferType>::set(const size_t index, const BufferType &o
     return true;
 }
 
-
+template <class BufferType>
+inline bool TCodeBuffer<BufferType>::resize(size_t newSize)
+{
+    buffer.resize(newSize);
+    capacity = newSize;
+    return false;
+}
 
 template <class BufferType>
 bool TCodeBuffer<BufferType>::push(BufferType obj)

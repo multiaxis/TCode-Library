@@ -117,6 +117,8 @@ struct TCode_Axis_Data
 {
     TCode_Axis_Extention_Type extentionType;
     TCode_Axis_Ramp_Type rampType;
+    int rampInValue;
+    int rampOutValue;
     int commandValue;
     long commandExtention;
 };
@@ -154,6 +156,8 @@ struct TCode_Axis_State
     unsigned long startTime;
     unsigned long endTime;
     TCode_Axis_Ramp_Type rampType;
+    int rampInValue;
+    int rampOutValue;
     int startValue;
     int endValue;
 };

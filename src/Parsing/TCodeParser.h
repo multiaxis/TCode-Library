@@ -287,6 +287,15 @@ public:
     static TCode_Command_Type getCommandType(unsigned char *buffer, const size_t length, size_t startIndex);
 
     /**
+     * @brief Parses the next command out of a buffer and puts it into a provided char buffer 
+     * @param inputBuffer buffer for command to be parsed from
+     * @param buffer buffer for command to go into
+     * @param length length of buffer
+     * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
+     */
+    static size_t getNextCommand(TCodeBuffer<char>* inputBuffer,unsigned char *buffer, size_t buffer_length);
+
+    /**
      * @brief Parses an Axis Command
      * @param buffer string to be processed
      * @param length length of buffer
