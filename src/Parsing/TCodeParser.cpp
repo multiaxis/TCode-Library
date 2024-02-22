@@ -113,8 +113,8 @@ void TCodeParser::combineRampSegments(TCode_Axis_Ramp_Type startingRampType, int
     if((startingRampType == TCode_Axis_Ramp_Type::Linear) || (endingRampType == TCode_Axis_Ramp_Type::Linear))
     {
         outRampType = TCode_Axis_Ramp_Type::Linear;
-        rampOutValue = 0;
-        rampInValue = 0;
+        rampOutValue = -1;
+        rampInValue = -1;
         return;
     }
 
@@ -122,14 +122,14 @@ void TCodeParser::combineRampSegments(TCode_Axis_Ramp_Type startingRampType, int
     {
         outRampType = endingRampType;
         rampOutValue = endingRampValue;
-        rampInValue = 0;
+        rampInValue = -1;
         return;
     }
 
     if(endingRampType == TCode_Axis_Ramp_Type::None)
     {
         outRampType = startingRampType;
-        rampOutValue = 0;
+        rampOutValue = -1;
         rampInValue = startingRampValue;
         return;
     }
@@ -179,6 +179,7 @@ bool TCodeParser::parseRampSegment(unsigned char *buffer, const size_t length, s
         return false;
     }
 
+    rampValue = -1;
     if(isnumber(getCharAt(buffer, length, startIndex)))
     {
         rampValue = getNextInt(buffer,length,startIndex);
@@ -284,6 +285,34 @@ size_t TCodeParser::getNextCommand(TCodeBuffer<char> *inputBuffer, unsigned char
             break;
         }
         buffer[index++] = inputBuffer->pop();
+    }
+    return index;
+}
+
+size_t TCodeParser::getNextCommand(unsigned char *inputBuffer, const size_t length , const size_t startIndex, unsigned char *outbuffer, const size_t outBufferLength)
+{
+    size_t index = 0;
+    size_t inputIndex = startIndex;
+    bool blevel = false;
+    while ((inputIndex < length - 1) && (index < outBufferLength - 1))
+    {
+        char charValue = inputBuffer[inputIndex];
+        if(charValue == '\"')
+            blevel = !blevel;
+
+        if ((charValue == ' ') && !blevel)
+        {
+            inputIndex++;
+            break;
+        }
+
+        if (charValue == '\n')
+        {
+            inputIndex++;
+            break;
+        }
+        outbuffer[index++] = charValue;
+        inputIndex++;
     }
     return index;
 }
