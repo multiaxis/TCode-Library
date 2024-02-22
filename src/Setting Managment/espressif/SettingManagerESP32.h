@@ -69,7 +69,7 @@ inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &set
     Serial.println(setting);
 #endif
 
-    StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
+    JsonDocument doc;
     String file_data;
     if (!getFile(file_data))
     {
@@ -126,7 +126,7 @@ inline bool SettingManagerESP32::setSettingTemplated(const char *setting, const 
     Serial.println(settingValue);
 #endif
 
-    StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
+    JsonDocument doc;
     String fileData;
     if (!getFile(fileData))
     {

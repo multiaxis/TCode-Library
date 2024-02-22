@@ -296,7 +296,7 @@ ITCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
 void TCode::executeNextBufferCommand()
 {
     unsigned char command[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
-    size_t length = TCodeParser::getNextCommand(inputBuffer,command, MAX_COMMAND_BUFFER_LENGTH_COUNT);
+    size_t length = TCodeParser::getNextCommand(&inputBuffer,command, MAX_COMMAND_BUFFER_LENGTH_COUNT);
     readCommand(command, length + 1);
 }
 
