@@ -19,12 +19,6 @@ bool SettingManagerESP32::init()
     foundFile = SPIFFS.exists(filepath);
     this->filepath = filepath;
 
-
-    if (foundFile)
-        
-
-
-
     if (!foundFile)
     {
         foundFile = true;
