@@ -134,7 +134,7 @@ void TCodeParser::combineRampSegments(TCode_Axis_Ramp_Type startingRampType, int
         return;
     }
 
-    if(startingRampType != endingRampValue)
+    if(startingRampType != endingRampType)
     {
         if(startingRampType == TCode_Axis_Ramp_Type::EaseIn)
         {
@@ -261,13 +261,11 @@ size_t TCodeParser::getNextCommand(TCodeBuffer<char> *inputBuffer, unsigned char
 {
     size_t index = 0;
     bool blevel = false;
-    bool isLast = false;
     while (!inputBuffer->empty() && (index < buffer_length - 1))
     {
         char charValue;
         if(!inputBuffer->peek(charValue))
             break;
-
 
         if(charValue == '\"')
             blevel = !blevel;
@@ -280,8 +278,7 @@ size_t TCodeParser::getNextCommand(TCodeBuffer<char> *inputBuffer, unsigned char
 
         if (charValue == '\n')
         {
-            isLast = true;
-            inputBuffer.pop();
+            inputBuffer->pop();
             break;
         }
         buffer[index++] = inputBuffer->pop();
