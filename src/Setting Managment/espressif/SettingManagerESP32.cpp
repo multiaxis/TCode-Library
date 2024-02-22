@@ -49,7 +49,7 @@ bool SettingManagerESP32::isMounted()
 
 bool SettingManagerESP32::hasSetting(const char *setting)
 {
-    StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
+    JsonDocument doc;
     String fileData;
     if (!getFile(fileData))
     {
