@@ -197,6 +197,18 @@ public:
         return count;
     }
 
+    static size_t uintToStrLen(unsigned long value)
+    {
+        const int base = 10;
+        if (value == 0)
+        {
+            return 1;
+        }
+        size_t i = 0;
+        for (; (value > 0) && (i <= 30); ++i, value /= base) {}
+        return i;
+    }
+
     /**
      * @brief Checks if the given ID is in a valid range compared to a max channel input
      * @param type The channel type Linear,Rotation,Vibration,Auxiliary
