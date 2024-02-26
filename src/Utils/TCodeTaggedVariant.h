@@ -7,12 +7,11 @@
 #include "TCodeVariant.h"
 
 //implementation of djb2 from http://www.cse.yorku.ca/~oz/hash.html
-unsigned long hash(unsigned char *str)
+unsigned long hash(const char *str)
 {
     unsigned long hash = 5381;
-    int c;
-
-    while (c = *str++)
+    char c;
+    for(int i = 0, c = str[i]; c != '\0'; i++)
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
     return hash;
@@ -21,13 +20,13 @@ unsigned long hash(unsigned char *str)
 class TCodeTaggedDataContainer
 {
 private:
-    int taghash;
+    unsigned int taghash;
     const char* tag;
     TCodeDataContainer data;
 public:
     TCodeTaggedDataContainer(const char * _tag, TCodeDataContainer _data) : tag(_tag),data(_data)
     {
-        taghash = hash((const unsigned char*)tag);
+        taghash = hash(tag);
     }
 
     TCodeDataContainer* getDataContainer()
