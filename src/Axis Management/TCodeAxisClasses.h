@@ -11,3 +11,4 @@
 //Includes for different Axis Interfaces
 #include "ITCodeAxis.h"
 #include "TCodeAxisUnbuffered/TCodeAxisUnbuffered.h"
+#include "TCodeAxisBuffered/TCodeAxisBuffered.h"
