@@ -201,7 +201,7 @@ private:
             return false;
         if (TCodeParser::uintToStrLen(value) + 1 > length)
             return false;
-        TCodeParser::uinttostr(value, buffer, length, 0);
+        TCodeParser::uintToStr(value, buffer, length, 0);
         return true;
     }
 
@@ -212,7 +212,7 @@ private:
             return false;
         if (TCodeParser::uintToStrLen(value) + 1 > length)
             return false;
-        TCodeParser::uinttostr(value, buffer, length, 0);
+        TCodeParser::uintToStr(value, buffer, length, 0);
         return true;
     }
 
