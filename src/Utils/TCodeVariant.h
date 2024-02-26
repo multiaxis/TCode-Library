@@ -16,7 +16,7 @@ enum class TCodeInterfaceDataTag
     LONG,
     FLOAT,
     EMPTY,
-}
+};
 
 using TCodeInterfaceVariant_t = std::variant<char,const char*,bool,int,long,float>;
 
