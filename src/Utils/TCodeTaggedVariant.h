@@ -27,7 +27,7 @@ private:
 public:
     TCodeTaggedDataContainer(const char * _tag, TCodeDataContainer _data) : tag(_tag),data(_data)
     {
-        taghash = hash(tag);
+        taghash = hash((const unsigned char*)tag);
     }
 
     TCodeDataContainer* getDataContainer()
@@ -53,7 +53,7 @@ public:
             return false;
         
         if(strcmp(LHS.tag,tag) != 0)
-            return false
+            return false;
 
         return true;
     }

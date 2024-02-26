@@ -165,7 +165,7 @@ public:
      * @param placeIndex index to put the converted int
      * @return returns length of writen value
      **/
-    static size_t uintToStr(unsigned long value, unsigned char *buffer, const size_t length, size_t &placeIndex)
+    static size_t uintToStr(unsigned long value, unsigned char *buffer, const size_t length, const size_t placeIndex)
     {
         const int base = 10;
         char buf[31];
