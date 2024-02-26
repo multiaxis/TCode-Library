@@ -3,7 +3,7 @@
 // implemented by Eve 24/02/2024
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
-#include <string>
+#include <string.h>
 #include "../Parsing/TCodeParser.h"
 
 enum class TCodeInterfaceDataTag
@@ -160,7 +160,7 @@ private:
         const char *value;
         if(!getValue(value))
             return false;
-        size_t value_length = std::strlen(value);
+        size_t value_length = strlen(value);
         if (length < value_length + 1)
             return false;
 
@@ -184,11 +184,11 @@ private:
 
         if (value)
         {
-            std::strcpy(true_value, buffer);
+            strcpy(buffer, true_value);
         }
         else
         {
-            std::strcpy(false_value, buffer);
+            strcpy(buffer ,false_value);
         }
 
         return true;
@@ -221,17 +221,20 @@ private:
         float value;
         if(!getValue(value))
             return false;
-        if (std::snprintf(buffer, length - 1, "%.4f", value) > length)
+        if (snprintf(buffer, length - 1, "%.4f", value) > length)
         {
             return false;
         }
         return true;
     }
 
-    size_t writeEmptyText(char *buffer, size_t length)
+    bool writeEmptyText(char *buffer, size_t length)
     {
         const char *errorText = "EMPTY";
-        return std::strncpy(buffer, errorText, length);
+        if(length < 6)
+            return false;
+        strcpy(buffer, errorText);
+        return true;
     }
 
 public:
@@ -282,7 +285,7 @@ public:
             valid = toStringFloat(buffer, length);
             break;
         case TCodeInterfaceDataTag::EMPTY:
-            valid = (writeEmptyText(buffer, length) >= length);
+            valid = writeEmptyText(buffer, length);
             break;
         }
         return valid;
