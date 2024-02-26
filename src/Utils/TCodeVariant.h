@@ -4,6 +4,7 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 #include <string.h>
+#include <type_traits>
 #include "../Parsing/TCodeParser.h"
 
 enum class TCodeInterfaceDataTag
@@ -240,6 +241,17 @@ private:
     }
 
 public:
+
+    TCodeDataContainer()
+    {}
+
+    template<typename T>
+    TCodeDataContainer(T value)
+    {
+        static_assert((std::is_same<T, char>||std::is_same<T, const char *>||std::is_same<T, bool>||std::is_same<T, int>||std::is_same<T, long>||std::is_same<T, float>)==false,"Invalid Type Used, Only supports char,const char*,bool,int,long,float");
+        data = value;
+    }
+
     TCodeInterfaceDataTag getDataType()
     {
         return data.tag;
