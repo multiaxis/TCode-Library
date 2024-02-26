@@ -248,7 +248,7 @@ public:
     template<typename T>
     TCodeDataContainer(T value)
     {
-        static_assert((std::is_same<T, char>||std::is_same<T, const char *>||std::is_same<T, bool>||std::is_same<T, int>||std::is_same<T, long>||std::is_same<T, float>)==false,"Invalid Type Used, Only supports char,const char*,bool,int,long,float");
+        static_assert((std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==false,"Invalid Type Used, Only supports char,const char*,bool,int,long,float");
         data = value;
     }
 
