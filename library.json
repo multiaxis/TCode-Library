@@ -5,10 +5,4 @@
 	"dependencies":
 	{
 		"bblanchon/ArduinoJson":"^6.21.3"
-	},
-	"build":
-	{
-		"flags":["-std=c++17"],
-		"unflags":["-std=gnu++11"]
 	}
-}

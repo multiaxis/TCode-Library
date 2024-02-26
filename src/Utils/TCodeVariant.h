@@ -3,7 +3,6 @@
 // implemented by Eve 24/02/2024
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
-#include <variant>
 #include <string>
 #include "../Parsing/TCodeParser.h"
 
@@ -18,164 +17,273 @@ enum class TCodeInterfaceDataTag
     EMPTY,
 };
 
-using TCodeInterfaceVariant_t = std::variant<char,const char*,bool,int,long,float>;
+struct TCodeInterfaceVariant_t
+{
+    TCodeInterfaceDataTag tag = TCodeInterfaceDataTag::EMPTY;
+    union DataValue
+    {
+        char dataChar;
+        const char *dataCharP;
+        bool dataBool;
+        int dataInt;
+        long dataLong;
+        float dataFloat;
+    } data;
 
+    template <typename T>
+    TCodeInterfaceVariant_t &operator=(const T &value) = delete;
+
+    template <typename T>
+    T &operator=(const TCodeInterfaceVariant_t &value) = delete;
+
+    TCodeInterfaceVariant_t &operator=(char &value)
+    {
+        data.dataChar = value;
+        tag = TCodeInterfaceDataTag::CHAR;
+        return *this;
+    }
+
+    TCodeInterfaceVariant_t &operator=(const char *&value)
+    {
+        data.dataCharP = value;
+        tag = TCodeInterfaceDataTag::CHARPOINTER;
+        return *this;
+    }
+
+    TCodeInterfaceVariant_t &operator=(bool &value)
+    {
+        data.dataBool = value;
+        tag = TCodeInterfaceDataTag::BOOL;
+        return *this;
+    }
+
+    TCodeInterfaceVariant_t &operator=(int &value)
+    {
+        data.dataInt = value;
+        tag = TCodeInterfaceDataTag::INT;
+        return *this;
+    }
+
+    TCodeInterfaceVariant_t &operator=(long &value)
+    {
+        data.dataLong = value;
+        tag = TCodeInterfaceDataTag::LONG;
+        return *this;
+    }
+
+    TCodeInterfaceVariant_t &operator=(float &value)
+    {
+        data.dataFloat = value;
+        tag = TCodeInterfaceDataTag::FLOAT;
+        return *this;
+    }
+
+    template <typename T>
+    bool get(T &value) = delete;
+
+    bool get(char &value)
+    {
+        if (tag != TCodeInterfaceDataTag::CHAR)
+            return false;
+
+        value = data.dataChar;
+        return true;
+    }
+
+    bool get(const char *&value)
+    {
+        if (tag != TCodeInterfaceDataTag::CHARPOINTER)
+            return false;
+
+        value = data.dataCharP;
+        return true;
+    }
+
+    bool get(bool &value)
+    {
+        if (tag != TCodeInterfaceDataTag::BOOL)
+            return false;
+
+        value = data.dataBool;
+        return true;
+    }
+
+    bool get(int &value)
+    {
+        if (tag != TCodeInterfaceDataTag::INT)
+            return false;
+
+        value = data.dataInt;
+        return true;
+    }
+
+    bool get(long &value)
+    {
+        if (tag != TCodeInterfaceDataTag::LONG)
+            return false;
+
+        value = data.dataLong;
+        return true;
+    }
+
+    bool get(float &value)
+    {
+        if (tag != TCodeInterfaceDataTag::FLOAT)
+            return false;
+
+        value = data.dataFloat;
+        return true;
+    }
+};
 
 class TCodeDataContainer
 {
 private:
     TCodeInterfaceVariant_t data;
-    
 
-    template<typename T>
-    bool toStringTemplated(char* buffer,size_t length) = delete;
-
-    template<>
-    bool toStringTemplated<char>(char* buffer,size_t length)
+    bool toStringChar(char *buffer, size_t length)
     {
-        if(length < 2)
+        if (length < 2)
             return false;
-        
-        buffer[0] = getValue<char>();
+        char value;
+
+        if(!getValue(value))
+            return false;
+
+        buffer[0] = value;
         buffer[1] = '\0';
         return true;
     }
 
-    template<>
-    bool toStringTemplated<const char*>(char* buffer,size_t length)
+    bool toStringCharPointer(char *buffer, size_t length)
     {
-        const char* value = getValue<const char*>();
-        size_t value_length = strlen(value);
-        if(length < value_length+1)
+        const char *value;
+        if(!getValue(value))
             return false;
-        
-        for(size_t i = 0; i < length; i++)
+        size_t value_length = std::strlen(value);
+        if (length < value_length + 1)
+            return false;
+
+        for (size_t i = 0; i < length; i++)
         {
             buffer[i] = value[i];
-        }    
+        }
         return true;
     }
 
-    template<>
-    bool toStringTemplated<bool>(char* buffer,size_t length)
+    bool toStringBool(char *buffer, size_t length)
     {
-        if(length < 6)
+        if (length < 6)
             return false;
-        
-        const char* true_value = "TRUE";
-        const char* false_value = "FALSE";
 
-        if(getValue<bool>())
+        const char *true_value = "TRUE";
+        const char *false_value = "FALSE";
+        bool value;
+        if(!getValue(value))
+            return false;
+
+        if (value)
         {
-            strcpy(true_value,buffer);
+            std::strcpy(true_value, buffer);
         }
         else
         {
-            strcpy(false_value,buffer);
+            std::strcpy(false_value, buffer);
         }
 
         return true;
     }
 
-    template<>
-    bool toStringTemplated<int>(char* buffer,size_t length)
+    bool toStringInt(char *buffer, size_t length)
     {
-        int value = getValue<int>();
-        if(TCodeParser::uintToStrLen(value)+1 > length)
+        int value;
+        if(!getValue(value))
             return false;
-        TCodeParser::uinttostr(value,buffer,length,0);
+        if (TCodeParser::uintToStrLen(value) + 1 > length)
+            return false;
+        TCodeParser::uinttostr(value, buffer, length, 0);
         return true;
     }
 
-    template<>
-    bool toStringTemplated<long>(char* buffer,size_t length)
+    bool toStringLong(char *buffer, size_t length)
     {
-        long value = getValue<long>();
-        if(TCodeParser::uintToStrLen(value)+1 > length)
+        long value;
+        if(!getValue(value))
             return false;
-        TCodeParser::uinttostr(value,buffer,length,0);
+        if (TCodeParser::uintToStrLen(value) + 1 > length)
+            return false;
+        TCodeParser::uinttostr(value, buffer, length, 0);
         return true;
     }
 
-    template<>
-    bool toStringTemplated<float>(char* buffer,size_t length)
+    bool toStringFloat(char *buffer, size_t length)
     {
-        float value = getValue<float>();
-        if(snprintf(buffer,length-1,"%.4f",value) > length)
+        float value;
+        if(!getValue(value))
+            return false;
+        if (std::snprintf(buffer, length - 1, "%.4f", value) > length)
         {
             return false;
         }
         return true;
     }
 
-    size_t writeEmptyText(char* buffer, size_t length)
+    size_t writeEmptyText(char *buffer, size_t length)
     {
-        const char* errorText = "EMPTY";
-        return strncpy(buffer,errorText,length);
+        const char *errorText = "EMPTY";
+        return std::strncpy(buffer, errorText, length);
     }
 
 public:
     TCodeInterfaceDataTag getDataType()
     {
-        switch (data.index())
-        {
-        case const_cast<int>(TCodeInterfaceDataTag::CHAR): return TCodeInterfaceDataTag::CHAR;
-        case const_cast<int>(TCodeInterfaceDataTag::CHARPOINTER): return TCodeInterfaceDataTag::CHARPOINTER;
-        case const_cast<int>(TCodeInterfaceDataTag::BOOL): return TCodeInterfaceDataTag::BOOL;
-        case const_cast<int>(TCodeInterfaceDataTag::INT): return TCodeInterfaceDataTag::INT;
-        case const_cast<int>(TCodeInterfaceDataTag::LONG): return TCodeInterfaceDataTag::LONG;
-        case const_cast<int>(TCodeInterfaceDataTag::FLOAT): return TCodeInterfaceDataTag::FLOAT;
-        default:
-            return TCodeInterfaceDataTag::EMPTY;
-        }
+        return data.tag;
     }
 
+    template <typename T>
+    bool getValue(T &value) = delete;
+    bool getValue(char &value) { return data.get(value); }
+    bool getValue(const char *&value) { return data.get(value); }
+    bool getValue(bool &value) { return data.get(value); }
+    bool getValue(int &value) { return data.get(value); }
+    bool getValue(long &value) { return data.get(value); }
+    bool getValue(float &value) { return data.get(value); }
 
-    template<typename T>
-    T getValue() = delete;
+    template <typename T>
+    void setValue(T &value) = delete;
+    void setValue(char value) { data = value; }
+    void setValue(const char *value) { data = value; }
+    void setValue(bool value) { data = value; }
+    void setValue(int value) { data = value; }
+    void setValue(long value) { data = value; }
+    void setValue(float value) { data = value; }
 
-    template<>
-    char getValue<char>() {return std::get(data);}
-    template<>
-    const char* getValue<const char*>() {return std::get(data);}
-    template<>
-    bool getValue<bool>() {return std::get(data);}
-    template<>
-    int getValue<int>() {return std::get(data);}
-    template<>
-    int getValue<long>() {return std::get(data);}
-    template<>
-    float getValue<float>() {return std::get(data);}
-    
-    template<typename T>
-    void setValue(T value) = delete;
-
-    template<>
-    void setValue<char>(char value) { data = value; }
-    template<>
-    void setValue<const char*>(const char* value) {data = value; }
-    template<>
-    void setValue<bool>(bool value) {data = value;}
-    template<>
-    void setValue<int>(int value) {data = value; }
-    template<>
-    void setValue<long>(long value) {data = value; }
-    template<>
-    void setValue<float>(float value) {data = value; }
-
-
-    bool toString(char* buffer, size_t length)
+    bool toString(char *buffer, size_t length)
     {
         bool valid = false;
         switch (getDataType())
         {
-            case TCodeInterfaceDataTag::CHAR: valid = toStringTemplated<char>(buffer,length); break;
-            case TCodeInterfaceDataTag::CHARPOINTER: valid = toStringTemplated<const char*>(buffer,length); break;
-            case TCodeInterfaceDataTag::BOOL: valid = toStringTemplated<bool>(buffer,length); break;
-            case TCodeInterfaceDataTag::INT: valid = toStringTemplated<int>(buffer,length); break;
-            case TCodeInterfaceDataTag::LONG: valid = toStringTemplated<long>(buffer,length); break;
-            case TCodeInterfaceDataTag::FLOAT: valid = toStringTemplated<float>(buffer,length); break;
-            case TCodeInterfaceDataTag::EMPTY: valid = (writeEmptyText(buffer,length) >= length); break;
+        case TCodeInterfaceDataTag::CHAR:
+            valid = toStringChar(buffer, length);
+            break;
+        case TCodeInterfaceDataTag::CHARPOINTER:
+            valid = toStringCharPointer(buffer, length);
+            break;
+        case TCodeInterfaceDataTag::BOOL:
+            valid = toStringBool(buffer, length);
+            break;
+        case TCodeInterfaceDataTag::INT:
+            valid = toStringInt(buffer, length);
+            break;
+        case TCodeInterfaceDataTag::LONG:
+            valid = toStringLong(buffer, length);
+            break;
+        case TCodeInterfaceDataTag::FLOAT:
+            valid = toStringFloat(buffer, length);
+            break;
+        case TCodeInterfaceDataTag::EMPTY:
+            valid = (writeEmptyText(buffer, length) >= length);
+            break;
         }
         return valid;
     }
