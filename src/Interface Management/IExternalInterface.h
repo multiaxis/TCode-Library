@@ -3,15 +3,10 @@
 // implemented by Eve 24/02/2024
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
-#include <vector>
-#include <variant>
-#include <string>
-#include "../Parsing/TCodeParser.h"
+#include "../Utils/TCodeVariantSet.h"
 
 class IExternalInterface
 {
-private:
-    
 public:
-    
+    virtual void update(TCodeVariantSet& returnValues) = delete;
 };
