@@ -14,6 +14,8 @@ enum class TCodeInterfaceDataTag
     BOOL,
     INT,
     LONG,
+    UINT,
+    ULONG,
     FLOAT,
     EMPTY,
 };
@@ -28,6 +30,8 @@ struct TCodeInterfaceVariant_t
         bool dataBool;
         int dataInt;
         long dataLong;
+        unsigned int dataUInt;
+        unsigned long dataULong;
         float dataFloat;
     } data;
 
@@ -79,6 +83,20 @@ struct TCodeInterfaceVariant_t
         return *this;
     }
 
+    TCodeInterfaceVariant_t &operator=(unsigned int &value)
+    {
+        data.dataUInt = value;
+        tag = TCodeInterfaceDataTag::UINT;
+        return *this;
+    }
+
+    TCodeInterfaceVariant_t &operator=(unsigned long &value)
+    {
+        data.dataULong = value;
+        tag = TCodeInterfaceDataTag::ULONG;
+        return *this;
+    }
+
     template <typename T>
     bool get(T &value) = delete;
 
@@ -124,6 +142,24 @@ struct TCodeInterfaceVariant_t
             return false;
 
         value = data.dataLong;
+        return true;
+    }
+
+    bool get(unsigned int &value)
+    {
+        if (tag != TCodeInterfaceDataTag::UINT)
+            return false;
+
+        value = data.dataUInt;
+        return true;
+    }
+
+    bool get(unsigned long &value)
+    {
+        if (tag != TCodeInterfaceDataTag::ULONG)
+            return false;
+
+        value = data.dataULong;
         return true;
     }
 
@@ -197,25 +233,100 @@ private:
         return true;
     }
 
-    bool toStringInt(char *buffer, size_t length)
+    bool toStringSignedNumber(char *buffer, size_t length)
     {
-        int value;
+        long value;
+        switch(data.tag)
+        {
+            case TCodeInterfaceDataTag::BOOL:
+                bool retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (long)retrieved;
+                break;
+            case TCodeInterfaceDataTag::INT:
+                int retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (long)retrieved;
+                break;
+            case TCodeInterfaceDataTag::LONG:
+                long retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (long)retrieved;
+                break;
+            case TCodeInterfaceDataTag::UINT:
+                unsigned int retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (long)retrieved;
+                break;   
+            case TCodeInterfaceDataTag::ULONG:
+                unsigned long retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (long)retrieved;
+                break;   
+            default:
+                return false;
+        }
+
         if(!getValue(value))
             return false;
-        if (TCodeParser::uintToStrLen(value) + 1 > length)
+        if (TCodeParser::uintToStrLen(abs(value)) + 1 > length)
             return false;
-        TCodeParser::uintToStr(value, (unsigned char*)buffer, length, 0);
+        size_t index = 0;
+        if(value < 0)
+            buffer[index++] = '-';
+        TCodeParser::uintToStr(abs(value), (unsigned char*)buffer, length, index);
         return true;
     }
 
-    bool toStringLong(char *buffer, size_t length)
+    bool toStringUnsignedNumber(char *buffer, size_t length)
     {
-        long value;
+        unsigned long value;
+        switch(data.tag)
+        {
+            case TCodeInterfaceDataTag::BOOL:
+                bool retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (unsigned long)retrieved;
+                break;
+            case TCodeInterfaceDataTag::INT:
+                int retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (unsigned long)retrieved;
+                break;
+            case TCodeInterfaceDataTag::LONG:
+                long retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (unsigned long)retrieved;
+                break;
+            case TCodeInterfaceDataTag::UINT:
+                unsigned int retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (unsigned long)retrieved;
+                break;   
+            case TCodeInterfaceDataTag::ULONG:
+                unsigned long retrieved;
+                if(!getValue(retrieved)):
+                    return false;
+                value = (unsigned long)retrieved;
+                break;   
+            default:
+                return false;
+        }
+    
         if(!getValue(value))
             return false;
-        if (TCodeParser::uintToStrLen(value) + 1 > length)
+        if (TCodeParser::uintToStrLen(abs(value)) + 1 > length)
             return false;
-        TCodeParser::uintToStr(value, (unsigned char*)buffer, length, 0);
+        TCodeParser::uintToStr(abs(value), (unsigned char*)buffer, length, 0);
         return true;
     }
 
@@ -248,7 +359,7 @@ public:
     template<typename T>
     TCodeDataContainer(T value)
     {
-        static_assert((std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,float");
+        static_assert((std::is_same<T, unsigned long>::value||std::is_same<T, unsigned int>::value||std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,uint,ulong,float");
         data = value;
     }
 
@@ -260,14 +371,14 @@ public:
     template <typename T>
     bool getValue(T &value)
     {
-        static_assert((std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,float");
+        static_assert((std::is_same<T, unsigned long>::value||std::is_same<T, unsigned int>::value||std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,uint,ulong,float");
         return data.get(value);
     }
 
     template <typename T>
     void setValue(T &value)
     {
-        static_assert((std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,float");
+        static_assert((std::is_same<T, unsigned long>::value||std::is_same<T, unsigned int>::value||std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,uint,ulong,float");
         data = value;
     }
 
@@ -286,10 +397,16 @@ public:
             valid = toStringBool(buffer, length);
             break;
         case TCodeInterfaceDataTag::INT:
-            valid = toStringInt(buffer, length);
+            valid = toStringSignedNumber(buffer, length);
             break;
         case TCodeInterfaceDataTag::LONG:
-            valid = toStringLong(buffer, length);
+            valid = toStringSignedNumber(buffer, length);
+            break;
+        case TCodeInterfaceDataTag::UINT:
+            valid = toStringUnsignedNumber(buffer, length);
+            break;
+        case TCodeInterfaceDataTag::ULONG:
+            valid = toStringUnsignedNumber(buffer, length);
             break;
         case TCodeInterfaceDataTag::FLOAT:
             valid = toStringFloat(buffer, length);
