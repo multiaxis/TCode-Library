@@ -1,4 +1,4 @@
-// TCode-Varoiant-Set-Class v1.0,
+// TCode-Data-Container-Set-Class v1.0,
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 24/02/2024
 // Please copy, share, learn, innovate, give attribution.
@@ -6,12 +6,12 @@
 #include <vector>
 #include "TCodeTaggedVariant.h"
 
-class TCodeVariantSet
+class TCodeDataContainerSet
 {
 private:
     std::vector<TCodeTaggedDataContainer> data;
 public:
-    TCodeVariantSet()
+    TCodeDataContainerSet()
     {
         data.reserve(5);
     }

@@ -147,7 +147,7 @@ unsigned long TCode::axisLastCommandTime(const char *name)
 
 void TCode::update()
 {
-    TCodeVariantSet outputvalues;
+    TCodeDataContainerSet outputvalues;
     for (int i = 0; i < externalInterfaces.count(); i++)
     {
         IExternalInterface *temp = nullptr;

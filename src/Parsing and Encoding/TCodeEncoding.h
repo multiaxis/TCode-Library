@@ -6,4 +6,10 @@
 #ifndef TCODE_ENCODING_H
 #define TCODE_ENCODING_H
 
+class TCodeEncoder
+{
+public:
+}
+
+
 #endif

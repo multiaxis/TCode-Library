@@ -20,7 +20,7 @@ public:
     TCodeButton() = delete;
     TCodeButton(unsigned int pin, const char* name);
     void setCallback(t_Button_Callback t);
-    virtual void update(TCodeVariantSet& returnValues);
+    virtual void update(TCodeDataContainerSet& returnValues);
     bool getState();
 
 private:
@@ -44,7 +44,7 @@ void TCodeButton::setCallback(t_Button_Callback _callback)
         callback = _callback;
 }
 
-bool TCodeButton::update(TCodeVariantSet& returnValues)
+bool TCodeButton::update(TCodeDataContainerSet& returnValues)
 {
     bool triggered = false;
     unsigned long current_time = millis();
