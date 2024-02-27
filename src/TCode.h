@@ -1,5 +1,5 @@
 // TCode-Class-h v1.0,
-// protocal by TempestMAx (https://www.patreon.com/tempestvr)
+// protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 10/09/2023
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
@@ -8,12 +8,12 @@
 #include "Constants and Enums/TCodeConstants.h"
 #include "Constants and Enums/TCodeEnums.h"
 #include "Utils/TCodeBuffer.h"
+#include "Utils/TCodeVariantSet.h"
 #include "Setting Managment/SettingManagementInterface.h"
 #include "Setting Managment/SettingManagers.h"
 #include "Parsing/TCodeParser.h"
 #include "Axis Management/TCodeAxisClasses.h"
-#include "Utils/TCodeVariant.h"
-#include "Utils/TCodeTaggedVariant.h"
+#include "Interface Management/IExternalInterface.h"
 
 
 
@@ -23,7 +23,7 @@
 #define DEFAULT_FILE_NAME "/spiffs/TCode.dat"
 
 
-const int MAX_BUTTON_COUNT = 10;
+const int MAX_INTERFACE_COUNT = 10;
 const int MAX_AXIS_COUNT = 20;
 
 const int MAX_AXIS_COMMAND_BUFFER_COUNT = 20;
@@ -127,14 +127,14 @@ public:
     unsigned long axisLastCommandTime(const char *name);
 
     /**
-     * @brief Main update function for handling buttons
+     * @brief Main update function for handling interfaces
      */
     void update();
 
     /**
-     * @brief Registers a button to the  
+     * @brief Registers an interface to the tcode class 
      */
-    bool registerButton(TCodeButton* button);
+    bool registerInterface(IExternalInterface* interface);
 
     /**
      * @brief stops all axis movement at its current position (sets vibration channels to 0)
@@ -210,7 +210,7 @@ private:
     const char *tcodeVersion;
     ISettings *settingManager;
     TCodeBuffer<ITCodeAxis *> axisBuffer {MAX_AXIS_COUNT};
-    TCodeBuffer<TCodeButton *> buttonBuffer {MAX_BUTTON_COUNT};
+    TCodeBuffer<IExternalInterface *> externalInterfaces {MAX_INTERFACE_COUNT};
     TCodeBuffer<char> outputBuffer{MAX_OUTPUT_BUFFER_LENGTH_COUNT};
     TCodeBuffer<char> externalCommandBuffer{MAX_OUTPUT_BUFFER_LENGTH_COUNT};
     TCodeBuffer<char> inputBuffer{MAX_INPUT_BUFFER_LENGTH_COUNT};

@@ -1,5 +1,5 @@
 // TCode-Parser-Class-H v1.0,
-// protocal by TempestMAx (https://www.patreon.com/tempestvr)
+// protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 26/06/2022
 // Please copy, share, learn, innovate, give attribution.
 #ifndef TCODE_PARSER_CPP
@@ -180,7 +180,7 @@ bool TCodeParser::parseRampSegment(unsigned char *buffer, const size_t length, s
     }
 
     rampValue = -1;
-    if(isnumber(getCharAt(buffer, length, startIndex)))
+    if(isnumber(getCharAt(buffer, length, startIndex+1)))
     {
         rampValue = getNextInt(buffer,length,startIndex);
     }

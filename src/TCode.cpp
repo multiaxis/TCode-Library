@@ -1,5 +1,5 @@
 // TCode-Class-cpp v1.0,
-// protocal by TempestMAx (https://www.patreon.com/tempestvr)
+// protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 10/09/2023
 // Please copy, share, learn, innovate, give attribution.
 #include "TCode.h"
@@ -147,32 +147,28 @@ unsigned long TCode::axisLastCommandTime(const char *name)
 
 void TCode::update()
 {
-    for (int i = 0; i < buttonBuffer.count(); i++)
+    TCodeVariantSet outputvalues;
+    for (int i = 0; i < externalInterfaces.count(); i++)
     {
-        TCodeButton *temp = nullptr;
-        if (buttonBuffer.get(i, temp))
+        IExternalInterface *temp = nullptr;
+        if (externalInterfaces.get(i, temp))
         {
-            if (temp->update())
-            {
-                String out = "#";
-                out += temp->name;
-                out += ":";
-                if (temp->getState())
-                    out += "1";
-                else
-                    out += "0";
-                println(out);
-            }
+            temp->update(outputvalues)
         }
+    }
+
+    for (int i = 0; i < outputvalues.size(); i++)
+    {
+        TCodeTaggedDataContainer current = outputvalues[i];
     }
 }
 
-bool TCode::registerButton(TCodeButton *button)
+bool TCode::registerInterface(IExternalInterface *interface)
 {
-    if (button == nullptr)
+    if (interface == nullptr)
         return false;
 
-    return buttonBuffer.push(button);
+    return externalInterfaces.push(interface);
 }
 
 void TCode::stop()

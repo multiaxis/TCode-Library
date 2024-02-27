@@ -1,5 +1,5 @@
 // TCode-Button-Class-h v1.0,
-// protocal by TempestMAx (https://www.patreon.com/tempestvr)
+// protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 13/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #pragma once

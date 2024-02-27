@@ -1,5 +1,5 @@
 // Setting-Management-Class-Hpp v1.0,
-// protocal by TempestMAx (https://www.patreon.com/tempestvr)
+// protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 12/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #include "SettingManagerESP32.h"

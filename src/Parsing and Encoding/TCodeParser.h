@@ -1,5 +1,5 @@
 // TCode-Parser-Class-H v1.0,
-// protocal by TempestMAx (https://www.patreon.com/tempestvr)
+// protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 26/06/2022
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
