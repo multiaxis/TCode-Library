@@ -4,6 +4,8 @@
 // Please copy, share, learn, innovate, give attribution.
 #include "SettingManagerESP32.h"
 
+
+
 bool SettingManagerESP32::init()
 {
     if (!SPIFFS.begin(true))
@@ -43,14 +45,14 @@ bool SettingManagerESP32::isMounted()
 
 bool SettingManagerESP32::hasSetting(const char *setting)
 {
-    JsonDocument doc;
+
     String fileData;
     if (!getFile(fileData))
     {
         ESP_LOGE(SETTING_MANAGMENT_TAG,"could not load Settings file\n");
         return false;
     }
-
+    StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
     DeserializationError error = deserializeJson(doc, fileData);
     if (error)
     {

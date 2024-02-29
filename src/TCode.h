@@ -12,7 +12,7 @@
 #include "Utils/TCodeDataContainerSet.h"
 #include "Setting Managment/SettingManagementInterface.h"
 #include "Setting Managment/SettingManagers.h"
-#include "Parsing/TCodeParser.h"
+#include "Parsing and Encoding/TCodeParser.h"
 #include "Axis Management/TCodeAxisClasses.h"
 #include "Interface Management/IExternalInterface.h"
 

@@ -51,7 +51,7 @@ private:
     bool getFile(String &out);
     bool writeFile(const String &fileData);
     unsigned long getFileSize();
-
+protected:
     template <class T>
     bool getSettingTemplated(const char *setting, T &settingValue);
 
@@ -68,8 +68,6 @@ inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &set
     Serial.print(F("SM: getting setting "));
     Serial.println(setting);
 #endif
-
-    JsonDocument doc;
     String file_data;
     if (!getFile(file_data))
     {
@@ -78,7 +76,7 @@ inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &set
 #endif
         return false;
     }
-
+    StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
     DeserializationError error = deserializeJson(doc, file_data);
     if (error)
     {
@@ -126,13 +124,13 @@ inline bool SettingManagerESP32::setSettingTemplated(const char *setting, const 
     Serial.println(settingValue);
 #endif
 
-    JsonDocument doc;
     String fileData;
     if (!getFile(fileData))
     {
         return false;
     }
 
+    StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
     DeserializationError error = deserializeJson(doc, fileData);
     if (error)
     {

@@ -4,6 +4,6 @@
 	"description":"A library to aid in decoding/using of Toy Code (\"T-Code\") data.",
 	"dependencies":
 	{
-		"bblanchon/ArduinoJson":"^6.21.3"
+		"bblanchon/ArduinoJson":"6.21.4"
 	}
 }
