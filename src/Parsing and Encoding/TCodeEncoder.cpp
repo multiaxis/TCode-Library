@@ -31,6 +31,7 @@ bool TCodeEncoder::encodeValue(const char *name, bool value, char *buffer, const
     if(index+1 > length-1)
         return false;
     buffer[index++] = '\0';
+    return true;
 }  
 
 bool TCodeEncoder::encodeValue(const char *name, short value, char *buffer, const size_t length)

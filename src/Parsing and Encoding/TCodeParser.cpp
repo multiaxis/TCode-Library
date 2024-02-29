@@ -95,7 +95,7 @@ TCode_ChannelID TCodeParser::constructID(const TCode_Channel_Type type, const ui
 
 TCode_Axis_Extention_Type TCodeParser::getExtentionTypeFromStr(unsigned char *buffer, const size_t length, size_t &startIndex)
 {
-    char type_char = toupper(getCharAt(buffer, length, startIndex));
+    char type_char = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex));
     startIndex++;
     switch (type_char)
     {
@@ -154,7 +154,7 @@ void TCodeParser::combineRampSegments(TCode_Axis_Ramp_Type startingRampType, int
 bool TCodeParser::parseRampSegment(unsigned char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampValue)
 {
     rampType = TCode_Axis_Ramp_Type::None;
-    char first = toupper(getCharAt(buffer, length, startIndex));
+    char first = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex));
     switch (first) // Decode what Ramp type it is
     {
     case '<':
@@ -180,9 +180,9 @@ bool TCodeParser::parseRampSegment(unsigned char *buffer, const size_t length, s
     }
 
     rampValue = -1;
-    if(isnumber(getCharAt(buffer, length, startIndex+1)))
+    if(TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, startIndex+1)))
     {
-        rampValue = getNextInt(buffer,length,startIndex);
+        rampValue = TCodeCStringUtils::getNextInt(buffer,length,startIndex);
     }
 
     return true;
@@ -199,7 +199,7 @@ bool TCodeParser::getRampTypeFromStr(unsigned char *buffer, const size_t length,
         return false;
     }
 
-    if(isramp(getCharAt(buffer, length, startIndex)))
+    if(TCodeCStringUtils::isramp(TCodeCStringUtils::getCharAt(buffer, length, startIndex)))
     {
         parseRampSegment(buffer,length,startIndex,endingRampType,endingRampValue);
     }
@@ -211,8 +211,8 @@ bool TCodeParser::getRampTypeFromStr(unsigned char *buffer, const size_t length,
 
 TCode_ChannelID TCodeParser::getIDFromStr(unsigned char *buffer, const size_t length, size_t &startIndex)
 {
-    char type_char = toupper(getCharAt(buffer, length, startIndex++));
-    uint8_t channel = static_cast<uint8_t>(toupper(getCharAt(buffer, length, startIndex++)) - '0'); // get channel number 0 - 9
+    char type_char = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex++));
+    uint8_t channel = static_cast<uint8_t>(TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex++)) - '0'); // get channel number 0 - 9
     TCode_Channel_Type type = TCode_Channel_Type::None;
     switch (type_char) // get channel type
     {
@@ -237,7 +237,7 @@ TCode_ChannelID TCodeParser::getIDFromStr(unsigned char *buffer, const size_t le
 TCode_Command_Type TCodeParser::getCommandType(unsigned char *buffer, const size_t length, size_t startIndex)
 {
     // Switch between command types
-    switch (toupper(getCharAt(buffer, length, startIndex)))
+    switch (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex)))
     {
     // Axis commands
     case 'L':
@@ -334,22 +334,22 @@ bool TCodeParser::parseAxisCommand(unsigned char *buffer, const size_t length, T
         valid = false;
     command_value = constrain(command_value, 0, TCODE_MAX_AXIS);
 
-    if (isextention(getCharAt(buffer, length, index)))
+    if (TCodeCStringUtils::isextention(TCodeCStringUtils::getCharAt(buffer, length, index)))
     {
         extentionType = getExtentionTypeFromStr(buffer, length, index);
-        commandExtention = getNextInt(buffer, length, index);
+        commandExtention = TCodeCStringUtils::getNextInt(buffer, length, index);
         if (commandExtention == -1)
             valid = false;
         commandExtention = constrain(commandExtention, 0, TCODE_MAX_AXIS_MAGNITUDE);
     }
 
-    if(isramp(getCharAt(buffer, length, index)))
+    if(TCodeCStringUtils::isramp(TCodeCStringUtils::getCharAt(buffer, length, index)))
     {
         if(!getRampTypeFromStr(buffer, length, index, rampType, rampInValue, rampOutValue))
             valid = false;
     }
 
-    if (toupper(getCharAt(buffer, length, index)) != '\0') // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
+    if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index)) != '\0') // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
         valid = false;
     if (!idValid(id)) // make sure that the ID is valid if it isnt then the command is not valid
         valid = false;
@@ -370,20 +370,20 @@ bool TCodeParser::parseSetupCommand(unsigned char *buffer, const size_t length, 
 {
     bool valid = true;
     size_t index = 0;
-    if (toupper(getCharAt(buffer, length, index++)) != '$')
+    if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index++)) != '$')
         valid = false;
 
     TCode_ChannelID id = getIDFromStr(buffer, length, index); // get the ID
-    if (toupper(getCharAt(buffer, length, index++)) != '-')
+    if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index++)) != '-')
         valid = false;
 
-    long minValue = getNextInt(buffer, length, index); // Get the first minimum value
+    long minValue = TCodeCStringUtils::getNextInt(buffer, length, index); // Get the first minimum value
 
-    if (toupper(getCharAt(buffer, length, index++)) != '-')
+    if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index++)) != '-')
         valid = false;
 
-    long maxValue = getNextInt(buffer, length, index); // Get the seccond maximum value
-    if ((toupper(getCharAt(buffer, length, index)) != '\0') || (minValue == -1) || (maxValue == -1) || (!idValid(id)))
+    long maxValue = TCodeCStringUtils::getNextInt(buffer, length, index); // Get the seccond maximum value
+    if ((TCodeCStringUtils::toupper(gTCodeCStringUtils::etCharAt(buffer, length, index)) != '\0') || (minValue == -1) || (maxValue == -1) || (!idValid(id)))
         valid = false;
     minValue = constrain(minValue, 0, TCODE_MAX_AXIS); // constrain the values to the maximum axis constraint
     maxValue = constrain(maxValue, 0, TCODE_MAX_AXIS);
@@ -411,10 +411,10 @@ bool TCodeParser::parseExternalCommand(unsigned char *buffer, const size_t lengt
 bool TCodeParser::parseDeviceCommand(unsigned char *buffer, const size_t length, TCode_Device_Command &out)
 {
     size_t index = 0;
-    if (toupper(getCharAt(buffer, length, index++)) != 'D')
+    if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index++)) != 'D')
         return false;
 
-    switch (toupper(getCharAt(buffer, length, index))) // looks at the first char and checks if it matches the values
+    switch (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index))) // looks at the first char and checks if it matches the values
     {
     case 'S':
         out = {TCode_Device_Command_Type::StopDevice};

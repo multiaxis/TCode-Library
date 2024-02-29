@@ -284,12 +284,12 @@ private:
 
         if(!getValue(value))
             return false;
-        if (TCodeCStringUtils::uintToStrLen(abs(value)) + 1 > length)
+        if (TCodeCStringUtils::uintToStrLen(std::abs(value)) + 1 > length)
             return false;
         size_t index = 0;
         if(value < 0)
             buffer[index++] = '-';
-        TCodeCStringUtils::uintToStr(abs(value), (unsigned char*)buffer, length, index);
+        TCodeCStringUtils::uintToStr(std::abs(value), (unsigned char*)buffer, length, index);
         return true;
     }
 
@@ -344,9 +344,9 @@ private:
     
         if(!getValue(value))
             return false;
-        if (TCodeCStringUtils::uintToStrLen(abs(value)) + 1 > length)
+        if (TCodeCStringUtils::uintToStrLen(std::abs(value)) + 1 > length)
             return false;
-        TCodeCStringUtils::uintToStr(abs(value), (unsigned char*)buffer, length, 0);
+        TCodeCStringUtils::uintToStr(std::abs(value), (unsigned char*)buffer, length, 0);
         return true;
     }
 

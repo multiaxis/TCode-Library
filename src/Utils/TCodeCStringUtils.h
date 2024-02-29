@@ -8,6 +8,7 @@
 
 class TCodeCStringUtils
 {
+public:
     /**
      * @brief Converts Lowecase Ascii to Uppercase
      * @param value is the value of the char which needs converting to uppercase
