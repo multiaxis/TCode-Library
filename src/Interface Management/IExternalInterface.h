@@ -6,11 +6,14 @@
 #ifndef TCODE_EXTERNAL_INTERFACE_H
 #define TCODE_EXTERNAL_INTERFACE_H
 #include "../Utils/TCodeDataContainerSet.h"
+#include "../TCode.h"
+
+class TCode;
 
 class IExternalInterface
 {
 public:
-    virtual void update(TCodeDataContainerSet& returnValues) = 0;
+    virtual void update(TCode& tcodeContext, TCodeDataContainerSet& returnValues) = 0;
 };
 
 #endif

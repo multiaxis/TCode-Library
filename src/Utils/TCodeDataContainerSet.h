@@ -29,6 +29,7 @@ public:
         }
 
         data.push_back(value);
+        return true;
     }
 
     size_t size()

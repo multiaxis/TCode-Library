@@ -13,8 +13,9 @@
 #include "Setting Managment/SettingManagementInterface.h"
 #include "Setting Managment/SettingManagers.h"
 #include "Parsing and Encoding/TCodeParser.h"
+#include "Parsing and Encoding/TCodeEncoder.h"
 #include "Axis Management/TCodeAxisClasses.h"
-#include "Interface Management/IExternalInterface.h"
+#include "Interface Management/InterfaceIncludes.h"
 
 
 
@@ -204,7 +205,6 @@ private:
     TCodeBuffer<IExternalInterface *> externalInterfaces {MAX_INTERFACE_COUNT};
     TCodeBuffer<char> externalCommandBuffer{MAX_OUTPUT_BUFFER_LENGTH_COUNT};
     Print* outputStream;
-    
     
     TCodeBuffer<char> inputBuffer{MAX_INPUT_BUFFER_LENGTH_COUNT};
 

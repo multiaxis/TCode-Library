@@ -6,7 +6,7 @@
 #ifndef TCODE_BUTTON_H
 #define TCODE_BUTTON_H
 #include <Arduino.h>
-#include "../IExternalInterface.h"
+#include "../../IExternalInterface.h"
 
 #define DEFAULT_TIMEOUT 60
 class TCodeButton;
@@ -20,7 +20,7 @@ public:
     TCodeButton() = delete;
     TCodeButton(unsigned int pin, const char* name);
     void setCallback(t_Button_Callback t);
-    virtual void update(TCodeDataContainerSet& returnValues);
+    virtual void update(TCode& context, TCodeDataContainerSet& returnValues);
     bool getState();
 
 private:
@@ -33,18 +33,18 @@ private:
 };
 
 
-TCodeButton::TCodeButton(unsigned int _pin, const char* _name) : name(_name),pin(_pin)
+inline TCodeButton::TCodeButton(unsigned int _pin, const char* _name) : name(_name),pin(_pin)
 {
     pinMode(_pin, INPUT);
 }
 
-void TCodeButton::setCallback(t_Button_Callback _callback)
+inline void TCodeButton::setCallback(t_Button_Callback _callback)
 {
     if (_callback != nullptr)
         callback = _callback;
 }
 
-bool TCodeButton::update(TCodeDataContainerSet& returnValues)
+inline void TCodeButton::update(TCode& context, TCodeDataContainerSet& returnValues)
 {
     bool triggered = false;
     unsigned long current_time = millis();
@@ -78,7 +78,6 @@ bool TCodeButton::update(TCodeDataContainerSet& returnValues)
 
         lastState = isPressed;
     }
-    return triggered;
 }
 
 #endif

@@ -153,15 +153,18 @@ void TCode::update()
         IExternalInterface *temp = nullptr;
         if (externalInterfaces.get(i, temp))
         {
-            temp->update(outputvalues);
+            temp->update(*this,outputvalues);
         }
     }
 
     for (int i = 0; i < outputvalues.size(); i++)
     {
         TCodeTaggedDataContainer current = outputvalues[i];
-        //TODO:
-        // Output Values
+        char buffer[64];
+        if(TCodeEncoder::encodeValue(current,buffer,64))
+        {
+            println(buffer);
+        }
     }
 }
 
