@@ -6,9 +6,9 @@
 #ifndef TCODE_PARSER_H
 #define TCODE_PARSER_H
 #include "esp_log.h"
+#include <Arduino.h>
 #include "../Constants and Enums/TCodeConstants.h"
 #include "../Constants and Enums/TCodeEnums.h"
-#include <Arduino.h>
 #include "../Utils/TCodeBuffer.h"
 #include "../Utils/TCodeCStringUtils.h"
 
