@@ -160,6 +160,8 @@ void TCode::update()
     for (int i = 0; i < outputvalues.size(); i++)
     {
         TCodeTaggedDataContainer current = outputvalues[i];
+        //TODO:
+        // Output Values
     }
 }
 
@@ -185,35 +187,6 @@ void TCode::stop()
     }
 }
 
-size_t TCode::available()
-{
-    return outputBuffer.count();
-}
-
-char TCode::getChar()
-{
-    if (outputBuffer.count() == 0)
-        return '\0';
-    char charValue;
-    if (!outputBuffer.pop(charValue))
-        return '\0';
-    return charValue;
-}
-
-size_t TCode::getChar(char *buffer, const size_t length)
-{
-    size_t length_to_read = min(length, outputBuffer.count());
-    for (size_t i = 0; i < length_to_read; i++)
-    {
-        char charValue;
-        if(outputBuffer.pop(charValue)){
-            *(buffer) = charValue;
-            buffer++;
-        }
-    }
-    return length_to_read;
-}
-
 size_t TCode::externalAvailable()
 {
     return externalCommandBuffer.count();
@@ -235,7 +208,7 @@ size_t TCode::getExternalChar(char *buffer, const size_t length)
     for (size_t i = 0; i < length_to_read; i++)
     {
         char charValue;
-        if(outputBuffer.pop(charValue)){
+        if(externalCommandBuffer.pop(charValue)){
             *(buffer) = charValue;
             buffer++;
         }
@@ -250,6 +223,14 @@ void TCode::setSettingManager(ISettings *settings)
 
     settingManager = settings;
     settingManager->init();
+}
+
+void TCode::setOutputStream(Print *stream)
+{
+    if(stream != nullptr)
+    {
+        outputStream = stream;
+    }
 }
 
 ISettings *TCode::getSettingManager()
@@ -489,53 +470,40 @@ void TCode::printSavedAxisValues()
 
 void TCode::print(const char value)
 {
-    outputBuffer.push(value);
+    outputStream->print(value);
 }
 
 void TCode::print(const char *value)
 {
-    size_t length = strlen(value);
-    for (int i = 0; i < length; i++)
-    {
-        outputBuffer.push(*(value + i));
-    }
+    outputStream->print(value);
 }
 
 void TCode::print(const __FlashStringHelper *value)
 {
-    char buffer[MAX_OUTPUT_BUFFER_LENGTH_COUNT];
-    strncpy_P(buffer, (const char *)value, MAX_OUTPUT_BUFFER_LENGTH_COUNT - 1);
-    print((const char *)buffer);
+    outputStream->print(value);
 }
 
 void TCode::print(const String &value)
 {
-    for (int i = 0; i < value.length(); i++)
-    {
-        outputBuffer.push(value.charAt(i));
-    }
+    outputStream->print(value);
 }
 
 void TCode::println(const char value)
 {
-    outputBuffer.push(value);
-    outputBuffer.push('\n');
+    outputStream->println(value);
 }
 
 void TCode::println(const char *value)
 {
-    print(value);
-    outputBuffer.push('\n');
+    outputStream->println(value);
 }
 
 void TCode::println(const __FlashStringHelper *value)
 {
-    print(value);
-    outputBuffer.push('\n');
+    outputStream->println(value);
 }
 
 void TCode::println(const String &value)
 {
-    print(value);
-    outputBuffer.push('\n');
+    outputStream->println(value);
 }

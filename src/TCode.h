@@ -5,6 +5,7 @@
 #pragma once
 #ifndef TCODE_HPP
 #define TCODE_HPP
+#include <Arduino.h>
 #include "Constants and Enums/TCodeConstants.h"
 #include "Constants and Enums/TCodeEnums.h"
 #include "Utils/TCodeBuffer.h"
@@ -142,22 +143,6 @@ public:
     void stop();
 
     /**
-     * @brief returns current available bytes in output buffer
-     */
-    size_t available();
-
-    /**
-     * @brief returns next byte in output buffer (returns '\0' if no bytes present)
-     */
-    char getChar();
-
-    /**
-     * @brief returns bytes in output buffer to an external buffer
-     * @return returns length of bytes put into the provided buffer
-     */
-    size_t getChar(char *buffer, const size_t length);
-
-    /**
      * @brief returns current available bytes in external command output buffer
      */
     size_t externalAvailable();
@@ -186,6 +171,12 @@ public:
     void setSettingManager(ISettings *settings);
 
     /**
+     * @brief sets the output printing stream
+     * @param stream pointer to the print object
+     */
+    void setOutputStream(Print *stream);
+
+    /**
      * @brief gets the current firmware ID
      */
 	const char * getFirmwareID() { return firmwareVersion; }
@@ -211,8 +202,10 @@ private:
     ISettings *settingManager;
     TCodeBuffer<ITCodeAxis *> axisBuffer {MAX_AXIS_COUNT};
     TCodeBuffer<IExternalInterface *> externalInterfaces {MAX_INTERFACE_COUNT};
-    TCodeBuffer<char> outputBuffer{MAX_OUTPUT_BUFFER_LENGTH_COUNT};
     TCodeBuffer<char> externalCommandBuffer{MAX_OUTPUT_BUFFER_LENGTH_COUNT};
+    Print* outputStream;
+    
+    
     TCodeBuffer<char> inputBuffer{MAX_INPUT_BUFFER_LENGTH_COUNT};
 
     ITCodeAxis *getAxisFromName(const char *name);

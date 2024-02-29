@@ -51,6 +51,16 @@ public:
         return data.getValue<T>(value);
     }
 
+    TCodeInterfaceDataTag getDataType()
+    {
+        return data.getDataType();
+    }
+
+    const char* getName()
+    {
+        return name;
+    }
+
     bool operator==(const TCodeTaggedDataContainer& LHS) const
     {
         if(LHS.taghash != taghash)
