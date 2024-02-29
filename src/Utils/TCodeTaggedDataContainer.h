@@ -8,16 +8,7 @@
 #include <string>
 #include "TCodeDataContainer.h"
 
-//implementation of djb2 from http://www.cse.yorku.ca/~oz/hash.html
-unsigned long hash(const char *str)
-{
-    unsigned long hash = 5381;
-    char c;
-    for(int i = 0, c = str[i]; c != '\0'; i++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
-    return hash;
-}
 
 class TCodeTaggedDataContainer
 {
@@ -25,6 +16,18 @@ private:
     unsigned int taghash;
     const char* tag;
     TCodeDataContainer data;
+
+    //implementation of djb2 from http://www.cse.yorku.ca/~oz/hash.html
+    unsigned long hash(const char *str)
+    {
+        unsigned long hash = 5381;
+        char c;
+        for(int i = 0, c = str[i]; c != '\0'; i++)
+            hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+        return hash;
+    }
+
 public:
     TCodeTaggedDataContainer(const char * _tag, TCodeDataContainer _data) : tag(_tag),data(_data)
     {
