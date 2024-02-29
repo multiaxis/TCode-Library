@@ -239,35 +239,45 @@ private:
         switch(data.tag)
         {
             case TCodeInterfaceDataTag::BOOL:
+                {
                 bool retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (long)retrieved;
                 break;
+                }
             case TCodeInterfaceDataTag::INT:
+                {
                 int retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (long)retrieved;
                 break;
+                }
             case TCodeInterfaceDataTag::LONG:
+                {
                 long retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (long)retrieved;
                 break;
+                }
             case TCodeInterfaceDataTag::UINT:
+                {
                 unsigned int retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (long)retrieved;
                 break;   
+                }
             case TCodeInterfaceDataTag::ULONG:
+                {
                 unsigned long retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (long)retrieved;
                 break;   
+                }
             default:
                 return false;
         }
@@ -289,35 +299,45 @@ private:
         switch(data.tag)
         {
             case TCodeInterfaceDataTag::BOOL:
+                {
                 bool retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (unsigned long)retrieved;
                 break;
+                }
             case TCodeInterfaceDataTag::INT:
+                {
                 int retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (unsigned long)retrieved;
                 break;
+                }
             case TCodeInterfaceDataTag::LONG:
+                {
                 long retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (unsigned long)retrieved;
                 break;
+                }
             case TCodeInterfaceDataTag::UINT:
+                {
                 unsigned int retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (unsigned long)retrieved;
                 break;   
+                }
             case TCodeInterfaceDataTag::ULONG:
+                {
                 unsigned long retrieved;
                 if(!getValue(retrieved))
                     return false;
                 value = (unsigned long)retrieved;
                 break;   
+                }
             default:
                 return false;
         }
