@@ -67,7 +67,7 @@ int TCodeParser::getStrfromID(unsigned char *buffer, const size_t length, const 
         buffer[index] = '?';
     }
     index++;
-    index += uintToStr(id.channel, buffer, length, index);
+    index += TCodeCStringUtils::uintToStr(id.channel, buffer, length, index);
 
     return index;
 }
@@ -329,7 +329,7 @@ bool TCodeParser::parseAxisCommand(unsigned char *buffer, const size_t length, T
     if (id.type == TCode_Channel_Type::None)
         valid = false;
 
-    command_value = getNextTCodeInt(buffer, length, index);
+    command_value = TCodeCStringUtils::getNextTCodeInt(buffer, length, index);
     if (command_value == -1)
         valid = false;
     command_value = constrain(command_value, 0, TCODE_MAX_AXIS);
@@ -383,7 +383,7 @@ bool TCodeParser::parseSetupCommand(unsigned char *buffer, const size_t length, 
         valid = false;
 
     long maxValue = TCodeCStringUtils::getNextInt(buffer, length, index); // Get the seccond maximum value
-    if ((TCodeCStringUtils::toupper(gTCodeCStringUtils::etCharAt(buffer, length, index)) != '\0') || (minValue == -1) || (maxValue == -1) || (!idValid(id)))
+    if ((TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index)) != '\0') || (minValue == -1) || (maxValue == -1) || (!idValid(id)))
         valid = false;
     minValue = constrain(minValue, 0, TCODE_MAX_AXIS); // constrain the values to the maximum axis constraint
     maxValue = constrain(maxValue, 0, TCODE_MAX_AXIS);
