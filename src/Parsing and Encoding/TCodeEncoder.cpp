@@ -15,7 +15,7 @@ bool TCodeEncoder::encodeValue(TCodeTaggedDataContainer &data, char *buffer, con
         {
             return false;
         }
-        encodeValue(data.getName(),value,buffer,length);
+        encodeValue(data.getTag(),value,buffer,length);
         }
         break;
     case TCodeInterfaceDataTag::INT:
@@ -25,7 +25,7 @@ bool TCodeEncoder::encodeValue(TCodeTaggedDataContainer &data, char *buffer, con
         {
             return false;
         }
-        return encodeValue(data.getName(),(short)value,buffer,length);
+        return encodeValue(data.getTag(),(short)value,buffer,length);
         }
         break;
     case TCodeInterfaceDataTag::LONG:
@@ -35,7 +35,7 @@ bool TCodeEncoder::encodeValue(TCodeTaggedDataContainer &data, char *buffer, con
         {
             return false;
         }
-        return encodeValue(data.getName(),(short)value,buffer,length);
+        return encodeValue(data.getTag(),(short)value,buffer,length);
         }
     case TCodeInterfaceDataTag::UINT:
         {
@@ -44,7 +44,7 @@ bool TCodeEncoder::encodeValue(TCodeTaggedDataContainer &data, char *buffer, con
         {
             return false;
         }
-        return encodeValue(data.getName(),(unsigned short)value,buffer,length);
+        return encodeValue(data.getTag(),(unsigned short)value,buffer,length);
         }
     case TCodeInterfaceDataTag::ULONG:
         {
@@ -53,7 +53,7 @@ bool TCodeEncoder::encodeValue(TCodeTaggedDataContainer &data, char *buffer, con
         {
             return false;
         }
-        return encodeValue(data.getName(),(unsigned short)value,buffer,length);
+        return encodeValue(data.getTag(),(unsigned short)value,buffer,length);
         }
     }
     return false;
