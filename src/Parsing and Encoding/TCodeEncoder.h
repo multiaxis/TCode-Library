@@ -5,44 +5,27 @@
 #pragma once
 #ifndef TCODE_ENCODING_H
 #define TCODE_ENCODING_H
-#include "../Utils/TCodeDataContainer.h"
+#include <string>
+#include "../Utils/TCodeTaggedDataContainer.h"
+
 
 class TCodeEncoder
 {
 public:
-    // TODO:
-    //   * DataContainer
-    //   * bool
-    //   * int
-    //   * long
-    //   * string
-    //   * float
-    // int, long, bool are converted to short 
-    //<prefix based on contained type><name id>:<encoding based on contained type>
-    static bool encodeTCodeDataContainer(TCodeDataContainer &value, char *buffer, size_t &index, const size_t length);
+    //#<name id>:<value 0 - false or 1 - true> - bool
+    //$<name id>:<- if negative><value> - int,long
+    //@<name id>:<value> - uint,ulong
+    // float,string are not supported currently for encoding
+    static bool encodeValue(TCodeTaggedDataContainer &data, char *buffer, const size_t length);
 
     //#<name id>:<value 0 - false or 1 - true>
-    static bool encodeTCodeBool(const char *name, bool value, char *buffer, size_t &index, const size_t length);
+    static bool encodeValue(const char *name, bool value, char *buffer, const size_t length);
 
     //$<name id>:<- if negative><value>
-    static bool encodeTCodeInt(const char *name, int value, char *buffer, size_t &index, const size_t length);
+    static bool encodeValue(const char *name, short value, char *buffer, const size_t length);
 
     //@<name id>:<value>
-    static bool encodeTCodeUInt(const char *name, unsigned int value, char *buffer, size_t &index, const size_t length);
-
-    //$<name id>:<- if negative><value>
-    static bool encodeTCodeLong(const char *name, long value, char *buffer, size_t &index, const size_t length);
-
-    //@<name id>:<value>
-    static bool encodeTCodeULong(const char *name, unsigned long value, char *buffer, size_t &index, const size_t length);
-
-    //Undecided as of yet
-    //&<name id>:"<value>"
-    static bool encodeTCodeString(const char *name, const char *value, char *buffer, size_t &index, const size_t length);
-
-    //Undecided as of yet
-    //&<name id>:<- if negative><value integer part>.<fractional part>
-    static bool encodeTCodeInt(const char *name, float value, char *buffer, size_t &index, const size_t length);
-}
+    static bool encodeValue(const char *name, unsigned short value, char *buffer, const size_t length);
+};
 
 #endif
