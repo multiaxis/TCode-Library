@@ -5,7 +5,7 @@
 #pragma once
 #include <string.h>
 #include <type_traits>
-#include "../Parsing/TCodeParser.h"
+#include "TCodeCStringUtils.h"
 
 enum class TCodeInterfaceDataTag
 {
@@ -274,12 +274,12 @@ private:
 
         if(!getValue(value))
             return false;
-        if (TCodeParser::uintToStrLen(abs(value)) + 1 > length)
+        if (TCodeCStringUtils::uintToStrLen(abs(value)) + 1 > length)
             return false;
         size_t index = 0;
         if(value < 0)
             buffer[index++] = '-';
-        TCodeParser::uintToStr(abs(value), (unsigned char*)buffer, length, index);
+        TCodeCStringUtils::uintToStr(abs(value), (unsigned char*)buffer, length, index);
         return true;
     }
 
@@ -324,9 +324,9 @@ private:
     
         if(!getValue(value))
             return false;
-        if (TCodeParser::uintToStrLen(abs(value)) + 1 > length)
+        if (TCodeCStringUtils::uintToStrLen(abs(value)) + 1 > length)
             return false;
-        TCodeParser::uintToStr(abs(value), (unsigned char*)buffer, length, 0);
+        TCodeCStringUtils::uintToStr(abs(value), (unsigned char*)buffer, length, 0);
         return true;
     }
 
