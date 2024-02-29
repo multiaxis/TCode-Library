@@ -211,7 +211,7 @@ private:
     ITCodeAxis *getAxisFromName(const char *name);
     ITCodeAxis *getAxisFromID(const TCode_ChannelID &id);
     void executeNextBufferCommand();
-    void readCommand(unsigned char *buffer, size_t length);
+    void readCommand(char *buffer, size_t length);
 
     void runAxisCommand(TCode_Axis_Command &command);
     void runDeviceCommand(TCode_Device_Command &command);

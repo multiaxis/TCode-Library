@@ -272,12 +272,12 @@ ITCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
 
 void TCode::executeNextBufferCommand()
 {
-    unsigned char command[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
+    char command[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
     size_t length = TCodeParser::getNextCommand(&inputBuffer,command, MAX_COMMAND_BUFFER_LENGTH_COUNT);
     readCommand(command, length + 1);
 }
 
-void TCode::readCommand(unsigned char *command, size_t length)
+void TCode::readCommand(char *command, size_t length)
 {
     TCode_Command_Type type = TCodeParser::getCommandType(command, length, 0); // find what command was read
     // Switch between command types

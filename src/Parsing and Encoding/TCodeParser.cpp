@@ -44,7 +44,7 @@ bool TCodeParser::idValid(const TCode_ChannelID id)
     return idValidRange(id.type, id.channel, TCODE_MAX_CHANNEL_COUNT - 1);
 }
 
-int TCodeParser::getStrfromID(unsigned char *buffer, const size_t length, const TCode_ChannelID &id)
+int TCodeParser::getStrfromID(char *buffer, const size_t length, const TCode_ChannelID &id)
 {
     size_t index = 0;
     switch (id.type) // gets the Channel type char and appends to the output string
@@ -72,7 +72,7 @@ int TCodeParser::getStrfromID(unsigned char *buffer, const size_t length, const 
 
 void TCodeParser::getStrfromID(const TCode_ChannelID &id, String &out)
 {
-    unsigned char buffer[10];
+    char buffer[10];
     for(int i = 0; i < 10; i++)
         buffer[i] = '\0';
 
@@ -91,7 +91,7 @@ TCode_ChannelID TCodeParser::constructID(const TCode_Channel_Type type, const ui
     return {type, channel};
 }
 
-TCode_Axis_Extention_Type TCodeParser::getExtentionTypeFromStr(unsigned char *buffer, const size_t length, size_t &startIndex)
+TCode_Axis_Extention_Type TCodeParser::getExtentionTypeFromStr(char *buffer, const size_t length, size_t &startIndex)
 {
     char type_char = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex));
     startIndex++;
@@ -149,7 +149,7 @@ void TCodeParser::combineRampSegments(TCode_Axis_Ramp_Type startingRampType, int
     }
 }
 
-bool TCodeParser::parseRampSegment(unsigned char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampValue)
+bool TCodeParser::parseRampSegment(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampValue)
 {
     rampType = TCode_Axis_Ramp_Type::None;
     char first = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex));
@@ -186,7 +186,7 @@ bool TCodeParser::parseRampSegment(unsigned char *buffer, const size_t length, s
     return true;
 }
 
-bool TCodeParser::getRampTypeFromStr(unsigned char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampInValue, int &rampOutValue)
+bool TCodeParser::getRampTypeFromStr(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampInValue, int &rampOutValue)
 {
     TCode_Axis_Ramp_Type startingRampType = TCode_Axis_Ramp_Type::None;
     TCode_Axis_Ramp_Type endingRampType = TCode_Axis_Ramp_Type::None;
@@ -207,7 +207,7 @@ bool TCodeParser::getRampTypeFromStr(unsigned char *buffer, const size_t length,
     return true;
 }
 
-TCode_ChannelID TCodeParser::getIDFromStr(unsigned char *buffer, const size_t length, size_t &startIndex)
+TCode_ChannelID TCodeParser::getIDFromStr(char *buffer, const size_t length, size_t &startIndex)
 {
     char type_char = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex++));
     uint8_t channel = static_cast<uint8_t>(TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex++)) - '0'); // get channel number 0 - 9
@@ -232,7 +232,7 @@ TCode_ChannelID TCodeParser::getIDFromStr(unsigned char *buffer, const size_t le
     return {type, channel};
 }
 
-TCode_Command_Type TCodeParser::getCommandType(unsigned char *buffer, const size_t length, size_t startIndex)
+TCode_Command_Type TCodeParser::getCommandType(char *buffer, const size_t length, size_t startIndex)
 {
     // Switch between command types
     switch (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex)))
@@ -255,7 +255,7 @@ TCode_Command_Type TCodeParser::getCommandType(unsigned char *buffer, const size
     return TCode_Command_Type::None;
 }
 
-size_t TCodeParser::getNextCommand(TCodeBuffer<char> *inputBuffer, unsigned char *buffer, size_t buffer_length)
+size_t TCodeParser::getNextCommand(TCodeBuffer<char> *inputBuffer, char *buffer, size_t buffer_length)
 {
     size_t index = 0;
     bool blevel = false;
@@ -284,7 +284,7 @@ size_t TCodeParser::getNextCommand(TCodeBuffer<char> *inputBuffer, unsigned char
     return index;
 }
 
-size_t TCodeParser::getNextCommand(unsigned char *inputBuffer, const size_t length , const size_t startIndex, unsigned char *outbuffer, const size_t outBufferLength)
+size_t TCodeParser::getNextCommand(char *inputBuffer, const size_t length , const size_t startIndex, char *outbuffer, const size_t outBufferLength)
 {
     size_t index = 0;
     size_t inputIndex = startIndex;
@@ -312,7 +312,7 @@ size_t TCodeParser::getNextCommand(unsigned char *inputBuffer, const size_t leng
     return index;
 }
 
-bool TCodeParser::parseAxisCommand(unsigned char *buffer, const size_t length, TCode_Axis_Command &out)
+bool TCodeParser::parseAxisCommand(char *buffer, const size_t length, TCode_Axis_Command &out)
 {
     bool valid = true;
     size_t index = 0;
@@ -364,7 +364,7 @@ bool TCodeParser::parseAxisCommand(unsigned char *buffer, const size_t length, T
     return valid;
 }
 
-bool TCodeParser::parseSetupCommand(unsigned char *buffer, const size_t length, TCode_Setup_Command &out)
+bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Setup_Command &out)
 {
     bool valid = true;
     size_t index = 0;
@@ -393,7 +393,7 @@ bool TCodeParser::parseSetupCommand(unsigned char *buffer, const size_t length, 
     return valid;
 }
 
-bool TCodeParser::parseExternalCommand(unsigned char *buffer, const size_t length, TCode_External_Command &out)
+bool TCodeParser::parseExternalCommand(char *buffer, const size_t length, TCode_External_Command &out)
 {
     size_t strLength = strlen((const char *)buffer);
     char *resizedBuffer = new char[strLength + 1];
@@ -406,7 +406,7 @@ bool TCodeParser::parseExternalCommand(unsigned char *buffer, const size_t lengt
     return true;
 }
 
-bool TCodeParser::parseDeviceCommand(unsigned char *buffer, const size_t length, TCode_Device_Command &out)
+bool TCodeParser::parseDeviceCommand(char *buffer, const size_t length, TCode_Device_Command &out)
 {
     size_t index = 0;
     if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index++)) != 'D')

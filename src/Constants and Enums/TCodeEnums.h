@@ -31,7 +31,7 @@ enum class TCode_Channel_Type
 struct TCode_ChannelID
 {
     TCode_Channel_Type type;
-    unsigned char channel;
+    char channel;
 };
 
 /**

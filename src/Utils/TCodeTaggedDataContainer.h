@@ -56,9 +56,9 @@ public:
         return data.getDataType();
     }
 
-    const char* getName()
+    const char* getTag()
     {
-        return name;
+        return tag;
     }
 
     bool operator==(const TCodeTaggedDataContainer& LHS) const

@@ -295,7 +295,7 @@ private:
         size_t index = 0;
         if(value < 0)
             buffer[index++] = '-';
-        TCodeCStringUtils::uintToStr(valueabs, (unsigned char*)buffer, length, index);
+        TCodeCStringUtils::uintToStr(valueabs, buffer, length, index);
         return true;
     }
 
@@ -356,7 +356,7 @@ private:
         
         if (TCodeCStringUtils::uintToStrLen(valueabs) + 1 > length)
             return false;
-        TCodeCStringUtils::uintToStr(valueabs, (unsigned char*)buffer, length, 0);
+        TCodeCStringUtils::uintToStr(valueabs, buffer, length, 0);
         return true;
     }
 

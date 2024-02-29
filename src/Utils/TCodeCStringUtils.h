@@ -86,7 +86,7 @@ public:
      * @param index the index pointing to a position in the string
      * @return returns a long the integer found in the string represented as base 10 unsigned if a integer string is found which is less than 4 characters long then it will be multiplied til it reaches that minimum e.g. "1" = 1000 ,"01" = 100
      */
-    static long getNextInt(unsigned char *buffer, const size_t length, size_t &index)
+    static long getNextInt(char *buffer, const size_t length, size_t &index)
     {
         size_t count = 0;
         long accum = 0;
@@ -111,7 +111,7 @@ public:
      * @param index the index pointing to a position in the string
      * @return returns a long the integer found in the string represented as base 10 unsigned if a integer string is found which is less than 4 characters long then it will be multiplied til it reaches that minimum e.g. "1" = 1000 ,"01" = 100
      */
-    static long getNextTCodeInt(unsigned char *buffer, const size_t length, size_t &index)
+    static long getNextTCodeInt(char *buffer, const size_t length, size_t &index)
     {
         size_t count = 0;
         long accum = 0;
@@ -142,7 +142,7 @@ public:
      * @param index index to get char from
      * @return returns a char pointed to at the index position in the buffer (returns '\0' if out of range)
      **/
-    static char getCharAt(unsigned char *buffer, const size_t length, size_t index)
+    static char getCharAt(char *buffer, const size_t length, size_t index)
     {
         if (index >= length)
             return '\0';
@@ -157,7 +157,7 @@ public:
      * @param index index to get char from
      * @return returns true if the value was written;
      **/
-    static bool setCharAt(unsigned char value,unsigned char *buffer, const size_t length, size_t index)
+    static bool setCharAt(char value,char *buffer, const size_t length, size_t index)
     {
         if (index >= length)
             return false;
@@ -173,7 +173,7 @@ public:
      * @param placeIndex index to put the converted int
      * @return returns length of writen value
      **/
-    static size_t uintToStr(unsigned long value, unsigned char *buffer, const size_t length, const size_t placeIndex)
+    static size_t uintToStr(unsigned long value, char *buffer, const size_t length, const size_t placeIndex)
     {
         const int base = 10;
         char buf[31];

@@ -55,7 +55,7 @@ public:
      * @param id Is the combined form of TCode_Channel_Type and the channel number
      * @returns The length of chars used in the buffer
      */
-    static int getStrfromID(unsigned char *buffer, const size_t length, const TCode_ChannelID &id);
+    static int getStrfromID(char *buffer, const size_t length, const TCode_ChannelID &id);
 
     /**
      * @brief For a given ID returns the string representation of the ID
@@ -79,7 +79,7 @@ public:
      * @param startIndex starting index of the char to be processed
      * @returns returns a TCode Axis Extention Type used in the Axis to work out if an extention means Time or Speed
      */
-    static TCode_Axis_Extention_Type getExtentionTypeFromStr(unsigned char *buffer, const size_t length, size_t &startIndex);
+    static TCode_Axis_Extention_Type getExtentionTypeFromStr(char *buffer, const size_t length, size_t &startIndex);
 
     /** @brief Takes in starting and ending ramp types and creates a ramp type combining those two
      * @param startingRampType starting ramp type
@@ -101,7 +101,7 @@ public:
      * @param rampValue ramp in value
      * @returns returns a true if ramp type was parsed correctly
      */
-    static bool parseRampSegment(unsigned char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampValue);
+    static bool parseRampSegment(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampValue);
 
     /**
      * @brief Gets the Ramp type from a string at the index specified
@@ -113,7 +113,7 @@ public:
      * @param rampOutValue ramp out value
      * @returns returns a true if ramp type was parsed correctly
      */
-    static bool getRampTypeFromStr(unsigned char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampInValue, int &rampOutValue);
+    static bool getRampTypeFromStr(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampInValue, int &rampOutValue);
 
     /**
      * @brief Gets the ID from an inputted string from a given index
@@ -122,7 +122,7 @@ public:
      * @param startIndex starting index of the char to be processed
      * @returns returns a TCode Channel ID found at the location at the starting index
      */
-    static TCode_ChannelID getIDFromStr(unsigned char *buffer, const size_t length, size_t &startIndex);
+    static TCode_ChannelID getIDFromStr(char *buffer, const size_t length, size_t &startIndex);
 
     /**
      * @brief Returns the type of command provided by the input string
@@ -130,7 +130,7 @@ public:
      * @param length length of buffer
      * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
      */
-    static TCode_Command_Type getCommandType(unsigned char *buffer, const size_t length, size_t startIndex);
+    static TCode_Command_Type getCommandType(char *buffer, const size_t length, size_t startIndex);
 
     /**
      * @brief Parses the next command out of a buffer and puts it into a provided char buffer
@@ -139,7 +139,7 @@ public:
      * @param length length of buffer
      * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
      */
-    static size_t getNextCommand(TCodeBuffer<char> *inputBuffer, unsigned char *buffer, size_t buffer_length);
+    static size_t getNextCommand(TCodeBuffer<char> *inputBuffer, char *buffer, size_t buffer_length);
 
     /**
      * @brief Parses the next command out of a buffer and puts it into a provided char buffer
@@ -150,7 +150,7 @@ public:
      * @param outBufferLength length of buffer
      * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
      */
-    static size_t getNextCommand(unsigned char *inputBuffer, const size_t length, const size_t startIndex, unsigned char *outbuffer, const size_t outBufferLength);
+    static size_t getNextCommand(char *inputBuffer, const size_t length, const size_t startIndex, char *outbuffer, const size_t outBufferLength);
 
     /**
      * @brief Parses an Axis Command
@@ -158,7 +158,7 @@ public:
      * @param length length of buffer
      * @param out a TCode Axis command struct so that the command can be executed easier
      */
-    static bool parseAxisCommand(unsigned char *buffer, const size_t length, TCode_Axis_Command &out);
+    static bool parseAxisCommand(char *buffer, const size_t length, TCode_Axis_Command &out);
 
     /**
      * @brief Parses a Device Command
@@ -167,7 +167,7 @@ public:
      * @param out Command to be outputted to
      * @returns a TCode Device Command which is a data representation of the device command to be processed easier
      */
-    static bool parseDeviceCommand(unsigned char *buffer, const size_t length, TCode_Device_Command &out);
+    static bool parseDeviceCommand(char *buffer, const size_t length, TCode_Device_Command &out);
 
     /**
      * @brief Parses a Setup Command
@@ -175,7 +175,7 @@ public:
      * @param length length of buffer
      * @param out a TCode Setup command struct in a data representation to be processed easier
      */
-    static bool parseSetupCommand(unsigned char *buffer, const size_t length, TCode_Setup_Command &out);
+    static bool parseSetupCommand(char *buffer, const size_t length, TCode_Setup_Command &out);
 
     /**
      * @brief Parses an External Command
@@ -183,7 +183,7 @@ public:
      * @param length length of buffer
      * @param out a TCode Setup command struct in a data representation to be processed easier
      */
-    static bool parseExternalCommand(unsigned char *buffer, const size_t length, TCode_External_Command &out);
+    static bool parseExternalCommand(char *buffer, const size_t length, TCode_External_Command &out);
 };
 
 #endif
