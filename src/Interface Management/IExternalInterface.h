@@ -8,5 +8,5 @@
 class IExternalInterface
 {
 public:
-    virtual void update(TCodeDataContainerSet& returnValues) = delete;
+    virtual void update(TCodeDataContainerSet& returnValues) = 0;
 };
