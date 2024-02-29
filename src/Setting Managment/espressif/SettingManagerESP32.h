@@ -1,10 +1,10 @@
-// Setting-Management-Class-Hpp v1.0,
+// Setting-Management-Class-H v1.0,
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 12/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
-#ifndef SETTING_MANAGER_ESP32_HPP
-#define SETTING_MANAGER_ESP32_HPP
+#ifndef SETTING_MANAGER_ESP32_H
+#define SETTING_MANAGER_ESP32_H
 #include "../SettingManagementInterface.h"
 #include <SPIFFS.h>
 #include <ArduinoJson.h>

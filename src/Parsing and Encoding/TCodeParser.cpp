@@ -1,9 +1,7 @@
-// TCode-Parser-Class-H v1.0,
+// TCode-Parser-Class-CPP v1.0,
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 26/06/2022
 // Please copy, share, learn, innovate, give attribution.
-#ifndef TCODE_PARSER_CPP
-#define TCODE_PARSER_CPP
 #include "TCodeParser.h"
 
 bool TCodeParser::idValidRange(const TCode_Channel_Type type, const uint8_t channel, const uint8_t maxChannel)
@@ -433,5 +431,3 @@ bool TCodeParser::parseDeviceCommand(unsigned char *buffer, const size_t length,
     out = {TCode_Device_Command_Type::None};
     return false;
 }
-
-#endif

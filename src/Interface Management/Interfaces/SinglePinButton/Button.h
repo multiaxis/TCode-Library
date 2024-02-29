@@ -1,4 +1,4 @@
-// TCode-Button-Class-h v1.0,
+// TCode-Button-Class-H v1.0,
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 13/11/2023
 // Please copy, share, learn, innovate, give attribution.

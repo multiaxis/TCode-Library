@@ -1,4 +1,4 @@
-// Setting-Management-Class-Hpp v1.0,
+// Setting-Management-Class-CPP v1.0,
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 12/11/2023
 // Please copy, share, learn, innovate, give attribution.

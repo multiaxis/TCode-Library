@@ -1,4 +1,4 @@
-// TCode-Class-cpp v1.0,
+// TCode-Class-CPP v1.0,
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 10/09/2023
 // Please copy, share, learn, innovate, give attribution.

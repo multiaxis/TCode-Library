@@ -1,7 +1,6 @@
-// TCode-Buffer-class v1.0,
+// TCode-Buffer-Class-H v1.0,
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 04/06/2022
-// usage of this class can be found at (https://github.com/Dreamer2345/Arduino_TCode_Parser)
 // Please copy, share, learn, innovate, give attribution.
 //
 #pragma once

@@ -1,3 +1,7 @@
+// TCode-Encoder-Class-CPP v1.0,
+// protocol by TempestMAx (https://www.patreon.com/tempestvr)
+// implemented by Eve 27/06/2022
+// Please copy, share, learn, innovate, give attribution.
 #include "TCodeEncoder.h"
 
 bool TCodeEncoder::encodeValue(const char *name, bool value, char *buffer, const size_t length)

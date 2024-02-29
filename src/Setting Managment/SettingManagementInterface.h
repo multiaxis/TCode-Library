@@ -1,10 +1,10 @@
-// Setting-Management-Interface-Class-Hpp v1.0,
+// Setting-Management-Interface-Class-H v1.0,
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 12/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
-#ifndef SETTING_MANAGEMENT_INTERFACE_HPP
-#define SETTING_MANAGEMENT_INTERFACE_HPP
+#ifndef SETTING_MANAGEMENT_INTERFACE_H
+#define SETTING_MANAGEMENT_INTERFACE_H
 #include "esp_log.h"
 #include <Arduino.h>
 
