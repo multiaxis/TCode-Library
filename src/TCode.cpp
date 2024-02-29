@@ -153,7 +153,7 @@ void TCode::update()
         IExternalInterface *temp = nullptr;
         if (externalInterfaces.get(i, temp))
         {
-            temp->update(outputvalues)
+            temp->update(outputvalues);
         }
     }
 
