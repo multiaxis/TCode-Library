@@ -16,7 +16,7 @@ public:
         data.reserve(5);
     }
 
-    bool append(TCodeDataContainer value)
+    bool append(TCodeTaggedDataContainer value)
     {
         for (size_t i = 0; i < data.size(); i++)
         {
@@ -31,7 +31,7 @@ public:
 
     size_t size()
     {
-        return data.size()
+        return data.size();
     }
 
     TCodeTaggedDataContainer &operator[](size_t i)
@@ -44,4 +44,4 @@ public:
         return data[i];
     }
 
-}
+};
