@@ -33,13 +33,13 @@ public:
      * @param extentionValue the extention value
      * @param rampType the ramp type
      */
-    void set(int targetValue, TCode_Axis_Extention_Type extentionType = TCode_Axis_Extention_Type::Time, long extentionValue = 0, TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
+    void set(float targetValue, TCode_Axis_Extention_Type extentionType = TCode_Axis_Extention_Type::Time, long extentionValue = 0, TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
     
     /**
      * @brief gets the current position of the axis
      * @returns current position of this axis as an int
      */
-    int getPosition();
+    float getPosition();
     /**
      * @brief stops axis movement at its current position
      */
@@ -67,7 +67,7 @@ public:
     unsigned long getLastCommandTime();
 
 private:
-    int lastPosition;
+    float lastPosition;
     int minInterval;               // minimum command interval
     TCode_Axis_State currentState;
 };

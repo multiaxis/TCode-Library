@@ -17,12 +17,12 @@ public:
      * @param extentionValue the extention value
      * @param rampType the ramp type
      */
-    virtual void set(int targetValue, TCode_Axis_Extention_Type extentionType = TCode_Axis_Extention_Type::Time, long extentionValue = 0, TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear) = 0;
+    virtual void set(float targetValue, TCode_Axis_Extention_Type extentionType = TCode_Axis_Extention_Type::Time, long extentionValue = 0, TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear) = 0;
     /**
      * @brief gets the current position of the axis
-     * @returns current position of this axis as an int
+     * @returns current position of this axis as a float
      */
-    virtual int getPosition() = 0;
+    virtual float getPosition() = 0;
     /**
      * @brief stops axis movement at its current position
      */

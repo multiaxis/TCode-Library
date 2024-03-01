@@ -13,6 +13,7 @@
 class SettingManagerESP32 : public ISettings
 {
 public:
+    SettingManagerESP32() = delete;
     SettingManagerESP32(const char *filepath) : filepath(filepath), max_filesize(DEFAULT_JSON_FILE_SIZE) {}
     //=================================================
     //             Interface definitions

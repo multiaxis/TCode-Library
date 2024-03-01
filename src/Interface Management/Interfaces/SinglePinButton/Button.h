@@ -27,15 +27,17 @@ private:
     unsigned long lastPressTime = 0;
     unsigned long timeout = DEFAULT_TIMEOUT;
     unsigned int pin = 0;
-    bool lastState;
-    bool isPressed;
+    bool lastState = false;
+    bool isPressed = false;
     t_Button_Callback callback = nullptr;
 };
 
 
 inline TCodeButton::TCodeButton(unsigned int _pin, const char* _name) : name(_name),pin(_pin)
 {
-    pinMode(_pin, INPUT);
+    pinMode(pin, INPUT);
+    isPressed = digitalRead(pin);
+    lastState = isPressed;
 }
 
 inline void TCodeButton::setCallback(t_Button_Callback _callback)
@@ -69,7 +71,7 @@ inline void TCodeButton::update(TCode& context, TCodeDataContainerSet& returnVal
             returnValues.append(dataTagged);
         }
 
-        if ((lastState ^ isPressed == true) && (lastState == true))
+        if (((lastState ^ isPressed) == true) && (lastState == true))
         {
             TCodeDataContainer data(false);
             TCodeTaggedDataContainer dataTagged(name,data);

@@ -32,6 +32,8 @@ double doubleEaseOut(double t)
     return t;
 }
 
+
+
 double constrainDouble(double doubleValue, double min, double max)
 {
     if (min > max)
@@ -84,6 +86,53 @@ long doubleMapEaseOut(long in, long inStart, long inEnd, long outStart, long out
 }
 
 long doubleMapEaseInOut(long in, long inStart, long inEnd, long outStart, long outEnd)
+{
+    double t = in - inStart;
+    t = t / (inEnd - inStart);
+    t = lerpDouble(doubleEaseIn(t),doubleEaseOut(t),t);
+    t = constrainDouble(t,0.0,1.0);
+    t = t * (outEnd - outStart);
+    t += outStart;
+    t = constrainDouble(t,outStart,outEnd);
+    return t;
+}
+
+float doubleMapf(double in, double inStart, double inEnd, double outStart, double outEnd)
+{
+    double t = in - inStart;
+    t = t / (inEnd - inStart);
+    t = constrainDouble(t,0.0,1.0);
+    t = t * (outEnd - outStart);
+    t += outStart;
+    t = constrainDouble(t,outStart,outEnd);
+    return t;
+}
+
+float doubleMapEaseInf(double in, double inStart, double inEnd, double outStart, double outEnd)
+{
+    double t = in - inStart;
+    t = t / (inEnd - inStart);
+    t = doubleEaseIn(t);
+    t = constrainDouble(t,0.0,1.0);
+    t = t * (outEnd - outStart);
+    t += outStart;
+    t = constrainDouble(t,outStart,outEnd);
+    return t;
+}
+
+float doubleMapEaseOutf(double in, double inStart, double inEnd, double outStart, double outEnd)
+{
+    double t = in - inStart;
+    t = t / (inEnd - inStart);
+    t = doubleEaseOut(t);
+    t = constrainDouble(t,0.0,1.0);
+    t = t * (outEnd - outStart);
+    t += outStart;
+    t = constrainDouble(t,outStart,outEnd);
+    return t;
+}
+
+float doubleMapEaseInOutf(double in, double inStart, double inEnd, double outStart, double outEnd)
 {
     double t = in - inStart;
     t = t / (inEnd - inStart);

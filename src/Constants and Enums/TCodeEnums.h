@@ -108,10 +108,10 @@ struct TCode_Axis_Data
 {
     TCode_Axis_Extention_Type extentionType;
     TCode_Axis_Ramp_Type rampType;
-    int rampInValue;
-    int rampOutValue;
-    int commandValue;
-    long commandExtention;
+    float rampInValue;
+    float rampOutValue;
+    float commandValue;
+    unsigned long commandExtention;
 };
 
 /**
@@ -147,10 +147,10 @@ struct TCode_Axis_State
     unsigned long startTime;
     unsigned long endTime;
     TCode_Axis_Ramp_Type rampType;
-    int rampInValue;
-    int rampOutValue;
-    int startValue;
-    int endValue;
+    float rampInValue;
+    float rampOutValue;
+    float startValue;
+    float endValue;
 };
 
 /**
@@ -160,8 +160,8 @@ struct TCode_Axis_State
  */
 struct TCode_Save_Entry
 {
-    int min;
-    int max;
+    float min;
+    float max;
 };
 
 /**

@@ -88,7 +88,7 @@ public:
      * @param extMagnitude the value for the extention type
      * @param rampType the ramp type
      */
-    void axisWrite(const TCode_ChannelID &id, const int targetValue, const TCode_Axis_Extention_Type extentionValue = TCode_Axis_Extention_Type::Time, const long extMagnitude = 0, const TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
+    void axisWrite(const TCode_ChannelID &id, const float targetValue, const TCode_Axis_Extention_Type extentionValue = TCode_Axis_Extention_Type::Time, const long extMagnitude = 0, const TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
 
     /**
      * @brief function to write to a specified axis
@@ -98,21 +98,21 @@ public:
      * @param extMagnitude the value for the extention type
      * @param rampType the ramp type
      */
-    void axisWrite(const char *name, const int targetValue, const TCode_Axis_Extention_Type extentionValue = TCode_Axis_Extention_Type::Time, const long extMagnitude = 0, const TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
+    void axisWrite(const char *name, const float targetValue, const TCode_Axis_Extention_Type extentionValue = TCode_Axis_Extention_Type::Time, const long extMagnitude = 0, const TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
 
     /**
      * @brief function to read the position of a specified axis
      * @param id channel ID to read the current position from
      * @returns current position or -1 if position could not be read
      */
-    int axisRead(const TCode_ChannelID &channel_id);
+    float axisRead(const TCode_ChannelID &channel_id);
 
     /**
      * @brief function to read the position of a specified axis
      * @param name name of the channel to read the current position from
      * @returns current position or -1 if position could not be read
      */
-    int axisRead(const char *name);
+    float axisRead(const char *name);
 
     /**
      * @brief function to read the last command time of a specified axis

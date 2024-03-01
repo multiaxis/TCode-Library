@@ -4,19 +4,8 @@
 #ifndef TCODE_CONSTANTS
 #define TCODE_CONSTANTS
 
-#ifndef TCODE_MAX_AXIS
-/**
- * @brief Value used to define the max range for an axis value
- */
-#define TCODE_MAX_AXIS 9999
-#endif
 
-#ifndef TCODE_MAX_AXIS_MAGNITUDE
-/**
- * @brief Value used to define the max range for an axis magnitude command input
- */
-#define TCODE_MAX_AXIS_MAGNITUDE 9999999LL
-#endif
+#define TCODE_MAX_AXIS 0.9999f
 
 /**
  * @brief Value used to define the max channel count

@@ -86,7 +86,7 @@ public:
      * @param index the index pointing to a position in the string
      * @return returns a long the integer found in the string represented as base 10 unsigned if a integer string is found which is less than 4 characters long then it will be multiplied til it reaches that minimum e.g. "1" = 1000 ,"01" = 100
      */
-    static long getNextInt(char *buffer, const size_t length, size_t &index)
+    static bool getNextInt(unsigned long &value,size_t &log,char *buffer, const size_t length, size_t &index)
     {
         size_t count = 0;
         long accum = 0;
@@ -99,9 +99,12 @@ public:
         }
 
         if (count == 0) // no chars were found with 0 - 9
-            return -1;
+            return false;
 
-        return accum;
+        log = count;
+        value = accum;
+
+        return true;
     }
 
     /**
@@ -111,7 +114,7 @@ public:
      * @param index the index pointing to a position in the string
      * @return returns a long the integer found in the string represented as base 10 unsigned if a integer string is found which is less than 4 characters long then it will be multiplied til it reaches that minimum e.g. "1" = 1000 ,"01" = 100
      */
-    static long getNextTCodeInt(char *buffer, const size_t length, size_t &index)
+    static bool getNextTCodeInt(unsigned long &value,size_t &log,char *buffer, const size_t length, size_t &index)
     {
         size_t count = 0;
         long accum = 0;
@@ -124,7 +127,7 @@ public:
         }
 
         if (count == 0) // no chars were found with 0 - 9
-            return -1;
+            return false;
 
         while (count < 4) // if less than 4 digits were found make up for it by multiplying eg 1 = 1000, 90 = 9000, 001 = 10
         {
@@ -132,7 +135,10 @@ public:
             count++;
         }
 
-        return accum;
+        log = count;
+        value = accum;
+
+        return true;
     }
 
     /**

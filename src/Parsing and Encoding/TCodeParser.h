@@ -90,7 +90,7 @@ public:
      * @param rampInValue ramp value given by the ramp in values for both ramps
      * @param rampOutValue ramp value given by the ramp out values for both ramps
      */
-    static void combineRampSegments(TCode_Axis_Ramp_Type startingRampType, int startingRampValue, TCode_Axis_Ramp_Type endingRampType, int endingRampValue, TCode_Axis_Ramp_Type &outRampType, int &rampInValue, int &rampOutValue);
+    static void combineRampSegments(TCode_Axis_Ramp_Type startingRampType, float startingRampValue, TCode_Axis_Ramp_Type endingRampType, float endingRampValue, TCode_Axis_Ramp_Type &outRampType, float &rampInValue, float &rampOutValue);
 
     /**
      * @brief Parses a single ramp segment in a command returning the ramp type and ramp value if it has one
@@ -98,10 +98,10 @@ public:
      * @param length length of buffer
      * @param startIndex starting index of the char to be processed
      * @param rampType returning ramp type
-     * @param rampValue ramp in value
+     * @param rampValue ramp value
      * @returns returns a true if ramp type was parsed correctly
      */
-    static bool parseRampSegment(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampValue);
+    static bool parseRampSegment(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, float &rampValue);
 
     /**
      * @brief Gets the Ramp type from a string at the index specified
@@ -113,7 +113,7 @@ public:
      * @param rampOutValue ramp out value
      * @returns returns a true if ramp type was parsed correctly
      */
-    static bool getRampTypeFromStr(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, int &rampInValue, int &rampOutValue);
+    static bool getRampTypeFromStr(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, float &rampInValue, float &rampOutValue);
 
     /**
      * @brief Gets the ID from an inputted string from a given index

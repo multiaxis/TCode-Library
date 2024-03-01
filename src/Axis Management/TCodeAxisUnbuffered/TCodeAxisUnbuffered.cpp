@@ -22,11 +22,11 @@ TCodeAxis::TCodeAxis(const char *name, TCode_ChannelID _channel)
     minInterval = TCODE_MIN_AXIS_SMOOTH_INTERVAL;
 }
 
-void TCodeAxis::set(int targetValue, TCode_Axis_Extention_Type extentionType, long extentionValue, TCode_Axis_Ramp_Type rampType)
+void TCodeAxis::set(float targetValue, TCode_Axis_Extention_Type extentionType, long extentionValue, TCode_Axis_Ramp_Type rampType)
 {
     unsigned long t = millis();
     unsigned long delta_time = 0;
-    int startPosition = getPosition();
+    float startPosition = getPosition();
     switch (extentionType)
     {
         case TCode_Axis_Extention_Type::Speed:
@@ -70,9 +70,9 @@ void TCodeAxis::set(int targetValue, TCode_Axis_Extention_Type extentionType, lo
     lastCommandTime = t;
 }
 
-int TCodeAxis::getPosition()
+float TCodeAxis::getPosition()
 {
-    int x; // This is the current axis position, 0-9999
+    float x; // This is the current axis position, 0-9999
     unsigned long t = millis();
 
 
@@ -95,23 +95,21 @@ int TCodeAxis::getPosition()
     switch (currentState.rampType)
     {
     case TCode_Axis_Ramp_Type::Linear:
-        x = doubleMap(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseIn:
-        x = doubleMapEaseIn(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMapEaseInf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseOut:
-        x = doubleMapEaseOut(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMapEaseOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseInOut:
-        x = doubleMapEaseInOut(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMapEaseInOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     default:
-        x = doubleMap(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
     }
 
-    if (x > TCODE_MAX_AXIS)
-        x = TCODE_MAX_AXIS;
     if (x < 0)
         x = 0;
 
