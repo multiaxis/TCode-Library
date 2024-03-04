@@ -180,11 +180,9 @@ bool TCodeParser::parseRampSegment(char *buffer, const size_t length, size_t &st
     if(TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, startIndex+1)))
     {
         startIndex++;
-        unsigned long rampValueLong;
         size_t log_value;
-        if (!TCodeCStringUtils::getNextTCodeInt(rampValueLong,log_value,buffer, length, startIndex))
+        if (!TCodeCStringUtils::getNextTCodeFloat(rampValue,log_value,buffer, length, startIndex))
             return false;
-        rampValue = (double)rampValueLong / (pow(10,log_value)-1);
     }
 
     return true;
@@ -334,11 +332,9 @@ bool TCodeParser::parseAxisCommand(char *buffer, const size_t length, TCode_Axis
     if (id.type == TCode_Channel_Type::None)
         return false;
 
-    unsigned long commandValueLong;
     size_t log_value;
-    if (!TCodeCStringUtils::getNextTCodeInt(commandValueLong,log_value,buffer, length, index))
+    if (!TCodeCStringUtils::getNextTCodeFloat(commandValue,log_value,buffer, length, index))
         return false;
-    commandValue = (double)commandValueLong / (pow(10,log_value)-1);
 
     if (TCodeCStringUtils::isextention(TCodeCStringUtils::getCharAt(buffer, length, index)))
     {
@@ -406,6 +402,8 @@ bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Set
     out.ID = id;
     out.Save.min = minValue;
     out.Save.max = maxValue;
+    out.Save.min_log = minValuelog;
+    out.Save.max_log = maxValuelog;
     return true;
 }
 

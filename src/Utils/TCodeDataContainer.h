@@ -175,6 +175,8 @@ struct TCodeInterfaceVariant_t
     }
 };
 
+const int value = sizeof(TCodeInterfaceVariant_t);
+
 class TCodeDataContainer
 {
 private:
@@ -349,11 +351,6 @@ private:
         }
 
         unsigned long valueabs;
-        if(value < 0)
-            valueabs = -value;
-        else
-            valueabs = value;
-        
         if (TCodeCStringUtils::uintToStrLen(valueabs) + 1 > length)
             return false;
         TCodeCStringUtils::uintToStr(valueabs, buffer, length, 0);
@@ -381,6 +378,13 @@ private:
         return true;
     }
 
+protected:
+
+    void setDataType(TCodeInterfaceDataTag tag)
+    {
+        data.tag = tag;
+    }
+
 public:
 
     TCodeDataContainer()
@@ -405,11 +409,29 @@ public:
         return data.get(value);
     }
 
+    bool getValue(TCodeDataContainer &value)
+    {
+        value.data.tag = data.tag;
+        value.data.data = data.data;
+        return true;
+    }
+
     template <typename T>
     void setValue(T &value)
     {
         static_assert((std::is_same<T, unsigned long>::value||std::is_same<T, unsigned int>::value||std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,uint,ulong,float");
         data = value;
+    }
+
+    void setValue(TCodeDataContainer &value)
+    {
+        data.tag = value.getDataType();
+        data.data = value.getUnderlyingType().data;
+    }
+
+    TCodeInterfaceVariant_t &getUnderlyingType()
+    {
+        return data;
     }
 
     bool toString(char *buffer, size_t length)
@@ -446,6 +468,14 @@ public:
             break;
         }
         return valid;
+    }
+
+    template<typename T>
+    TCodeDataContainer &operator=(T &value)
+    {
+        static_assert((std::is_same<T, TCodeDataContainer>::value||std::is_same<T, unsigned long>::value||std::is_same<T, unsigned int>::value||std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,uint,ulong,float");
+        setValue(value);
+        return *this;
     }
 };
 

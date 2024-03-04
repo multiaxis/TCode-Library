@@ -12,27 +12,25 @@ double lerpDouble(double start, double stop, double t)
 
 double doubleEaseIn(double t)
 {
-    if(t < 0)
+    if (t < 0)
         return 0.0f;
-    if(t > 1)
+    if (t > 1)
         return 1.0f;
     return t * t;
 }
 
 double doubleEaseOut(double t)
 {
-    if(t < 0)
+    if (t < 0)
         return 1.0f;
-    if(t > 1)
+    if (t > 1)
         return 0.0f;
-    
+
     t = 1.0 - t;
     t = t * t;
     t = 1.0 - t;
     return t;
 }
-
-
 
 double constrainDouble(double doubleValue, double min, double max)
 {
@@ -50,96 +48,149 @@ double constrainDouble(double doubleValue, double min, double max)
     return doubleValue;
 }
 
-long doubleMap(long in, long inStart, long inEnd, long outStart, long outEnd)
+long TCodeFloatingOperations::doubleMap(long in, long inStart, long inEnd, long outStart, long outEnd)
 {
     double t = in - inStart;
     t = t / (inEnd - inStart);
-    t = constrainDouble(t,0.0,1.0);
+    t = constrainDouble(t, 0.0, 1.0);
     t = t * (outEnd - outStart);
     t += outStart;
-    t = constrainDouble(t,outStart,outEnd);
+    t = constrainDouble(t, outStart, outEnd);
     return t;
 }
 
-long doubleMapEaseIn(long in, long inStart, long inEnd, long outStart, long outEnd)
+long TCodeFloatingOperations::doubleMapEaseIn(long in, long inStart, long inEnd, long outStart, long outEnd)
 {
     double t = in - inStart;
     t = t / (inEnd - inStart);
     t = doubleEaseIn(t);
-    t = constrainDouble(t,0.0,1.0);
+    t = constrainDouble(t, 0.0, 1.0);
     t = t * (outEnd - outStart);
     t += outStart;
-    t = constrainDouble(t,outStart,outEnd);
+    t = constrainDouble(t, outStart, outEnd);
     return t;
 }
 
-long doubleMapEaseOut(long in, long inStart, long inEnd, long outStart, long outEnd)
+long TCodeFloatingOperations::doubleMapEaseOut(long in, long inStart, long inEnd, long outStart, long outEnd)
 {
     double t = in - inStart;
     t = t / (inEnd - inStart);
     t = doubleEaseOut(t);
-    t = constrainDouble(t,0.0,1.0);
+    t = constrainDouble(t, 0.0, 1.0);
     t = t * (outEnd - outStart);
     t += outStart;
-    t = constrainDouble(t,outStart,outEnd);
+    t = constrainDouble(t, outStart, outEnd);
     return t;
 }
 
-long doubleMapEaseInOut(long in, long inStart, long inEnd, long outStart, long outEnd)
+long TCodeFloatingOperations::doubleMapEaseInOut(long in, long inStart, long inEnd, long outStart, long outEnd)
 {
     double t = in - inStart;
     t = t / (inEnd - inStart);
-    t = lerpDouble(doubleEaseIn(t),doubleEaseOut(t),t);
-    t = constrainDouble(t,0.0,1.0);
+    t = lerpDouble(doubleEaseIn(t), doubleEaseOut(t), t);
+    t = constrainDouble(t, 0.0, 1.0);
     t = t * (outEnd - outStart);
     t += outStart;
-    t = constrainDouble(t,outStart,outEnd);
+    t = constrainDouble(t, outStart, outEnd);
     return t;
 }
 
-float doubleMapf(double in, double inStart, double inEnd, double outStart, double outEnd)
+float TCodeFloatingOperations::doubleMapf(double in, double inStart, double inEnd, double outStart, double outEnd)
 {
     double t = in - inStart;
     t = t / (inEnd - inStart);
-    t = constrainDouble(t,0.0,1.0);
+    t = constrainDouble(t, 0.0, 1.0);
     t = t * (outEnd - outStart);
     t += outStart;
-    t = constrainDouble(t,outStart,outEnd);
+    t = constrainDouble(t, outStart, outEnd);
     return t;
 }
 
-float doubleMapEaseInf(double in, double inStart, double inEnd, double outStart, double outEnd)
+float TCodeFloatingOperations::doubleMapEaseInf(double in, double inStart, double inEnd, double outStart, double outEnd)
 {
     double t = in - inStart;
     t = t / (inEnd - inStart);
     t = doubleEaseIn(t);
-    t = constrainDouble(t,0.0,1.0);
+    t = constrainDouble(t, 0.0, 1.0);
     t = t * (outEnd - outStart);
     t += outStart;
-    t = constrainDouble(t,outStart,outEnd);
+    t = constrainDouble(t, outStart, outEnd);
     return t;
 }
 
-float doubleMapEaseOutf(double in, double inStart, double inEnd, double outStart, double outEnd)
+float TCodeFloatingOperations::doubleMapEaseOutf(double in, double inStart, double inEnd, double outStart, double outEnd)
 {
     double t = in - inStart;
     t = t / (inEnd - inStart);
     t = doubleEaseOut(t);
-    t = constrainDouble(t,0.0,1.0);
+    t = constrainDouble(t, 0.0, 1.0);
     t = t * (outEnd - outStart);
     t += outStart;
-    t = constrainDouble(t,outStart,outEnd);
+    t = constrainDouble(t, outStart, outEnd);
     return t;
 }
 
-float doubleMapEaseInOutf(double in, double inStart, double inEnd, double outStart, double outEnd)
+float TCodeFloatingOperations::doubleMapEaseInOutf(double in, double inStart, double inEnd, double outStart, double outEnd)
 {
     double t = in - inStart;
     t = t / (inEnd - inStart);
-    t = lerpDouble(doubleEaseIn(t),doubleEaseOut(t),t);
-    t = constrainDouble(t,0.0,1.0);
+    t = lerpDouble(doubleEaseIn(t), doubleEaseOut(t), t);
+    t = constrainDouble(t, 0.0, 1.0);
     t = t * (outEnd - outStart);
     t += outStart;
-    t = constrainDouble(t,outStart,outEnd);
+    t = constrainDouble(t, outStart, outEnd);
     return t;
+}
+
+float TCodeFloatingOperations::absf(float value)
+{
+    if (value < 0)
+        return -value;
+    return value;
+}
+
+float TCodeFloatingOperations::pow10(int exponent)
+{
+    float outvalue = 10;
+
+    if (exponent == 0)
+        return 1.0f;
+
+    for (int i = 0; i < TCodeFloatingOperations::absf(exponent); i++)
+    {
+        outvalue *= 10;
+    }
+
+    if (exponent < 0)
+        outvalue = 1 / outvalue;
+    return outvalue;
+}
+
+unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precision, unsigned char &log_out)
+{
+    float depsilon = TCodeFloatingOperations::pow10(-precision);
+    unsigned long out = 0;
+    int log = 0;
+    while ((value > 0) && (log < precision))
+    {
+        value *= 10;
+        int integer_part = static_cast<int>(value);
+        value -= integer_part;
+        out = (out * 10) + integer_part;
+        log++;
+
+        if ((value < depsilon) || (value > 1 - depsilon))
+            break;
+    }
+    if (value > 0.5)
+        out += 1;
+
+    while ((out % 10 == 0) && (log != 0))
+    {
+        out /= 10;
+        log--;
+    }
+
+    log_out = log;
+    return out;
 }

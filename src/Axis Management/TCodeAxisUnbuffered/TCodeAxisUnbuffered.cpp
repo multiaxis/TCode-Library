@@ -62,6 +62,12 @@ void TCodeAxis::set(float targetValue, TCode_Axis_Extention_Type extentionType, 
             }
         }
     }
+
+    if(targetValue > 1.0)
+        targetValue = 1.0;
+    if(targetValue < 0.0)
+        targetValue = 0.0;
+
     currentState.startTime = t;
     currentState.endTime = t + delta_time;
     currentState.rampType = rampType;
@@ -95,19 +101,19 @@ float TCodeAxis::getPosition()
     switch (currentState.rampType)
     {
     case TCode_Axis_Ramp_Type::Linear:
-        x = doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseIn:
-        x = doubleMapEaseInf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapEaseInf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseOut:
-        x = doubleMapEaseOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapEaseOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case TCode_Axis_Ramp_Type::EaseInOut:
-        x = doubleMapEaseInOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapEaseInOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     default:
-        x = doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
     }
 
     if (x < 0)

@@ -162,6 +162,8 @@ struct TCode_Save_Entry
 {
     float min;
     float max;
+    uint8_t min_log;
+    uint8_t max_log;
 };
 
 /**

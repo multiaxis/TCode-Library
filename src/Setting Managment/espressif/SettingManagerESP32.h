@@ -6,9 +6,12 @@
 #ifndef SETTING_MANAGER_ESP32_H
 #define SETTING_MANAGER_ESP32_H
 #include "../SettingManagementInterface.h"
+#include "../../Utils/TCodeBuffer.h"
+#include "../../Utils/TCodeTaggedDataContainer.h"
 #include <SPIFFS.h>
 #include <ArduinoJson.h>
 #define DEFAULT_JSON_FILE_SIZE 2048
+#define DEFAULT_SETTING_CACHE_SIZE 15
 
 class SettingManagerESP32 : public ISettings
 {
@@ -49,6 +52,11 @@ private:
     bool fileSystemMounted = false;
     bool foundFile = false;
 
+    TCodeBuffer<TCodeTaggedDataContainer> cache {DEFAULT_SETTING_CACHE_SIZE};
+
+    bool keyInCache(const char* setting);
+    bool getValueFromCache(const char* setting,TCodeDataContainer& value);
+    bool setValueToCache(const char* setting,TCodeDataContainer value);
     bool getFile(String &out);
     bool writeFile(const String &fileData);
     unsigned long getFileSize();
@@ -64,6 +72,14 @@ protected:
 template <class T>
 inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &settingValue)
 {
+    if(keyInCache(setting))
+    {
+        TCodeDataContainer result;
+        if(getValueFromCache(setting,result))
+            return result.getValue<T>(settingValue);
+    }
+
+
 
 #ifdef DEBUG
     Serial.print(F("SM: getting setting "));
@@ -117,6 +133,8 @@ inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &set
 template <class T>
 inline bool SettingManagerESP32::setSettingTemplated(const char *setting, const T &settingValue)
 {
+    setValueToCache(setting,settingValue);
+    
 
 #ifdef DEBUG
     Serial.print(F("SM: setting setting "));

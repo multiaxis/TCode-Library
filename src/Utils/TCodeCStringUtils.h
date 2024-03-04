@@ -5,6 +5,7 @@
 #pragma once
 #ifndef TCODE_CSTRING_UTILS_H
 #define TCODE_CSTRING_UTILS_H
+#include "TCodeFloating.h"
 
 class TCodeCStringUtils
 {
@@ -114,7 +115,7 @@ public:
      * @param index the index pointing to a position in the string
      * @return returns a long the integer found in the string represented as base 10 unsigned if a integer string is found which is less than 4 characters long then it will be multiplied til it reaches that minimum e.g. "1" = 1000 ,"01" = 100
      */
-    static bool getNextTCodeInt(unsigned long &value,size_t &log,char *buffer, const size_t length, size_t &index)
+    static bool getNextTCodeFloat(float &value,size_t &log,char *buffer, const size_t length, size_t &index)
     {
         size_t count = 0;
         long accum = 0;
@@ -135,6 +136,7 @@ public:
             count++;
         }
 
+        value = (double)accum / (TCodeFloatingOperations::pow10((int)count)-1);
         log = count;
         value = accum;
 

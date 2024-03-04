@@ -392,13 +392,23 @@ void TCode::runExternalCommand(TCode_External_Command &command)
     externalCommandBuffer.push('\n');
 }
 
-void TCode::setSaveValues(TCode_ChannelID &id, unsigned int min, unsigned int max)
+void TCode::setSaveValues(TCode_ChannelID &id, float min, float max)
 {
     if (settingManager == nullptr)
     {
         print(F("TCODE : Setting Manager Is Null"));
         return;
     }
+
+    if(min > 1.0)
+        min = 1.0;
+    if(min < 0.0)
+        min = 0.0;
+
+    if(max > 1.0)
+        max = 1.0;
+    if(max < 0.0)
+        max = 0.0; 
 
     ITCodeAxis *temp = getAxisFromID(id);
     if (temp != nullptr)
@@ -409,7 +419,7 @@ void TCode::setSaveValues(TCode_ChannelID &id, unsigned int min, unsigned int ma
         name += str_id;
         if (!settingManager->hasSetting(name.c_str()))
         {
-            settingManager->setSetting(name.c_str(), 0);
+            settingManager->setSetting(name.c_str(), 0.0f);
         }
         else
         {
@@ -420,12 +430,20 @@ void TCode::setSaveValues(TCode_ChannelID &id, unsigned int min, unsigned int ma
         name += str_id;
         if (!settingManager->hasSetting(name.c_str()))
         {
-            settingManager->setSetting(name.c_str(), TCODE_MAX_AXIS);
+            settingManager->setSetting(name.c_str(), 1.0f);
         }
         else
         {
             settingManager->setSetting(name.c_str(), max);
         }
+
+        name = "AXIS-MIN-LOG-";
+        name += str_id;
+        settingManager->setSetting(name.c_str(), 4);
+
+        name = "AXIS-MAX-LOG-";
+        name += str_id;
+        settingManager->setSetting(name.c_str(), 4);
     }
 }
 
@@ -442,29 +460,51 @@ void TCode::printSavedAxisValues()
         ITCodeAxis *temp = nullptr;
         if (axisBuffer.get(i, temp))
         {
+            float min = 0.0f;
+            int min_log = 4;
+            float max = 1.0;
+            int max_log = 4;
+            unsigned long tcode_min;
+            unsigned long tcode_max;
+
             String str_id = "";
             TCodeParser::getStrfromID(temp->getChannelID(), str_id);
             String name = "AXIS-MIN-";
             name += str_id;
-            unsigned int min = 0;
             if (!settingManager->getSetting(name.c_str(), min))
             {
-                settingManager->setSetting(name.c_str(), 0);
+                settingManager->setSetting(name.c_str(), 0.0f);
+            }
+            
+            name = "AXIS-MIN-LOG-";
+            name += str_id;
+            if (!settingManager->getSetting(name.c_str(), min_log))
+            {
+                settingManager->setSetting(name.c_str(), 4);
             }
 
             name = "AXIS-MAX-";
             name += str_id;
-            unsigned int max = TCODE_MAX_AXIS;
+            
             if (!settingManager->getSetting(name.c_str(), max))
             {
-                settingManager->setSetting(name.c_str(), TCODE_MAX_AXIS);
+                settingManager->setSetting(name.c_str(), 1.0f);
             }
 
+            name = "AXIS-MAX-LOG-";
+            name += str_id;
+            if (!settingManager->getSetting(name.c_str(), max_log))
+            {
+                settingManager->setSetting(name.c_str(), 4);
+            }
+            unsigned char log_out;
+            tcode_min = TCodeFloatingOperations::getTCodeFromFloat(min,min_log,log_out);
+            tcode_max = TCodeFloatingOperations::getTCodeFromFloat(max,max_log,log_out);
             print(str_id);
             print(' ');
-            print(String(min));
+            print(String(tcode_min));
             print(' ');
-            print(String(max));
+            print(String(tcode_max));
             print(' ');
             println(temp->getName());
         }

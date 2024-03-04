@@ -43,8 +43,95 @@ bool SettingManagerESP32::isMounted()
     return fileSystemMounted && foundFile;
 }
 
+bool SettingManagerESP32::keyInCache(const char* setting)
+{
+    unsigned long settingHash = str2hash(setting);
+    for(size_t i = 0; i < cache.count(); i++)
+    {
+        TCodeTaggedDataContainer result;
+        if(!cache.get(i,result))
+        {
+            continue;
+        }
+
+        if(result == settingHash)
+        {
+            if(result == setting)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool SettingManagerESP32::getValueFromCache(const char* setting,TCodeDataContainer& value)
+{
+    unsigned long settingHash = str2hash(setting);
+    for(size_t i = 0; i < cache.count(); i++)
+    {
+        TCodeTaggedDataContainer result;
+        if(!cache.get(i,result))
+        {
+            continue;
+        }
+
+        if(result == settingHash)
+        {
+            if(result == setting)
+            {
+                value.setValue(*result.getDataContainer());
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool SettingManagerESP32::setValueToCache(const char* setting,TCodeDataContainer value)
+{
+    if(!keyInCache(setting))
+    {
+        if(cache.full())
+            cache.pop();
+        TCodeTaggedDataContainer tagged(setting,value);
+        cache.push(tagged);
+        return true;
+    }
+    else
+    {
+        unsigned long settingHash = str2hash(setting);
+        for(size_t i = 0; i < cache.count(); i++)
+        {
+            TCodeTaggedDataContainer result;
+            if(!cache.get(i,result))
+            {
+                continue;
+            }
+
+            if(result == settingHash)
+            {
+                if(result == setting)
+                {
+                    TCodeTaggedDataContainer tagged(setting,value);
+                    cache.set(i,tagged);
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 bool SettingManagerESP32::hasSetting(const char *setting)
 {
+    ESP_LOGI(SETTING_MANAGMENT_TAG,"checking cache for setting \"%s\"",setting);
+
+    if(keyInCache(setting))
+    {
+        ESP_LOGI(SETTING_MANAGMENT_TAG,"key \"%s\" in cache",setting);
+        return true;
+    }
 
     String fileData;
     if (!getFile(fileData))

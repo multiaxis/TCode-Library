@@ -7,6 +7,12 @@
 
 #define TCODE_MAX_AXIS 0.9999f
 
+
+/**
+ * @brief Value used to define the max log count
+ */
+#define TCODE_MAX_LOG 15
+
 /**
  * @brief Value used to define the max channel count
  */
