@@ -8,6 +8,8 @@
 #ifndef TCODE_FLOATING_POINT_H
 #define TCODE_FLOATING_POINT_H
 #include "../Constants and Enums/TCodeConstants.h"
+#include <Arduino.h>
+
 
 namespace TCodeFloatingOperations
 {

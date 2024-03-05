@@ -387,7 +387,7 @@ bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Set
 
     unsigned long maxValueLong; 
     size_t maxValuelog;
-    if(!TCodeCStringUtils::getNextInt(minValueLong,minValuelog,buffer, length, index)) // Get the first minimum value
+    if(!TCodeCStringUtils::getNextInt(maxValueLong,maxValuelog,buffer, length, index)) // Get the first minimum value
         return false;
 
     if ((TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index)) != '\0'))

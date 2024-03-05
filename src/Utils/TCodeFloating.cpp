@@ -151,7 +151,7 @@ float TCodeFloatingOperations::absf(float value)
 
 float TCodeFloatingOperations::pow10(int exponent)
 {
-    float outvalue = 10;
+    float outvalue = 1;
 
     if (exponent == 0)
         return 1.0f;
@@ -171,26 +171,31 @@ unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precis
     float depsilon = TCodeFloatingOperations::pow10(-precision);
     unsigned long out = 0;
     int log = 0;
-    while ((value > 0) && (log < precision))
-    {
-        value *= 10;
-        int integer_part = static_cast<int>(value);
-        value -= integer_part;
-        out = (out * 10) + integer_part;
-        log++;
 
-        if ((value < depsilon) || (value > 1 - depsilon))
-            break;
+    if(value > 1.0f)
+        value = 1.0f;
+    if(value < 0.0f)
+        value = 0.0f;
+
+    if(value < 1.0f){
+        while ((value > 0) && (log < precision))
+        {
+            value *= 10;
+            int integer_part = static_cast<int>(value);
+            value -= integer_part;
+            out = (out * 10) + integer_part;
+            log++;
+
+            if ((value < depsilon) || (value > 1 - depsilon))
+                break;
+        }
+        if (value > 0.5)
+            out += 1;
     }
-    if (value > 0.5)
-        out += 1;
-
-    while ((out % 10 == 0) && (log != 0))
+    else
     {
-        out /= 10;
-        log--;
+        return (unsigned long)TCodeFloatingOperations::pow10(precision);
     }
-
     log_out = log;
     return out;
 }

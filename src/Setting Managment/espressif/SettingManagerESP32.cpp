@@ -55,9 +55,9 @@ bool SettingManagerESP32::keyInCache(const char* setting)
             continue;
         }
 
-        if(result == settingHash)
+        if(result.getHash() == settingHash)
         {
-            if(result == setting)
+            if(strcmp(result.getTag(),setting) == 0)
             {
                 return true;
             }
@@ -78,9 +78,9 @@ bool SettingManagerESP32::getValueFromCache(const char* setting,TCodeDataContain
             continue;
         }
 
-        if(result == settingHash)
+        if(result.getHash() == settingHash)
         {
-            if(result == setting)
+            if(strcmp(result.getTag(),setting) == 0)
             {
                 value.setValue(*result.getDataContainer());
                 return true;
@@ -112,9 +112,9 @@ bool SettingManagerESP32::setValueToCache(const char* setting,TCodeDataContainer
                 continue;
             }
 
-            if(result == settingHash)
+            if(result.getHash() == settingHash)
             {
-                if(result == setting)
+                if(strcmp(result.getTag(),setting) == 0)
                 {
                     TCodeTaggedDataContainer tagged(setting,value);
                     cache.set(i,tagged);

@@ -11,8 +11,8 @@
 #include <SPIFFS.h>
 #include <ArduinoJson.h>
 #define DEFAULT_JSON_FILE_SIZE 2048
-#define DEFAULT_SETTING_CACHE_SIZE 15
-
+#define DEFAULT_SETTING_CACHE_SIZE 64
+//#define DEBUG
 
 class SettingManagerESP32 : public ISettings
 {
@@ -62,24 +62,26 @@ private:
     bool writeFile(const String &fileData);
     unsigned long getFileSize();
 protected:
-    template <class T>
+    template <typename T>
     bool getSettingTemplated(const char *setting, T &settingValue);
 
-    template <class T>
+    template <typename T>
     bool setSettingTemplated(const char *setting, const T &settingValue);
 };
 
 
-template <class T>
+template <typename T>
 inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &settingValue)
 {
 #ifdef DEBUG
-    Serial.print("SM: Checking Cache");
+    Serial.print("SM: Checking Cache For setting \"");
+    Serial.print(setting);
+    Serial.println("\"");
 #endif
     if(keyInCache(setting))
     {
 #ifdef DEBUG
-        Serial.print("SM: value found in cache:");
+        Serial.println("SM: value found in cache:");
 #endif
         TCodeDataContainer result;
         if(getValueFromCache(setting,result))
@@ -100,6 +102,9 @@ inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &set
 #endif
         return false;
     }
+
+    //Serial.println(file_data);
+
     StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
     DeserializationError error = deserializeJson(doc, file_data);
     if (error)
@@ -111,7 +116,7 @@ inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &set
         return false;
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_VERBOSE
     Serial.print(F("SM: keys "));
     JsonObject documentRoot = doc.as<JsonObject>();
     for (JsonPair keyValue : documentRoot)
@@ -133,16 +138,15 @@ inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &set
     }
 
     settingValue = doc[setting].as<T>();
-
+    TCodeDataContainer settingValueContainer(settingValue);
+    setValueToCache(setting,settingValueContainer);
     return true;
 }
 
-template <class T>
+template <typename T>
 inline bool SettingManagerESP32::setSettingTemplated(const char *setting, const T &settingValue)
 {
-    setValueToCache(setting,settingValue);
     
-
 #ifdef DEBUG
     Serial.print(F("SM: setting setting "));
     Serial.print(setting);
@@ -155,6 +159,9 @@ inline bool SettingManagerESP32::setSettingTemplated(const char *setting, const 
     {
         return false;
     }
+
+    TCodeDataContainer settingValueContainer(settingValue);
+    setValueToCache(setting,settingValueContainer);
 
     StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
     DeserializationError error = deserializeJson(doc, fileData);
@@ -170,6 +177,7 @@ inline bool SettingManagerESP32::setSettingTemplated(const char *setting, const 
     doc[setting] = settingValue;
     String out;
     serializeJson(doc, out);
+    //Serial.println(out);
     writeFile(out);
     return true;
 }
