@@ -392,7 +392,7 @@ void TCode::runExternalCommand(TCode_External_Command &command)
     externalCommandBuffer.push('\n');
 }
 
-void TCode::setSaveValues(TCode_ChannelID &id, float min, float max)
+void TCode::setSaveValues(TCode_ChannelID &id, float min, float max, uint8_t min_log, uint8_t max_log)
 {
     if (settingManager == nullptr)
     {
@@ -409,6 +409,12 @@ void TCode::setSaveValues(TCode_ChannelID &id, float min, float max)
         max = 1.0;
     if(max < 0.0)
         max = 0.0; 
+
+    if(min_log > TCODE_MAX_LOG)
+        min_log = TCODE_MAX_LOG;
+    if(max_log > TCODE_MAX_LOG)
+        max_log = TCODE_MAX_LOG;  
+    
 
     ITCodeAxis *temp = getAxisFromID(id);
     if (temp != nullptr)
@@ -439,11 +445,11 @@ void TCode::setSaveValues(TCode_ChannelID &id, float min, float max)
 
         name = "AXIS-MIN-LOG-";
         name += str_id;
-        settingManager->setSetting(name.c_str(), 4);
+        settingManager->setSetting(name.c_str(), (int)min_log);
 
         name = "AXIS-MAX-LOG-";
         name += str_id;
-        settingManager->setSetting(name.c_str(), 4);
+        settingManager->setSetting(name.c_str(), (int)max_log);
     }
 }
 
@@ -476,6 +482,7 @@ void TCode::printSavedAxisValues()
                 settingManager->setSetting(name.c_str(), 0.0f);
             }
             
+
             name = "AXIS-MIN-LOG-";
             name += str_id;
             if (!settingManager->getSetting(name.c_str(), min_log))
@@ -513,56 +520,56 @@ void TCode::printSavedAxisValues()
 
 void TCode::print(const char value)
 {
-    if(outputStream = nullptr)
+    if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
 void TCode::print(const char *value)
 {
-    if(outputStream = nullptr)
+    if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
 void TCode::print(const __FlashStringHelper *value)
 {
-    if(outputStream = nullptr)
+    if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
 void TCode::print(const String &value)
 {
-    if(outputStream = nullptr)
+    if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
 void TCode::println(const char value)
 {
-    if(outputStream = nullptr)
+    if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
 void TCode::println(const char *value)
 {
-    if(outputStream = nullptr)
+    if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
 void TCode::println(const __FlashStringHelper *value)
 {
-    if(outputStream = nullptr)
+    if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
 void TCode::println(const String &value)
 {
-    if(outputStream = nullptr)
+    if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }

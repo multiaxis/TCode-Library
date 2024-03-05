@@ -45,7 +45,8 @@ bool SettingManagerESP32::isMounted()
 
 bool SettingManagerESP32::keyInCache(const char* setting)
 {
-    unsigned long settingHash = str2hash(setting);
+    size_t length = strlen(setting);
+    unsigned long settingHash = str2hash(setting,length);
     for(size_t i = 0; i < cache.count(); i++)
     {
         TCodeTaggedDataContainer result;
@@ -67,7 +68,8 @@ bool SettingManagerESP32::keyInCache(const char* setting)
 
 bool SettingManagerESP32::getValueFromCache(const char* setting,TCodeDataContainer& value)
 {
-    unsigned long settingHash = str2hash(setting);
+    size_t length = strlen(setting);
+    unsigned long settingHash = str2hash(setting,length);
     for(size_t i = 0; i < cache.count(); i++)
     {
         TCodeTaggedDataContainer result;
@@ -100,7 +102,8 @@ bool SettingManagerESP32::setValueToCache(const char* setting,TCodeDataContainer
     }
     else
     {
-        unsigned long settingHash = str2hash(setting);
+        size_t length = strlen(setting);
+        unsigned long settingHash = str2hash(setting,length);
         for(size_t i = 0; i < cache.count(); i++)
         {
             TCodeTaggedDataContainer result;

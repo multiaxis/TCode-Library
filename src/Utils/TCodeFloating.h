@@ -104,6 +104,8 @@ namespace TCodeFloatingOperations
     float pow10(int exponent);
 
     unsigned long getTCodeFromFloat(float value, int precision, unsigned char &log_out);
+
+    unsigned long getTCodeEstimateLogFromFloat(float value);
 }
 
 #endif

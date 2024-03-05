@@ -13,6 +13,7 @@
 #define DEFAULT_JSON_FILE_SIZE 2048
 #define DEFAULT_SETTING_CACHE_SIZE 15
 
+
 class SettingManagerESP32 : public ISettings
 {
 public:
@@ -72,8 +73,14 @@ protected:
 template <class T>
 inline bool SettingManagerESP32::getSettingTemplated(const char *setting, T &settingValue)
 {
+#ifdef DEBUG
+    Serial.print("SM: Checking Cache");
+#endif
     if(keyInCache(setting))
     {
+#ifdef DEBUG
+        Serial.print("SM: value found in cache:");
+#endif
         TCodeDataContainer result;
         if(getValueFromCache(setting,result))
             return result.getValue<T>(settingValue);
@@ -153,8 +160,10 @@ inline bool SettingManagerESP32::setSettingTemplated(const char *setting, const 
     DeserializationError error = deserializeJson(doc, fileData);
     if (error)
     {
+#ifdef DEBUG
         Serial.print(F("SM: deserializeJson() failed: "));
         Serial.println(error.f_str());
+#endif
         return false;
     }
 

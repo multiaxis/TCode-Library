@@ -218,7 +218,7 @@ private:
     void runSetupCommand(TCode_Setup_Command &command);
     void runExternalCommand(TCode_External_Command &command);
 
-    void setSaveValues(TCode_ChannelID &id, float min, float max);
+    void setSaveValues(TCode_ChannelID &id, float min, float max,uint8_t min_log = 4, uint8_t max_log = 4);
 
 
     void printSavedAxisValues();

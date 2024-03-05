@@ -194,3 +194,18 @@ unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precis
     log_out = log;
     return out;
 }
+
+unsigned long TCodeFloatingOperations::getTCodeEstimateLogFromFloat(float value)
+{
+    unsigned long log = 0;
+    const unsigned long max_log = 15;
+    while ((value > 0) && (log < max_log))
+    {
+        value *= 10;
+        int integer_part = static_cast<int>(value);
+        value -= integer_part;
+        if(value < 0.5f)
+            break;
+    }
+    return log;
+}

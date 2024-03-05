@@ -6,16 +6,18 @@
 #ifndef TCODE_TAGGED_DATA_CONTAINER_H
 #define TCODE_TAGGED_DATA_CONTAINER_H
 #include <string>
+#include <Arduino.h>
 #include "TCodeDataContainer.h"
 
 //implementation of djb2 from http://www.cse.yorku.ca/~oz/hash.html
-static unsigned long str2hash(const char *str)
+static unsigned long str2hash(const char *str,size_t length)
 {
     unsigned long hash = 5381;
     char c;
-    for(int i = 0, c = str[i]; c != '\0'; i++)
+    for(int i = 0, c = str[i]; c != '\0', i < length; i++)
+    {
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-
+    }
     return hash;
 }
 
@@ -34,7 +36,8 @@ public:
 
     TCodeTaggedDataContainer(const char * _tag, TCodeDataContainer _data) : tag(_tag),data(_data)
     {
-        taghash = str2hash(tag);
+        size_t length = strlen(tag);
+        taghash = str2hash(tag,length);
     }
 
     TCodeDataContainer* getDataContainer()
