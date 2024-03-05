@@ -6,7 +6,6 @@
 #ifndef TCODE_TAGGED_DATA_CONTAINER_H
 #define TCODE_TAGGED_DATA_CONTAINER_H
 #include <string>
-#include <Arduino.h>
 #include "TCodeDataContainer.h"
 
 //implementation of djb2 from http://www.cse.yorku.ca/~oz/hash.html

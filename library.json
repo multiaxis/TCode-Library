@@ -1,6 +1,6 @@
 {
 	"name":"TCode Library",
-	"version":"0.1.5",
+	"version":"0.2.0",
 	"description":"A library to aid in decoding/using of Toy Code (\"T-Code\") data.",
 	"dependencies":
 	{
