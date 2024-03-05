@@ -1,10 +1,14 @@
-name: Compile Library
+name: Compile Library Main
 
 on:
   push:
+    branches:
+      - master
     paths-ignore:
       - 'examples/**'
   pull_request:
+    branches:
+      - master
     paths-ignore:
       - 'examples/**'
 
