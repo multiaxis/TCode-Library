@@ -76,16 +76,7 @@ void print_heap()
   size_t total_size = heap_caps_get_total_size(MALLOC_CAP_DEFAULT);
   Serial.println("=== HEAP INFO ===");
 
-  float percent_blocks_allocated = ((float)info_value.allocated_blocks / (float)info_value.total_blocks) * 100.0f;
-  float percent_blocks_free = ((float)info_value.allocated_blocks / (float)info_value.total_blocks)  * 100.0f;
   float percent_bytes_allocated = ((float)info_value.total_free_bytes / (float)total_size)  * 100.0f;
-  Serial.print("Blocks Allocated :");
-  Serial.print(percent_blocks_allocated);
-  Serial.println('%');
-
-  Serial.print("Blocks Free :");
-  Serial.print(percent_blocks_free);
-  Serial.println('%');
 
   Serial.print("Bytes Free :");
   Serial.print(percent_bytes_allocated);
