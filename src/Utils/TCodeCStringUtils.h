@@ -136,7 +136,7 @@ public:
             count++;
         }
 
-        value = (double)accum / (TCodeFloatingOperations::pow10((int)count)-1);
+        value = (double)accum / TCodeFloatingOperations::pow10((int)count);
         log = count;
         value = accum;
 
