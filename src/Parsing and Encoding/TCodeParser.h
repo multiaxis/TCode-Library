@@ -137,7 +137,7 @@ public:
     static bool parseAxisCommand(char *buffer, const size_t length, TCode_Axis_Command &out);
 
     /**
-     * @brief Parses the next command out of a buffer and puts it into a provided char buffer
+     * @brief Parses axis extention from command buffer
      * @param inputBuffer buffer for command to be parsed from
      * @param length length of input buffer
      * @param index starting index
@@ -148,7 +148,7 @@ public:
     static bool parseAxisExtention(char *buffer, const size_t length, size_t &index, TCode_Axis_Extention_Type &extentionType, long &commandExtention);
     
     /**
-     * @brief Parses the next command out of a buffer and puts it into a provided char buffer
+     * @brief Parses axis ramp from command buffer
      * @param inputBuffer buffer for command to be parsed from
      * @param length length of input buffer
      * @param index starting index
@@ -158,7 +158,17 @@ public:
      * @returns returns a true if axis ramp was parsed correctly
      */
     static bool bool parseAxisRamp(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &rampIn, TCode_Axis_Ramp_Data &rampOut);
-
+    
+    /**
+     * @brief Parses axis ramp data from command buffer
+     * @param inputBuffer buffer for command to be parsed from
+     * @param length length of input buffer
+     * @param index starting index
+     * @param data returning ramp data
+     * @returns returns a true if axis ramp data was parsed correctly
+     */
+    static bool parseAxisRampData(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Data &data);
+    
     /**
      * @brief Parses a Device Command
      * @param buffer string to be processed

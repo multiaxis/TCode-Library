@@ -323,31 +323,41 @@ bool TCodeParser::parseAxisRamp(char *buffer, const size_t length, size_t &index
      
     if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
         return true;            
-        
-    size_t log_value;
-    float rampTangent = 0;
-    float rampWeight = 1/3f;  
-    if (!TCodeCStringUtils::getNextTCodeFloat(rampTangent, log_value, buffer, length, index))
+
+    TCode_Axis_Ramp_Data data = {};
+    if (!parseAxisRampData(buffer, length, index, data))
         return false;
 
+    if (currentRampType == TCode_Axis_Ramp_Type::In || currentRampType == TCode_Axis_Ramp_Type::InOut)
+        rampIn = data;
+    if (currentRampType == TCode_Axis_Ramp_Type::Out || currentRampType == TCode_Axis_Ramp_Type::InOut)
+        rampOut = data;
+
+    if (rampType != TCode_Axis_Ramp_Type::None)
+        rampType = TCode_Axis_Ramp_Type::InOut;
+
+    return true;
+}
+
+bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Data &data)
+{
+    data = {0, false, 1/3f, false}; 
+
+    size_t log_value;
+    if (!TCodeCStringUtils::getNextTCodeFloat(data.tangent, log_value, buffer, length, index))
+        return false;
+
+    data.hasTangent = true;
     if (TCodeCStringUtils::getCharAt(buffer, length, index++) != '.')
         return true;
     
     if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
         return false;
     
-    if (!TCodeCStringUtils::getNextTCodeFloat(rampWeight, log_value, buffer, length, index))
+    if (!TCodeCStringUtils::getNextTCodeFloat(data.weight, log_value, buffer, length, index))
         return false; 
 
-    if (currentRampType == TCode_Axis_Ramp_Type::In || currentRampType == TCode_Axis_Ramp_Type::InOut)
-        rampIn = {rampTangent, rampWeight};
-    if (currentRampType == TCode_Axis_Ramp_Type::Out || currentRampType == TCode_Axis_Ramp_Type::InOut)
-        rampOut = {rampTangent, rampWeight};
-
-    if (rampType != TCode_Axis_Ramp_Type::None)
-        rampType = TCode_Axis_Ramp_Type::InOut;
-
-    return true;
+    data.hasWeight = true;
 }
 
 bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Setup_Command &out)

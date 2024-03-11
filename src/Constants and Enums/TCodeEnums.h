@@ -119,8 +119,11 @@ struct TCode_Axis_Data
 */
 struct TCode_Axis_Ramp_Data 
 {
+
     float tangent;
+    bool hasTangent;
     float weight;
+    bool hasWeight;
 }
 
 /**
