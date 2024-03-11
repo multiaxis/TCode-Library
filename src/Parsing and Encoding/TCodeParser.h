@@ -76,53 +76,28 @@ public:
      * @brief Gets the Extention type from a string at the index specified
      * @param buffer string to be processed
      * @param length length of buffer
-     * @param startIndex starting index of the char to be processed
+     * @param index starting index of the char to be processed
      * @returns returns a TCode Axis Extention Type used in the Axis to work out if an extention means Time or Speed
      */
-    static TCode_Axis_Extention_Type getExtentionTypeFromStr(char *buffer, const size_t length, size_t &startIndex);
-
-    /** @brief Takes in starting and ending ramp types and creates a ramp type combining those two
-     * @param startingRampType starting ramp type
-     * @param startingRampValue starting ramp value
-     * @param endingRampType ending ramp type
-     * @param endingRampValue ending ramp value
-     * @param outRampType ramp returned by combination of the starting and ending ramp types
-     * @param rampInValue ramp value given by the ramp in values for both ramps
-     * @param rampOutValue ramp value given by the ramp out values for both ramps
-     */
-    static void combineRampSegments(TCode_Axis_Ramp_Type startingRampType, float startingRampValue, TCode_Axis_Ramp_Type endingRampType, float endingRampValue, TCode_Axis_Ramp_Type &outRampType, float &rampInValue, float &rampOutValue);
-
-    /**
-     * @brief Parses a single ramp segment in a command returning the ramp type and ramp value if it has one
-     * @param buffer string to be processed
-     * @param length length of buffer
-     * @param startIndex starting index of the char to be processed
-     * @param rampType returning ramp type
-     * @param rampValue ramp value
-     * @returns returns a true if ramp type was parsed correctly
-     */
-    static bool parseRampSegment(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, float &rampValue);
-
+    static TCode_Axis_Extention_Type getExtentionTypeFromStr(char *buffer, const size_t length, size_t &index);
     /**
      * @brief Gets the Ramp type from a string at the index specified
      * @param buffer string to be processed
      * @param length length of buffer
-     * @param startIndex starting index of the char to be processed
+     * @param index starting index of the char to be processed
      * @param rampType returning ramp type
-     * @param rampInValue ramp in value
-     * @param rampOutValue ramp out value
      * @returns returns a true if ramp type was parsed correctly
      */
-    static bool getRampTypeFromStr(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, float &rampInValue, float &rampOutValue);
+    static bool getRampTypeFromStr(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Type &rampType);
 
     /**
      * @brief Gets the ID from an inputted string from a given index
      * @param buffer string to be processed
      * @param length length of buffer
-     * @param startIndex starting index of the char to be processed
+     * @param index starting index
      * @returns returns a TCode Channel ID found at the location at the starting index
      */
-    static TCode_ChannelID getIDFromStr(char *buffer, const size_t length, size_t &startIndex);
+    static TCode_ChannelID getIDFromStr(char *buffer, const size_t length, size_t &index);
 
     /**
      * @brief Returns the type of command provided by the input string
@@ -130,13 +105,14 @@ public:
      * @param length length of buffer
      * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
      */
-    static TCode_Command_Type getCommandType(char *buffer, const size_t length, size_t startIndex);
+    static TCode_Command_Type getCommandType(char *buffer, const size_t length, size_t index);
 
     /**
      * @brief Parses the next command out of a buffer and puts it into a provided char buffer
      * @param inputBuffer buffer for command to be parsed from
      * @param buffer buffer for command to go into
      * @param length length of buffer
+     * @param index starting index of the char to be processed
      * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
      */
     static size_t getNextCommand(TCodeBuffer<char> *inputBuffer, char *buffer, size_t buffer_length);
@@ -145,12 +121,12 @@ public:
      * @brief Parses the next command out of a buffer and puts it into a provided char buffer
      * @param inputBuffer buffer for command to be parsed from
      * @param length length of input buffer
-     * @param startIndex starting index
+     * @param index starting index
      * @param outbuffer buffer for command to go into
      * @param outBufferLength length of buffer
      * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
      */
-    static size_t getNextCommand(char *inputBuffer, const size_t length, const size_t startIndex, char *outbuffer, const size_t outBufferLength);
+    static size_t getNextCommand(char *inputBuffer, const size_t length, const size_t index, char *outbuffer, const size_t outBufferLength);
 
     /**
      * @brief Parses an Axis Command
@@ -159,6 +135,29 @@ public:
      * @param out a TCode Axis command struct so that the command can be executed easier
      */
     static bool parseAxisCommand(char *buffer, const size_t length, TCode_Axis_Command &out);
+
+    /**
+     * @brief Parses the next command out of a buffer and puts it into a provided char buffer
+     * @param inputBuffer buffer for command to be parsed from
+     * @param length length of input buffer
+     * @param index starting index
+     * @param extentionType returning extention type
+     * @param commandExtention returning extendion value
+     * @returns returns a true if axis extention was parsed correctly
+     */
+    static bool parseAxisExtention(char *buffer, const size_t length, size_t &index, TCode_Axis_Extention_Type &extentionType, long &commandExtention);
+    
+    /**
+     * @brief Parses the next command out of a buffer and puts it into a provided char buffer
+     * @param inputBuffer buffer for command to be parsed from
+     * @param length length of input buffer
+     * @param index starting index
+     * @param rampType returning ramp type
+     * @param rampIn returning ramp in data
+     * @param rampOut returning ramp out data
+     * @returns returns a true if axis ramp was parsed correctly
+     */
+    static bool bool parseAxisRamp(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &rampIn, TCode_Axis_Ramp_Data &rampOut);
 
     /**
      * @brief Parses a Device Command

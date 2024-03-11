@@ -48,19 +48,17 @@ enum class TCode_Axis_Extention_Type
 };
 
 /**
- * @brief representation of a TCode Channel type as an Enum
- * @param Linear Uses Linear interpolation to go from the current value to the target
- * @param EaseIn Uses Easing In ramp function to go from the current value to the target meaning the begining is eased using quadratics and the end is Linear
- * @param EaseOut Uses Easing Out ramp function to go from the current value to the target meaning the end is eased using quadratics and the begining is Linear
- * @param EaseInOut Uses Easing In and Out ramp function to go from the current value to the target meaning it is eased both in and out
+ * @brief representation of a TCode Axis ramp type as an Enum
+ * @param In
+ * @param Out
+ * @param InOut
  * @param None
  */
 enum class TCode_Axis_Ramp_Type
 {
-    Linear,
-    EaseIn,
-    EaseOut,
-    EaseInOut,
+    In,
+    Out,
+    InOut,
     None,
 };
 
@@ -108,11 +106,22 @@ struct TCode_Axis_Data
 {
     TCode_Axis_Extention_Type extentionType;
     TCode_Axis_Ramp_Type rampType;
-    float rampInValue;
-    float rampOutValue;
+    TCode_Axis_Ramp_Data rampIn;
+    TCode_Axis_Ramp_Data rampOut;
     float commandValue;
     unsigned long commandExtention;
 };
+
+/**
+ * @brief representation of the data for an TCode Axis ramp 
+ * @param tangent used to control the ramp angle
+ * @param weight used to control the ramp weight
+*/
+struct TCode_Axis_Ramp_Data 
+{
+    float tangent;
+    float weight;
+}
 
 /**
  * @brief representation of a TCode Device Command
@@ -147,8 +156,8 @@ struct TCode_Axis_State
     unsigned long startTime;
     unsigned long endTime;
     TCode_Axis_Ramp_Type rampType;
-    float rampInValue;
-    float rampOutValue;
+    TCode_Axis_Ramp_Data rampIn;
+    TCode_Axis_Ramp_Data rampOut;
     float startValue;
     float endValue;
 };

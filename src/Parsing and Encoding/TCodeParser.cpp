@@ -91,10 +91,9 @@ TCode_ChannelID TCodeParser::constructID(const TCode_Channel_Type type, const ui
     return {type, channel};
 }
 
-TCode_Axis_Extention_Type TCodeParser::getExtentionTypeFromStr(char *buffer, const size_t length, size_t &startIndex)
+TCode_Axis_Extention_Type TCodeParser::getExtentionTypeFromStr(char *buffer, const size_t length, size_t &index)
 {
-    char type_char = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex));
-    startIndex++;
+    char type_char = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index));
     switch (type_char)
     {
     case 'I':
@@ -102,110 +101,37 @@ TCode_Axis_Extention_Type TCodeParser::getExtentionTypeFromStr(char *buffer, con
     case 'S':
         return TCode_Axis_Extention_Type::Speed;
     }
+
+    index++;
     return TCode_Axis_Extention_Type::None;
 }
 
-
-void TCodeParser::combineRampSegments(TCode_Axis_Ramp_Type startingRampType, float startingRampValue, TCode_Axis_Ramp_Type endingRampType, float endingRampValue, TCode_Axis_Ramp_Type &outRampType, float &rampInValue, float &rampOutValue)
+bool TCodeParser::getRampTypeFromStr(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Type &rampType)
 {
-    if((startingRampType == TCode_Axis_Ramp_Type::Linear) || (endingRampType == TCode_Axis_Ramp_Type::Linear))
-    {
-        outRampType = TCode_Axis_Ramp_Type::Linear;
-        rampOutValue = -1;
-        rampInValue = -1;
-        return;
-    }
-
-    if(startingRampType == TCode_Axis_Ramp_Type::None)
-    {
-        outRampType = endingRampType;
-        rampOutValue = endingRampValue;
-        rampInValue = -1;
-        return;
-    }
-
-    if(endingRampType == TCode_Axis_Ramp_Type::None)
-    {
-        outRampType = startingRampType;
-        rampOutValue = -1;
-        rampInValue = startingRampValue;
-        return;
-    }
-
-    if(startingRampType != endingRampType)
-    {
-        if(startingRampType == TCode_Axis_Ramp_Type::EaseIn)
-        {
-            rampOutValue = endingRampValue;
-            rampInValue = startingRampValue;
-            outRampType = TCode_Axis_Ramp_Type::EaseInOut;
-        }
-        else
-        {
-            rampOutValue = startingRampValue;
-            rampInValue = endingRampValue;
-            outRampType = TCode_Axis_Ramp_Type::EaseInOut;
-        }
-    }
-}
-
-bool TCodeParser::parseRampSegment(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, float &rampValue)
-{
-    rampType = TCode_Axis_Ramp_Type::None;
-    char first = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex));
+    char first = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index));
     switch (first) // Decode what Ramp type it is
     {
     case '<':
     {
-        startIndex++;
-        rampType = TCode_Axis_Ramp_Type::EaseIn;
+        rampType = TCode_Axis_Ramp_Type::In;
     }
     break;
     case '>':
     {
-        startIndex++;
-        rampType = TCode_Axis_Ramp_Type::EaseOut;
+        rampType = TCode_Axis_Ramp_Type::Out;
     }
     break;
     case '=':
     {
-        startIndex++;
-        rampType = TCode_Axis_Ramp_Type::Linear;
+        rampType = TCode_Axis_Ramp_Type::InOut;
     }
     break;
     default:
+        rampType = TCode_Axis_Ramp_Type::None;
         return false;
     }
 
-    if(TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, startIndex+1)))
-    {
-        startIndex++;
-        size_t log_value;
-        if (!TCodeCStringUtils::getNextTCodeFloat(rampValue,log_value,buffer, length, startIndex))
-            return false;
-    }
-
-    return true;
-}
-
-bool TCodeParser::getRampTypeFromStr(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, float &rampInValue, float &rampOutValue)
-{
-    TCode_Axis_Ramp_Type startingRampType = TCode_Axis_Ramp_Type::None;
-    TCode_Axis_Ramp_Type endingRampType = TCode_Axis_Ramp_Type::None;
-    float startingRampValue;
-    float endingRampValue;
-    if(!parseRampSegment(buffer, length, startIndex, startingRampType, startingRampValue))
-    {
-        return false;
-    }
-
-    if(TCodeCStringUtils::isramp(TCodeCStringUtils::getCharAt(buffer, length, startIndex)))
-    {
-        parseRampSegment(buffer,length,startIndex,endingRampType,endingRampValue);
-    }
-
-    combineRampSegments(startingRampType, startingRampValue, endingRampType, endingRampValue, rampType, rampInValue, rampOutValue);
-
+    index++;
     return true;
 }
 
@@ -323,9 +249,9 @@ bool TCodeParser::parseAxisCommand(char *buffer, const size_t length, TCode_Axis
         return false;
 
     TCode_Axis_Extention_Type extentionType = TCode_Axis_Extention_Type::None;
-    TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear;
-    float rampInValue = 0;
-    float rampOutValue = 0;
+    TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::None;
+    TCode_Axis_Ramp_Data rampIn = {};
+    TCode_Axis_Ramp_Data rampOut = {};
     float commandValue = 0;
     unsigned long commandExtention = 0;
 
@@ -333,23 +259,32 @@ bool TCodeParser::parseAxisCommand(char *buffer, const size_t length, TCode_Axis
         return false;
 
     size_t log_value;
-    if (!TCodeCStringUtils::getNextTCodeFloat(commandValue,log_value,buffer, length, index))
+    if (!TCodeCStringUtils::getNextTCodeFloat(commandValue, log_value, buffer, length, index))
         return false;
 
-    if (TCodeCStringUtils::isextention(TCodeCStringUtils::getCharAt(buffer, length, index)))
+    while (true)
     {
-        extentionType = getExtentionTypeFromStr(buffer, length, index);
-        if (!TCodeCStringUtils::getNextInt(commandExtention,log_value,buffer, length, index))
-            return false;
+        if (TCodeCStringUtils::isextention(TCodeCStringUtils::getCharAt(buffer, length, index)))
+        {
+            if (extentionType != TCode_Axis_Extention_Type::None)
+                return false;
+
+            if (!parseAxisExtention(buffer, length, index, extentionType, commandExtention))
+                return false;
+        }
+        else if (TCodeCStringUtils::isramp(TCodeCStringUtils::getCharAt(buffer, length, index)))
+        {            
+            if (!parseAxisRamp(buffer, length, index, rampType, rampIn, rampOut))
+                return false;
+        }
+        else
+        {
+            break;
+        }
     }
 
-    if(TCodeCStringUtils::isramp(TCodeCStringUtils::getCharAt(buffer, length, index)))
-    {
-        if(!getRampTypeFromStr(buffer, length, index, rampType, rampInValue, rampOutValue))
-            return false;
-    }
-
-    if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index)) != '\0') // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
+    // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
+    if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index)) != '\0')
         return false;
 
     TCode_Axis_Data data;
@@ -357,9 +292,61 @@ bool TCodeParser::parseAxisCommand(char *buffer, const size_t length, TCode_Axis
     data.commandExtention = commandExtention;
     data.extentionType = extentionType;
     data.rampType = rampType;
+    data.rampIn = rampIn;
+    data.rampOut = rampOut;
 
     out.Data = data;
     out.ID = id;
+    return true;
+}
+
+bool TCodeParse::parseAxisExtention(char *buffer, const size_t length, size_t &index, TCode_Axis_Extention_Type &extentionType, long &commandExtention)
+{
+    extentionType = getExtentionTypeFromStr(buffer, length, index);
+
+    size_t log_value;
+    if (!TCodeCStringUtils::getNextInt(commandExtention, log_value, buffer, length, index))
+        return false;
+}
+
+bool TCodeParser::parseAxisRamp(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &rampIn, TCode_Axis_Ramp_Data &rampOut)
+{
+    //(<|>|=)(<tangent>(.<weight>))
+    if (rampType == TCode_Axis_Ramp_Type::InOut)
+        return false;
+
+    TCode_Axis_Ramp_Type currentRampType;
+    if (!getRampTypeFromStr(buffer, length, index, currentRampType))
+        return false;
+    if (currentRampType == rampType)
+        return false;
+     
+    if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
+        return true;            
+        
+    size_t log_value;
+    float rampTangent = 0;
+    float rampWeight = 1/3f;  
+    if (!TCodeCStringUtils::getNextTCodeFloat(rampTangent, log_value, buffer, length, index))
+        return false;
+
+    if (TCodeCStringUtils::getCharAt(buffer, length, index++) != '.')
+        return true;
+    
+    if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
+        return false;
+    
+    if (!TCodeCStringUtils::getNextTCodeFloat(rampWeight, log_value, buffer, length, index))
+        return false; 
+
+    if (currentRampType == TCode_Axis_Ramp_Type::In || currentRampType == TCode_Axis_Ramp_Type::InOut)
+        rampIn = {rampTangent, rampWeight};
+    if (currentRampType == TCode_Axis_Ramp_Type::Out || currentRampType == TCode_Axis_Ramp_Type::InOut)
+        rampOut = {rampTangent, rampWeight};
+
+    if (rampType != TCode_Axis_Ramp_Type::None)
+        rampType = TCode_Axis_Ramp_Type::InOut;
+
     return true;
 }
 
@@ -371,7 +358,7 @@ bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Set
 
     TCode_ChannelID id = getIDFromStr(buffer, length, index); // get the ID
 
-    if(!idValid(id))
+    if (!idValid(id))
         return false;
 
     if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index++)) != '-')
@@ -379,7 +366,7 @@ bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Set
 
     unsigned long minValueLong; 
     size_t minValuelog;
-    if(!TCodeCStringUtils::getNextInt(minValueLong,minValuelog,buffer, length, index)) // Get the first minimum value
+    if (!TCodeCStringUtils::getNextInt(minValueLong,minValuelog,buffer, length, index)) // Get the first minimum value
         return false;
 
     if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index++)) != '-')
@@ -387,7 +374,7 @@ bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Set
 
     unsigned long maxValueLong; 
     size_t maxValuelog;
-    if(!TCodeCStringUtils::getNextInt(maxValueLong,maxValuelog,buffer, length, index)) // Get the first minimum value
+    if (!TCodeCStringUtils::getNextInt(maxValueLong,maxValuelog,buffer, length, index)) // Get the first minimum value
         return false;
 
     if ((TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index)) != '\0'))
