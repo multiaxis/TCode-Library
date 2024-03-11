@@ -344,11 +344,12 @@ bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &i
     if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
         return true;
 
-    size_t log_value;
-    if (!TCodeCStringUtils::getNextTCodeFloat(data.tangent, log_value, buffer, length, index))
+    size_t logValue;
+    float tangent;
+    if (!TCodeCStringUtils::getNextTCodeFloat(tangent, logValue, buffer, length, index))
         return false;
     
-    data.tangent = clamp(data.tangent, -almostOne, almostOne);
+    data.tangent = map(tangent, 0, 1, -almostOne, almostOne);
     data.hasTangent = true;
     if (TCodeCStringUtils::getCharAt(buffer, length, index) != '.')
         return true;
@@ -357,10 +358,11 @@ bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &i
     if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
         return false;
     
-    if (!TCodeCStringUtils::getNextTCodeFloat(data.weight, log_value, buffer, length, index))
+    float weight;
+    if (!TCodeCStringUtils::getNextTCodeFloat(weight, logValue, buffer, length, index))
         return false; 
 
-    data.weight = clamp(data.weight, 0, almostOne);
+    data.weight = clamp(weight, 0, almostOne);
     data.hasWeight = true;
 }
 
