@@ -340,11 +340,11 @@ bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &i
 {
     const float almostOne = 1 - TCodeFloatingOperations::Eps;
 
-    data = {0, false, 1/3f, false}; 
+    data = {0, true, 1/3f, false};
     if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
     {
         if (rampType != TCode_Axis_Ramp_Type::InOut)
-            data = {0.704832764699f, true, 1/3f, false}; // tangent = 2arctan(2)/pi to approximates easing functions
+            data.tangent = 0.704832764699f; // 2arctan(2)/pi approximates easing functions
         return true;
     }
 
@@ -354,7 +354,6 @@ bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &i
         return false;
     
     data.tangent = map(tangent, 0, 1, -almostOne, almostOne);
-    data.hasTangent = true;
     if (TCodeCStringUtils::getCharAt(buffer, length, index) != '.')
         return true;
     
