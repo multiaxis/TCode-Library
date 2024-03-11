@@ -322,7 +322,7 @@ bool TCodeParser::parseAxisRamp(char *buffer, const size_t length, size_t &index
         return false;
      
     TCode_Axis_Ramp_Data data;
-    if (!parseAxisRampData(buffer, length, index, data))
+    if (!parseAxisRampData(buffer, length, index, currentRampType, data))
         return false;
 
     if (currentRampType == TCode_Axis_Ramp_Type::In || currentRampType == TCode_Axis_Ramp_Type::InOut)
@@ -336,13 +336,17 @@ bool TCodeParser::parseAxisRamp(char *buffer, const size_t length, size_t &index
     return true;
 }
 
-bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Data &data)
+bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &index, const TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &data)
 {
     const float almostOne = 1 - TCodeFloatingOperations::Eps;
 
     data = {0, false, 1/3f, false}; 
     if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
+    {
+        if (rampType != TCode_Axis_Ramp_Type::InOut)
+            data = {0.704832764699f, true, 1/3f, false}; // tangent = 2arctan(2)/pi to approximates easing functions
         return true;
+    }
 
     size_t logValue;
     float tangent;
