@@ -13,6 +13,8 @@
 
 namespace TCodeFloatingOperations
 {
+    static float Eps = 1e-10;
+    
     /**
      * @brief Maps a given range of values to an output range based on a linear method
      * @param in value to be mapped
@@ -100,6 +102,12 @@ namespace TCodeFloatingOperations
      * @return the mapped value from the in range to out range based on the Ease in out Curve
      */
     float doubleMapEaseInOutf(double in, double inStart, double inEnd, double outStart, double outEnd);
+
+    /**
+     * @brief 
+     * @return
+     */
+    float interpolatef(float x, float x0, float y0, TCode_Axis_Ramp_Data r0, float x1, float y1, TCode_Axis_Ramp_Data r1);
 
     float absf(float value);
 

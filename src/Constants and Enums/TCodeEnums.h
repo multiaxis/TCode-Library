@@ -150,7 +150,6 @@ struct TCode_Axis_Command
  * @brief representation of the data for an TCode Axis State
  * @param startTime the time in ms when the state is active
  * @param stopTime the time in ms when the state is inactive
- * @param rampType used to control the ramp type of extention commands
  * @param startValue the starting value of the state
  * @param endValue the target value for this state
 */
@@ -158,11 +157,11 @@ struct TCode_Axis_State
 {
     unsigned long startTime;
     unsigned long endTime;
-    TCode_Axis_Ramp_Type rampType;
-    TCode_Axis_Ramp_Data rampIn;
-    TCode_Axis_Ramp_Data rampOut;
     float startValue;
     float endValue;
+    TCode_Axis_Ramp_Data startRamp;
+    TCode_Axis_Ramp_Data endRamp;
+    TCode_Axis_Data data;
 };
 
 /**

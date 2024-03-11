@@ -341,12 +341,15 @@ bool TCodeParser::parseAxisRamp(char *buffer, const size_t length, size_t &index
 
 bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Data &data)
 {
+    const float almostOne = 1 - TCodeFloatingOperations::Eps;
+
     data = {0, false, 1/3f, false}; 
 
     size_t log_value;
     if (!TCodeCStringUtils::getNextTCodeFloat(data.tangent, log_value, buffer, length, index))
         return false;
-
+    
+    data.tangent = clamp(data.tangent, -almostOne, almostOne);
     data.hasTangent = true;
     if (TCodeCStringUtils::getCharAt(buffer, length, index++) != '.')
         return true;
@@ -357,6 +360,7 @@ bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &i
     if (!TCodeCStringUtils::getNextTCodeFloat(data.weight, log_value, buffer, length, index))
         return false; 
 
+    data.weight = clamp(data.weight, 0, almostOne);
     data.hasWeight = true;
 }
 

@@ -142,6 +142,77 @@ float TCodeFloatingOperations::doubleMapEaseInOutf(double in, double inStart, do
     return t;
 }
 
+float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_Axis_Ramp_Data r0, float x1, float y1, TCode_Axis_Ramp_Data r1)
+{
+    if (!r0.hasTangent && !r1.hasTangent)
+    {
+        //linear
+        return doubleMap(x, x0, x1, y0, y1);
+    }
+    else if (!r0.hasWeight && !r1.hasWeight)
+    {
+        //cubic hermite
+        float d = x1 - x0;
+        float dx = x - x0;
+        float t = dx / d;
+        float r = 1 - t;
+
+        return r * r * (y0 * (1 + 2 * t) + r0.tangent * dx)
+             + t * t * (y1 * (3 - 2 * t) - d * r1.tangent * r);
+    }
+    else
+    {
+        //bezier
+        const float almostOne = 1 - Eps;
+
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+
+        float x = (x - x0) / dx;
+        float m0 = clamp(r0.tangent, -almostOne, almostOne) * dx / dy;
+        float m1 = clamp(r1.tangent, -almostOne, almostOne) * dx / dy;
+
+        float w0 = clamp(r0.weight, 0, almostOne);
+        float w1 = clamp(r1.weight, 0, almostOne);
+        float w1s = 1 - w1;
+
+        float t = 0.5f;
+        float ts;
+
+        if (w0 == 1 / 3f && w1 == 1 / 3f) // TODO: float compare
+        {
+            t = x;
+            ts = 1 - t;
+        }
+        else
+        {
+            while (true)
+            {
+                ts = (1 - t);
+
+                float t2 = t * t;
+                float ts2 = ts * ts;
+
+                float fg = 3 * ts2 * t * w0 + 3 * ts * t2 * w1s + t2 - x;
+                if (abs(fg) < 2 * eps)
+                    break;
+
+                // third order householder method
+                float fpg = 3 * ts2 * w0 + 6 * t2 * t * (w1s - w0) + 3 * t * (1 - w1s);
+                float fppg = 6 * ts * (w1s - 2 * w0) + 6 * t * (1 - 2 * w1s + w0);
+                float fpppg = 18 * w0 - 18 * w1s + 6;
+
+                float fg2 = fg * fg;
+                float fpg2 = fpg * fpg;
+                t -= (6 * fg * fpg2 - 3 * fg2 * fppg) / (6 * fpg2 * fpg - 6 * fg * fpg * fppg + fg2 * fpppg);
+            }
+        }
+        
+        float y = 3 * ts * ts * t * w0 * m0 + 3 * ts * t * t * (1 - w1 * m1) + t * t * t;
+        return y * dy + y0;
+    }
+}
+
 float TCodeFloatingOperations::absf(float value)
 {
     if (value < 0)

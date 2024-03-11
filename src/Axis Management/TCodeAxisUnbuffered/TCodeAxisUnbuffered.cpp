@@ -22,20 +22,24 @@ TCodeAxis::TCodeAxis(const char *name, TCode_ChannelID _channel)
     minInterval = TCODE_MIN_AXIS_SMOOTH_INTERVAL;
 }
 
-void TCodeAxis::set(float targetValue, TCode_Axis_Extention_Type extentionType, long extentionValue, TCode_Axis_Ramp_Type rampType)
+void TCodeAxis::set(const TCode_Axis_Data &data)
 {
     unsigned long t = millis();
-    unsigned long delta_time = 0;
-    float startPosition = getPosition();
-    switch (extentionType)
+    unsigned long deltaTime = 0;
+
+    float startValue = getPosition();
+    float endValue = clamp(data.commandValue, 0, 1);
+    unsigned long extentionValue = data.commandExtention;
+
+    switch (data.extentionType)
     {
         case TCode_Axis_Extention_Type::Speed:
         {
-            delta_time = abs(targetValue - startPosition);
-            delta_time *= 100;
+            deltaTime = abs(targetValue - startValue);
+            deltaTime *= 100;
             if (extentionValue > 0)
             {
-                delta_time /= extentionValue;
+                deltaTime /= extentionValue;
             }
         }
         break;
@@ -44,7 +48,7 @@ void TCodeAxis::set(float targetValue, TCode_Axis_Extention_Type extentionType, 
         {
             if (extentionValue > 0)
             {
-                delta_time = extentionValue;
+                deltaTime = extentionValue;
             }
             else
             {
@@ -58,39 +62,30 @@ void TCodeAxis::set(float targetValue, TCode_Axis_Extention_Type extentionType, 
                     minInterval -= 1;
                 }
 
-                delta_time = minInterval;
+                deltaTime = minInterval;
             }
         }
     }
 
-    if(targetValue > 1.0)
-        targetValue = 1.0;
-    if(targetValue < 0.0)
-        targetValue = 0.0;
-
     currentState.startTime = t;
-    currentState.endTime = t + delta_time;
-    currentState.rampType = rampType;
-    currentState.startValue = startPosition;
-    currentState.endValue = targetValue;
+    currentState.endTime = t + deltaTime;
+    currentState.startValue = startValue;
+    currentState.endValue = endValue;
+    currentState.startRamp = currentState.data.rampOut;
+    currentState.endRamp = data.rampIn;
+    currentState.data = data;
+
     lastCommandTime = t;
 }
 
 float TCodeAxis::getPosition()
 {
-    float x; // This is the current axis position, 0-9999
     unsigned long t = millis();
-
-
-    if(t >= currentState.endTime)
-    {
+    if (t >= currentState.endTime)
         return currentState.endValue;
-    }
-
-    if(t <= currentState.startTime)
-    {
+    if (t <= currentState.startTime)
         return currentState.startValue;
-    }
+
     //Serial.print("Test:");
     //Serial.println(t);
     //Serial.print("SV:");
@@ -98,28 +93,8 @@ float TCodeAxis::getPosition()
     //Serial.print("EV:");
     //Serial.println(currentState.endValue);
 
-    switch (currentState.rampType)
-    {
-    case TCode_Axis_Ramp_Type::Linear:
-        x = TCodeFloatingOperations::doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
-        break;
-    case TCode_Axis_Ramp_Type::EaseIn:
-        x = TCodeFloatingOperations::doubleMapEaseInf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
-        break;
-    case TCode_Axis_Ramp_Type::EaseOut:
-        x = TCodeFloatingOperations::doubleMapEaseOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
-        break;
-    case TCode_Axis_Ramp_Type::EaseInOut:
-        x = TCodeFloatingOperations::doubleMapEaseInOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
-        break;
-    default:
-        x = TCodeFloatingOperations::doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
-    }
-
-    if (x < 0)
-        x = 0;
-
-    return x;
+    float position = TCodeFloatingOperations::interpolatef(t, currentState.startTime, currentState.startValue, currentState.startRamp, currentState.endTime, currentState.endValue, currentState.endRamp);
+    return clamp(position, 0, 1);
 }
 
 void TCodeAxis::stop()

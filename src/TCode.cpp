@@ -87,22 +87,18 @@ bool TCode::registerAxis(ITCodeAxis *axis)
     return axisBuffer.push(axis);
 }
 
-void TCode::axisWrite(const TCode_ChannelID &id, const float magnitude, const TCode_Axis_Extention_Type extentionValue, const long extMagnitude, const TCode_Axis_Ramp_Type rampType)
+void TCode::axisWrite(const TCode_ChannelID &id, const TCode_Axis_Data &data)
 {
     ITCodeAxis *axis = getAxisFromID(id);
     if (axis != nullptr)
-    {
-        axis->set(magnitude, extentionValue, extMagnitude, rampType);
-    }
+        axis->set(data);
 }
 
-void TCode::axisWrite(const char *name, const float magnitude, const TCode_Axis_Extention_Type extentionValue, const long extMagnitude, const TCode_Axis_Ramp_Type rampType)
+void TCode::axisWrite(const char *name, const TCode_Axis_Data &data)
 {
     ITCodeAxis *axis = getAxisFromName(name);
     if (axis != nullptr)
-    {
-        axis->set(magnitude, extentionValue, extMagnitude, rampType);
-    }
+        axis->set(data);
 }
 
 float TCode::axisRead(const TCode_ChannelID &channel_id)
@@ -344,9 +340,9 @@ void TCode::readCommand(char *command, size_t length)
     }
 }
 
-void TCode::runAxisCommand(TCode_Axis_Command &command)
+void TCode::runAxisCommand(const TCode_Axis_Command &command)
 {
-    axisWrite(command.ID, command.Data.commandValue, command.Data.extentionType, command.Data.commandExtention, command.Data.rampType);
+    axisWrite(command.ID, command.Data);
 }
 
 void TCode::runDeviceCommand(TCode_Device_Command &command)
