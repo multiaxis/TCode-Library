@@ -168,7 +168,6 @@ float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_A
         float dx = x1 - x0;
         float dy = y1 - y0;
 
-        float x = (x - x0) / dx;
         float m0 = clamp(r0.tangent, -almostOne, almostOne) * dx / dy;
         float m1 = clamp(r1.tangent, -almostOne, almostOne) * dx / dy;
 
@@ -176,25 +175,26 @@ float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_A
         float w1 = clamp(r1.weight, 0, almostOne);
         float w1s = 1 - w1;
 
-        float t = 0.5f;
         float ts;
+        float t = 0.5f;
+        float tx = (x - x0) / dx;
 
         if (w0 == 1 / 3f && w1 == 1 / 3f) // TODO: float compare
         {
-            t = x;
+            t = tx;
             ts = 1 - t;
         }
         else
         {
             while (true)
             {
-                ts = (1 - t);
+                ts = 1 - t;
 
                 float t2 = t * t;
                 float ts2 = ts * ts;
 
-                float fg = 3 * ts2 * t * w0 + 3 * ts * t2 * w1s + t2 - x;
-                if (abs(fg) < 2 * eps)
+                float fg = 3 * ts2 * t * w0 + 3 * ts * t2 * w1s + t2 - tx;
+                if (abs(fg) < 2 * Eps)
                     break;
 
                 // third order householder method
@@ -208,7 +208,8 @@ float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_A
             }
         }
         
-        float y = 3 * ts * ts * t * w0 * m0 + 3 * ts * t * t * (1 - w1 * m1) + t * t * t;
+        float t2 = t * t;
+        float y = 3 * ts * ts * t * w0 * m0 + 3 * ts * t2 * (1 - w1 * m1) + t2 * t;
         return y * dy + y0;
     }
 }
