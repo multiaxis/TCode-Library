@@ -340,13 +340,11 @@ bool TCodeParser::parseAxisRamp(char *buffer, const size_t length, size_t &index
 
 bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &index, const TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &data)
 {
-    const float almostOne = 1 - TCodeFloatingOperations::Eps;
-
     data = {0, true, 1 / 3.0f, false};
     if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
     {
         if (rampType != TCode_Axis_Ramp_Type::InOut)
-            data.tangent = 0.704832764699f; // 2arctan(2)/pi approximates easing functions
+            data.tangent = 0.7048328f; // 2arctan(2)/pi approximates easing functions
         return true;
     }
 
@@ -355,7 +353,7 @@ bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &i
     if (!TCodeCStringUtils::getNextTCodeFloat(tangent, logValue, buffer, length, index))
         return false;
     
-    data.tangent = map(tangent, 0, 1, -almostOne, almostOne);
+    data.tangent = map(tangent, 0, 1, -0.999f, 0.999f);
     if (TCodeCStringUtils::getCharAt(buffer, length, index) != '.')
         return true;
     
@@ -367,7 +365,7 @@ bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &i
     if (!TCodeCStringUtils::getNextTCodeFloat(weight, logValue, buffer, length, index))
         return false; 
 
-    data.weight = constrain(weight, 0, almostOne);
+    data.weight = constrain(weight, 0, 0.999f);
     data.hasWeight = true;
     return true;
 }

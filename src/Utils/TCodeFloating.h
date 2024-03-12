@@ -14,8 +14,6 @@
 
 namespace TCodeFloatingOperations
 {
-    static float Eps = 1e-10;
-    
     /**
      * @brief Maps a given range of values to an output range based on a linear method
      * @param in value to be mapped
