@@ -11,13 +11,9 @@ class ITCodeAxis
 {
 public:
     /**
-     * @brief sets the axis' dynamic parameters
-     * @param target_value the target value for this axis
-     * @param extentionType the extention type for the axis e.g. Time,Speed
-     * @param extentionValue the extention value
-     * @param rampType the ramp type
+     * @brief 
      */
-    virtual void set(float targetValue, TCode_Axis_Extention_Type extentionType = TCode_Axis_Extention_Type::Time, long extentionValue = 0, TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear) = 0;
+    virtual void set(const TCode_Axis_Data &data) = 0;
     /**
      * @brief gets the current position of the axis
      * @returns current position of this axis as a float

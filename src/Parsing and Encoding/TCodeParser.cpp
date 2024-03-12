@@ -300,7 +300,7 @@ bool TCodeParser::parseAxisCommand(char *buffer, const size_t length, TCode_Axis
     return true;
 }
 
-bool TCodeParse::parseAxisExtention(char *buffer, const size_t length, size_t &index, TCode_Axis_Extention_Type &extentionType, long &commandExtention)
+bool TCodeParser::parseAxisExtention(char *buffer, const size_t length, size_t &index, TCode_Axis_Extention_Type &extentionType, unsigned long &commandExtention)
 {
     extentionType = getExtentionTypeFromStr(buffer, length, index);
 
@@ -340,7 +340,7 @@ bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &i
 {
     const float almostOne = 1 - TCodeFloatingOperations::Eps;
 
-    data = {0, true, 1/3f, false};
+    data = {0, true, 1 / 3.0f, false};
     if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
     {
         if (rampType != TCode_Axis_Ramp_Type::InOut)
@@ -365,8 +365,9 @@ bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &i
     if (!TCodeCStringUtils::getNextTCodeFloat(weight, logValue, buffer, length, index))
         return false; 
 
-    data.weight = clamp(weight, 0, almostOne);
+    data.weight = constrain(weight, 0, almostOne);
     data.hasWeight = true;
+    return true;
 }
 
 bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Setup_Command &out)
@@ -399,8 +400,8 @@ bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Set
     if ((TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index)) != '\0'))
         return false;
 
-    float minValue = (double)minValueLong / (pow(10,minValuelog)-1);
-    float maxValue = (double)maxValueLong / (pow(10,maxValuelog)-1);
+    float minValue = (double)minValueLong / pow10f(minValuelog);
+    float maxValue = (double)maxValueLong / pow10f(maxValuelog);
 
     if (minValue > maxValue) // if the minimum is larger than the maximum the command is not valid
         return false;

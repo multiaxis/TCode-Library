@@ -13,7 +13,6 @@ TCodeAxis::TCodeAxis(const char *name, TCode_ChannelID _channel)
     axisName = name;
     channel.channel = _channel.channel;
     channel.type = _channel.type;
-    currentState.rampType = TCode_Axis_Ramp_Type::Linear;
     currentState.startValue = TCODE_DEFAULT_AXIS_RETURN_VALUE;
     currentState.endValue = TCODE_DEFAULT_AXIS_RETURN_VALUE;
     currentState.startTime = 0;
@@ -28,14 +27,14 @@ void TCodeAxis::set(const TCode_Axis_Data &data)
     unsigned long deltaTime = 0;
 
     float startValue = getPosition();
-    float endValue = clamp(data.commandValue, 0, 1);
+    float endValue = constrain(data.commandValue, 0, 1);
     unsigned long extentionValue = data.commandExtention;
 
     switch (data.extentionType)
     {
         case TCode_Axis_Extention_Type::Speed:
         {
-            deltaTime = abs(targetValue - startValue);
+            deltaTime = abs(endValue - startValue);
             deltaTime *= 100;
             if (extentionValue > 0)
             {
@@ -94,7 +93,7 @@ float TCodeAxis::getPosition()
     //Serial.println(currentState.endValue);
 
     float position = TCodeFloatingOperations::interpolatef(t, currentState.startTime, currentState.startValue, currentState.startRamp, currentState.endTime, currentState.endValue, currentState.endRamp);
-    return clamp(position, 0, 1);
+    return constrain(position, 0, 1);
 }
 
 void TCodeAxis::stop()

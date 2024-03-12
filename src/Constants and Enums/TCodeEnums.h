@@ -96,23 +96,6 @@ enum class TCode_Device_Command_Type
 };
 
 /**
- * @brief representation of the data for an TCode Axis Command
- * @param extentionType the extention type of the command used for time and speed functions when setting axis values
- * @param rampType used to control the ramp type of extention commands
- * @param command_value the target value of the axis
- * @param commandExtention the extention value used by the axis for time and speed functions 
-*/
-struct TCode_Axis_Data
-{
-    TCode_Axis_Extention_Type extentionType;
-    TCode_Axis_Ramp_Type rampType;
-    TCode_Axis_Ramp_Data rampIn;
-    TCode_Axis_Ramp_Data rampOut;
-    float commandValue;
-    unsigned long commandExtention;
-};
-
-/**
  * @brief representation of the data for an TCode Axis ramp 
  * @param tangent used to control the ramp angle
  * @param weight used to control the ramp weight
@@ -124,7 +107,24 @@ struct TCode_Axis_Ramp_Data
     bool hasTangent;
     float weight;
     bool hasWeight;
-}
+};
+
+/**
+ * @brief representation of the data for an TCode Axis Command
+ * @param extentionType the extention type of the command used for time and speed functions when setting axis values
+ * @param rampType used to control the ramp type of extention commands
+ * @param command_value the target value of the axis
+ * @param commandExtention the extention value used by the axis for time and speed functions 
+*/
+struct TCode_Axis_Data
+{
+    float commandValue;
+    unsigned long commandExtention;
+    TCode_Axis_Extention_Type extentionType;
+    TCode_Axis_Ramp_Type rampType;
+    TCode_Axis_Ramp_Data rampIn;
+    TCode_Axis_Ramp_Data rampOut;
+};
 
 /**
  * @brief representation of a TCode Device Command

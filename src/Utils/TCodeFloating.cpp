@@ -168,18 +168,18 @@ float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_A
         float dx = x1 - x0;
         float dy = y1 - y0;
 
-        float m0 = clamp(r0.tangent, -almostOne, almostOne) * dx / dy;
-        float m1 = clamp(r1.tangent, -almostOne, almostOne) * dx / dy;
+        float m0 = constrain(r0.tangent, -almostOne, almostOne) * dx / dy;
+        float m1 = constrain(r1.tangent, -almostOne, almostOne) * dx / dy;
 
-        float w0 = clamp(r0.weight, 0, almostOne);
-        float w1 = clamp(r1.weight, 0, almostOne);
+        float w0 = constrain(r0.weight, 0, almostOne);
+        float w1 = constrain(r1.weight, 0, almostOne);
         float w1s = 1 - w1;
 
         float ts;
         float t = 0.5f;
         float tx = (x - x0) / dx;
 
-        if (w0 == 1 / 3f && w1 == 1 / 3f) // TODO: float compare
+        if (w0 == 1 / 3.0f && w1 == 1 / 3.0f) // TODO: float compare
         {
             t = tx;
             ts = 1 - t;
@@ -221,35 +221,14 @@ float TCodeFloatingOperations::absf(float value)
     return value;
 }
 
-float TCodeFloatingOperations::pow10(int exponent)
-{
-    float outvalue = 1;
-
-    if (exponent == 0)
-        return 1.0f;
-
-    for (int i = 0; i < TCodeFloatingOperations::absf(exponent); i++)
-    {
-        outvalue *= 10;
-    }
-
-    if (exponent < 0)
-        outvalue = 1 / outvalue;
-    return outvalue;
-}
-
 unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precision, unsigned char &log_out)
 {
-    float depsilon = TCodeFloatingOperations::pow10(-precision);
+    float depsilon = pow10f(-precision);
     unsigned long out = 0;
     int log = 0;
 
-    if(value > 1.0f)
-        value = 1.0f;
-    if(value < 0.0f)
-        value = 0.0f;
-
-    if(value < 1.0f){
+    value = constrain(value, 0, 1);
+    if (value < 1.0f){
         while ((value > 0) && (log < precision))
         {
             value *= 10;
@@ -266,8 +245,9 @@ unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precis
     }
     else
     {
-        return (unsigned long)TCodeFloatingOperations::pow10(precision);
+        return (unsigned long)pow10(precision);
     }
+
     log_out = log;
     return out;
 }

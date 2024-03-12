@@ -8,6 +8,7 @@
 #ifndef TCODE_FLOATING_POINT_H
 #define TCODE_FLOATING_POINT_H
 #include "../Constants and Enums/TCodeConstants.h"
+#include "../Constants and Enums/TCodeEnums.h"
 #include <Arduino.h>
 
 
@@ -110,8 +111,6 @@ namespace TCodeFloatingOperations
     float interpolatef(float x, float x0, float y0, TCode_Axis_Ramp_Data r0, float x1, float y1, TCode_Axis_Ramp_Data r1);
 
     float absf(float value);
-
-    float pow10(int exponent);
 
     unsigned long getTCodeFromFloat(float value, int precision, unsigned char &log_out);
 

@@ -145,7 +145,7 @@ public:
      * @param commandExtention returning extendion value
      * @returns returns a true if axis extention was parsed correctly
      */
-    static bool parseAxisExtention(char *buffer, const size_t length, size_t &index, TCode_Axis_Extention_Type &extentionType, long &commandExtention);
+    static bool parseAxisExtention(char *buffer, const size_t length, size_t &index, TCode_Axis_Extention_Type &extentionType, unsigned long &commandExtention);
     
     /**
      * @brief Parses axis ramp from command buffer
@@ -157,7 +157,7 @@ public:
      * @param rampOut returning ramp out data
      * @returns returns a true if axis ramp was parsed correctly
      */
-    static bool bool parseAxisRamp(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &rampIn, TCode_Axis_Ramp_Data &rampOut);
+    static bool parseAxisRamp(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &rampIn, TCode_Axis_Ramp_Data &rampOut);
     
     /**
      * @brief Parses axis ramp data from command buffer
@@ -167,7 +167,7 @@ public:
      * @param data returning ramp data
      * @returns returns a true if axis ramp data was parsed correctly
      */
-    static bool parseAxisRampData(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Data &data);
+    static bool parseAxisRampData(char *buffer, const size_t length, size_t &index, const TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &data);
     
     /**
      * @brief Parses a Device Command

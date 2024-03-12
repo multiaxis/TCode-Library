@@ -180,7 +180,7 @@ void TCode::stop()
         if (!axisBuffer.get(i, temp))
             break;
         if (temp->getChannelID().type == TCode_Channel_Type::Vibration)
-            temp->set(0);
+            temp->set({});
         else
             temp->stop();
     }
@@ -340,7 +340,7 @@ void TCode::readCommand(char *command, size_t length)
     }
 }
 
-void TCode::runAxisCommand(const TCode_Axis_Command &command)
+void TCode::runAxisCommand(TCode_Axis_Command &command)
 {
     axisWrite(command.ID, command.Data);
 }
