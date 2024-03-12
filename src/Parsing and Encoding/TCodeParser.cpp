@@ -307,6 +307,8 @@ bool TCodeParser::parseAxisExtention(char *buffer, const size_t length, size_t &
     size_t log_value;
     if (!TCodeCStringUtils::getNextInt(commandExtention, log_value, buffer, length, index))
         return false;
+
+    return true;
 }
 
 bool TCodeParser::parseAxisRamp(char *buffer, const size_t length, size_t &index, TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &rampIn, TCode_Axis_Ramp_Data &rampOut)
