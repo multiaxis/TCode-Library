@@ -166,8 +166,8 @@ float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_A
 		float dx = x1 - x0;
 		float dy = y1 - y0;
 
-		float m0 = tan(PI / 2 * constrain(m0, -0.999f, 0.999f)) * dx / dy;
-		float m1 = tan(PI / 2 * constrain(m1, -0.999f, 0.999f)) * dx / dy;
+		float m0 = tan(PI / 2 * constrain(m0, -0.999f, 0.999f));
+		float m1 = tan(PI / 2 * constrain(m1, -0.999f, 0.999f));
 
 		float w0 = constrain(w0, 0.f, 0.999f);
 		float w1 = constrain(w1, 0.f, 0.999f);
@@ -207,8 +207,7 @@ float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_A
 		}
 		
 		float t2 = t * t;
-		float y = 3 * ts * ts * t * w0 * m0 + 3 * ts * t2 * (1 - w1 * m1) + t2 * t;
-		return y * dy + y0;
+		return y0 + 3 * ts * ts * t * w0 * m0 * dx + 3 * ts * t2 * (dy - w1 * m1 * dx) + t2 * t * dy;
     }
 }
 
