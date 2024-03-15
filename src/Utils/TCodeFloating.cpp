@@ -166,11 +166,11 @@ float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_A
 		float dx = x1 - x0;
 		float dy = y1 - y0;
 
-		float m0 = tan(PI / 2 * constrain(m0, -0.999f, 0.999f));
-		float m1 = tan(PI / 2 * constrain(m1, -0.999f, 0.999f));
+		float m0 = tan(PI / 2 * constrain(r0.tangent, -0.999f, 0.999f));
+		float m1 = tan(PI / 2 * constrain(r1.tangent, -0.999f, 0.999f));
 
-		float w0 = constrain(w0, 0.f, 0.999f);
-		float w1 = constrain(w1, 0.f, 0.999f);
+		float w0 = constrain(r0.weight, 0.f, 0.999f);
+		float w1 = constrain(r1.weight, 0.f, 0.999f);
 		float w1s = 1 - w1;
 
 		float ts;
