@@ -180,7 +180,7 @@ float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_A
         float t = 0.5f;
         float tx = (x - x0) / dx;
 
-        if (w0 == 1 / 3.0f && w1 == 1 / 3.0f) // TODO: float compare
+        if (abs(w0 - 1 / 3.0f) < 1e-6f && abs(w1 - 1 / 3.0f) < 1e-6f)
         {
             t = tx;
             ts = 1 - t;
