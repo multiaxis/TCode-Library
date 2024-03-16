@@ -340,13 +340,9 @@ bool TCodeParser::parseAxisRamp(char *buffer, const size_t length, size_t &index
 
 bool TCodeParser::parseAxisRampData(char *buffer, const size_t length, size_t &index, const TCode_Axis_Ramp_Type &rampType, TCode_Axis_Ramp_Data &data)
 {
-    data = {0, true, 1 / 3.0f, false};
+    data = {0, true, 1 / 3.0f, false, /* autoTangent */ rampType != TCode_Axis_Ramp_Type::InOut};
     if (!TCodeCStringUtils::isnumber(TCodeCStringUtils::getCharAt(buffer, length, index)))
-    {
-        if (rampType != TCode_Axis_Ramp_Type::InOut)
-            data.tangent = 0.7048328f; // 2arctan(2)/pi approximates easing functions
         return true;
-    }
 
     size_t logValue;
     float tangent;

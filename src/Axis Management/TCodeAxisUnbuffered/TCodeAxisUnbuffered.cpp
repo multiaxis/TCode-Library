@@ -74,6 +74,20 @@ void TCodeAxis::set(const TCode_Axis_Data &data)
     currentState.endRamp = data.rampIn;
     currentState.data = data;
 
+    if (deltaTime != 0)
+    {
+        float deltaValue = endValue - startValue;
+        float easingTangent = 2 / PI * atan(2 * deltaValue / deltaTime); // approximates easing functions
+        if (currentState.startRamp.autoTangent)
+        {
+            currentState.startRamp.tangent = easingTangent;
+        }
+        if (currentState.endRamp.autoTangent)
+        {
+            currentState.endRamp.tangent = easingTangent;
+        }
+    }
+
     lastCommandTime = t;
 }
 
