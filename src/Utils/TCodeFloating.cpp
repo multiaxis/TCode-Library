@@ -157,8 +157,11 @@ float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_A
         float t = dx / d;
         float r = 1 - t;
 
-        return r * r * (y0 * (1 + 2 * t) + r0.tangent * dx)
-             + t * t * (y1 * (3 - 2 * t) - d * r1.tangent * r);
+		float m0 = tan(PI / 2 * constrain(r0.tangent, -0.999f, 0.999f));
+		float m1 = tan(PI / 2 * constrain(r1.tangent, -0.999f, 0.999f));
+
+        return r * r * (y0 * (1 + 2 * t) + m0 * dx)
+             + t * t * (y1 * (3 - 2 * t) - d * m1 * r);
     }
     else
     {
