@@ -105,7 +105,7 @@ public:
      * @param id channel ID to read the current position from
      * @returns current position or -1 if position could not be read
      */
-    float axisRead(const ChannelID &channel_id);
+    float axisRead(const ChannelID &channelID);
 
     /**
      * @brief function to read the position of a specified axis
@@ -116,10 +116,10 @@ public:
 
     /**
      * @brief function to read the last command time of a specified axis
-     * @param channel_id id of the channel to read the last command time from
+     * @param channelID id of the channel to read the last command time from
      * @returns last command time or -1 if position could not be read
      */
-    unsigned long axisLastCommandTime(const ChannelID &channel_id);
+    unsigned long axisLastCommandTime(const ChannelID &channelID);
     
     /**
      * @brief function to read the last command time of a specified axis
