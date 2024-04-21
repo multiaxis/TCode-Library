@@ -74,8 +74,8 @@ public:
     void clearBuffer();
 
     /**
-     * @brief function to register a TCodeAxis with the TCode class
-     * @param axis TCodeAxis pointer to be added to the TCode class to be processed
+     * @brief function to register a UnbufferedAxis with the TCode class
+     * @param axis UnbufferedAxis pointer to be added to the TCode class to be processed
      * @return returns false if axis could not be registered
      */
     bool registerAxis(ITCodeAxis *axis);
@@ -84,28 +84,28 @@ public:
      * @brief function to write to a specified axis
      * @param id channel ID to write to
      * @param targetValue the target value for this axis
-     * @param extentionValue the extention type for the axis e.g. Time,Speed
+     * @param extentionValue the extention type for the axis e.g. TIME,SPEED
      * @param extMagnitude the value for the extention type
      * @param rampType the ramp type
      */
-    void axisWrite(const TCode_ChannelID &id, const float targetValue, const TCode_Axis_Extention_Type extentionValue = TCode_Axis_Extention_Type::Time, const long extMagnitude = 0, const TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
+    void axisWrite(const ChannelID &id, const float targetValue, const AxisExtentionType extentionValue = AxisExtentionType::TIME, const long extMagnitude = 0, const AxisRampType rampType = AxisRampType::LINEAR);
 
     /**
      * @brief function to write to a specified axis
      * @param name name of the channel to write to
      * @param targetValue the target value for this axis
-     * @param extentionValue the extention type for the axis e.g. Time,Speed
+     * @param extentionValue the extention type for the axis e.g. TIME,SPEED
      * @param extMagnitude the value for the extention type
      * @param rampType the ramp type
      */
-    void axisWrite(const char *name, const float targetValue, const TCode_Axis_Extention_Type extentionValue = TCode_Axis_Extention_Type::Time, const long extMagnitude = 0, const TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
+    void axisWrite(const char *name, const float targetValue, const AxisExtentionType extentionValue = AxisExtentionType::TIME, const long extMagnitude = 0, const AxisRampType rampType = AxisRampType::LINEAR);
 
     /**
      * @brief function to read the position of a specified axis
      * @param id channel ID to read the current position from
      * @returns current position or -1 if position could not be read
      */
-    float axisRead(const TCode_ChannelID &channel_id);
+    float axisRead(const ChannelID &channel_id);
 
     /**
      * @brief function to read the position of a specified axis
@@ -119,7 +119,7 @@ public:
      * @param channel_id id of the channel to read the last command time from
      * @returns last command time or -1 if position could not be read
      */
-    unsigned long axisLastCommandTime(const TCode_ChannelID &channel_id);
+    unsigned long axisLastCommandTime(const ChannelID &channel_id);
     
     /**
      * @brief function to read the last command time of a specified axis
@@ -195,7 +195,7 @@ public:
 
 private:
     bool useOverwrite = true;
-    TCodeBuffer<TCode_Axis_Command> axisCommandBuffer {MAX_AXIS_COMMAND_BUFFER_COUNT};
+    TCodeBuffer<AxisCommand> axisCommandBuffer {MAX_AXIS_COMMAND_BUFFER_COUNT};
 
     const char *filepath;
     const char *firmwareVersion;
@@ -209,16 +209,16 @@ private:
     TCodeBuffer<char> inputBuffer{MAX_INPUT_BUFFER_LENGTH_COUNT};
 
     ITCodeAxis *getAxisFromName(const char *name);
-    ITCodeAxis *getAxisFromID(const TCode_ChannelID &id);
+    ITCodeAxis *getAxisFromID(const ChannelID &id);
     void executeNextBufferCommand();
     void readCommand(char *buffer, size_t length);
 
-    void runAxisCommand(TCode_Axis_Command &command);
-    void runDeviceCommand(TCode_Device_Command &command);
-    void runSetupCommand(TCode_Setup_Command &command);
-    void runExternalCommand(TCode_External_Command &command);
+    void runAxisCommand(AxisCommand &command);
+    void runDeviceCommand(DeviceCommand &command);
+    void runSetupCommand(SetupCommand &command);
+    void runExternalCommand(ExternalCommand &command);
 
-    void setSaveValues(TCode_ChannelID &id, float min, float max,uint8_t min_log = 4, uint8_t max_log = 4);
+    void setSaveValues(ChannelID &id, float min, float max,uint8_t min_log = 4, uint8_t max_log = 4);
 
 
     void printSavedAxisValues();

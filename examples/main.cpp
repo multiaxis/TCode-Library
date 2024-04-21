@@ -20,17 +20,17 @@
 
 SettingManagerESP32 settings(DEFAULT_FILE_NAME);
 TCodeButton button(12,"Test");
-TCodeAxis stroke_axis("Stroke",{TCode_Channel_Type::Linear,0});
-TCodeAxis surge_axis("Surge",{TCode_Channel_Type::Linear,1});
-TCodeAxis sway_axis("Sway",{TCode_Channel_Type::Linear,2});
-TCodeAxis twist_axis("Twist",{TCode_Channel_Type::Rotation,0});
-TCodeAxis roll_axis("Roll",{TCode_Channel_Type::Rotation,1});
-TCodeAxis pitch_axis("Pitch",{TCode_Channel_Type::Rotation,2});
-TCodeAxis vibe0_axis("Vibe 1",{TCode_Channel_Type::Vibration,0});
-TCodeAxis vibe1_axis("Vibe 2",{TCode_Channel_Type::Vibration,1});
-TCodeAxis valve_axis("Valve",{TCode_Channel_Type::Auxiliary,0});
-TCodeAxis suck_axis("Suck",{TCode_Channel_Type::Auxiliary,1});
-TCodeAxis lube_axis("Lube",{TCode_Channel_Type::Auxiliary,2});
+UnbufferedAxis stroke_axis("Stroke",{ChannelType::LINEAR,0});
+UnbufferedAxis surge_axis("Surge",{ChannelType::LINEAR,1});
+UnbufferedAxis sway_axis("Sway",{ChannelType::LINEAR,2});
+UnbufferedAxis twist_axis("Twist",{ChannelType::ROTATION,0});
+UnbufferedAxis roll_axis("Roll",{ChannelType::ROTATION,1});
+UnbufferedAxis pitch_axis("Pitch",{ChannelType::ROTATION,2});
+UnbufferedAxis vibe0_axis("Vibe 1",{ChannelType::VIBRATION,0});
+UnbufferedAxis vibe1_axis("Vibe 2",{ChannelType::VIBRATION,1});
+UnbufferedAxis valve_axis("Valve",{ChannelType::AUXILIARY,0});
+UnbufferedAxis suck_axis("Suck",{ChannelType::AUXILIARY,1});
+UnbufferedAxis lube_axis("Lube",{ChannelType::AUXILIARY,2});
 #define axis_count 11
 ITCodeAxis* axis_pointers[axis_count] = {&stroke_axis,&surge_axis,&sway_axis,&twist_axis,&roll_axis,&pitch_axis,&vibe0_axis,&vibe1_axis,&valve_axis,&suck_axis,&lube_axis};
 

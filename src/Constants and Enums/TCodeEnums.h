@@ -2,196 +2,199 @@
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 05/02/2022
 // Please copy, share, learn, innovate, give attribution.
+#pragma once
 #ifndef TCODE_ENUMS_H
 #define TCODE_ENUMS_H
-#include <Arduino.h>
 
-/**
- * @brief representation of a TCode channel type as an Enum
- * @param Linear
- * @param Rotation
- * @param Vibration
- * @param Auxiliary
- * @param None
- */
-enum class TCode_Channel_Type
+namespace TCodeNamespace
 {
-    Linear,
-    Rotation,
-    Vibration,
-    Auxiliary,
-    None,
-};
-
-/**
- * @brief representation of a TCode channel type and channel number
- * @param type type of channel
- * @param channel channel number
- */
-struct TCode_ChannelID
-{
-    TCode_Channel_Type type;
-    char channel;
-};
-
-/**
- * @brief representation of a TCode Axis Extention as an Enum
- * @param Speed Controls the Rate of change of the Axis value
- * @param Time Controls the Rate of change based on a target time for the Axis Value
- * @param None
- */
-enum class TCode_Axis_Extention_Type
-{
-    Speed,
-    Time,
-    None,
-};
-
-/**
- * @brief representation of a TCode Channel type as an Enum
- * @param Linear Uses Linear interpolation to go from the current value to the target
- * @param EaseIn Uses Easing In ramp function to go from the current value to the target meaning the begining is eased using quadratics and the end is Linear
- * @param EaseOut Uses Easing Out ramp function to go from the current value to the target meaning the end is eased using quadratics and the begining is Linear
- * @param EaseInOut Uses Easing In and Out ramp function to go from the current value to the target meaning it is eased both in and out
- * @param None
- */
-enum class TCode_Axis_Ramp_Type
-{
-    Linear,
-    EaseIn,
-    EaseOut,
-    EaseInOut,
-    None,
-};
-
-/**
- * @brief representation of a TCode Command type as an Enum
- * @param Axis Is an axis command which changes the values of the axis
- * @param Device Commands the Device itself to do something
- * @param Setup Sets different values within the Device which are used externaly
- * @param None
- */
-enum class TCode_Command_Type
-{
-    Axis,
-    Device,
-    Setup,
-    External,
-    None,
-};
-
-/**
- * @brief representation of a TCode Device Command type as an Enum
- * @param GetSoftwareVersion gets the software version string stored on the device
- * @param GetTCodeVersion gets the TCode version string stored on the device
- * @param GetAssignedAxisValues gets the assigned axis and their min and max values aswell as their names
- * @param StopDevice stops the device causing it to stay at its current position
- * @param None
- */
-enum class TCode_Device_Command_Type
-{
-    GetSoftwareVersion,
-    GetTCodeVersion,
-    GetAssignedAxisValues,
-    StopDevice,
-    None,
-};
-
-/**
- * @brief representation of the data for an TCode Axis Command
- * @param extentionType the extention type of the command used for time and speed functions when setting axis values
- * @param rampType used to control the ramp type of extention commands
- * @param command_value the target value of the axis
- * @param commandExtention the extention value used by the axis for time and speed functions 
-*/
-struct TCode_Axis_Data
-{
-    TCode_Axis_Extention_Type extentionType;
-    TCode_Axis_Ramp_Type rampType;
-    float rampInValue;
-    float rampOutValue;
-    float commandValue;
-    unsigned long commandExtention;
-};
-
-/**
- * @brief representation of a TCode Device Command
- * @param type the type of command to be executed
- */
-struct TCode_Device_Command
-{
-    TCode_Device_Command_Type type;
-};
-
-/**
- * @brief representation of a TCode Axis Command
- * @param ID the ID to be edited by the command
- * @param Data stores the timing and value data for the command
- */
-struct TCode_Axis_Command
-{
-    TCode_ChannelID ID;
-    TCode_Axis_Data Data;
-};
-
-/**
- * @brief representation of the data for an TCode Axis State
- * @param startTime the time in ms when the state is active
- * @param stopTime the time in ms when the state is inactive
- * @param rampType used to control the ramp type of extention commands
- * @param startValue the starting value of the state
- * @param endValue the target value for this state
-*/
-struct TCode_Axis_State
-{
-    unsigned long startTime;
-    unsigned long endTime;
-    TCode_Axis_Ramp_Type rampType;
-    float rampInValue;
-    float rampOutValue;
-    float startValue;
-    float endValue;
-};
-
-/**
- * @brief representation of a TCode Save Entry used to store the minimum and maximum values for an axis
- * @param min minimum axis value
- * @param max maximum axis value
- */
-struct TCode_Save_Entry
-{
-    float min;
-    float max;
-    uint8_t min_log;
-    uint8_t max_log;
-};
-
-/**
- * @brief representation of a TCode Setup Command
- * @param ID the ID to be edited by the command
- * @param Save the save entry values to be stored
- */
-struct TCode_Setup_Command
-{
-    TCode_ChannelID ID;
-    TCode_Save_Entry Save;
-};
-
-/**
- * @brief representation of a TCode External Command
- * @param length the length of the command
- * @param command the body of the command
- */
-struct TCode_External_Command
-{
-    unsigned int length;
-    const char *command;
-
-    ~TCode_External_Command()
+    /**
+     * @brief representation of a TCode channel type as an Enum
+     * @param LINEAR
+     * @param ROTATION
+     * @param VIBRATION
+     * @param AUXILIARY
+     * @param NONE
+     */
+    enum class ChannelType
     {
-        if(command != nullptr)
-            delete[] command;
-    }
+        LINEAR,
+        ROTATION,
+        VIBRATION,
+        AUXILIARY,
+        NONE,
+    };
+
+    /**
+     * @brief representation of a TCode channel type and channel number
+     * @param type type of channel
+     * @param channel channel number
+     */
+    struct ChannelID
+    {
+        ChannelType type;
+        char channel;
+    };
+
+    /**
+     * @brief representation of a TCode Axis Extention as an Enum
+     * @param SPEED Controls the Rate of change of the Axis value
+     * @param TIME Controls the Rate of change based on a target time for the Axis Value
+     * @param NONE
+     */
+    enum class AxisExtentionType
+    {
+        SPEED,
+        TIME,
+        NONE,
+    };
+
+    /**
+     * @brief representation of a TCode Channel type as an Enum
+     * @param LINEAR Uses LINEAR interpolation to go from the current value to the target
+     * @param EaseIn Uses Easing In ramp function to go from the current value to the target meaning the begining is eased using quadratics and the end is LINEAR
+     * @param EaseOut Uses Easing Out ramp function to go from the current value to the target meaning the end is eased using quadratics and the begining is LINEAR
+     * @param EaseInOut Uses Easing In and Out ramp function to go from the current value to the target meaning it is eased both in and out
+     * @param NONE
+     */
+    enum class AxisRampType
+    {
+        LINEAR,
+        EASEIN,
+        EASEOUT,
+        EASEINOUT,
+        NONE,
+    };
+
+    /**
+     * @brief representation of a TCode Command type as an Enum
+     * @param Axis Is an axis command which changes the values of the axis
+     * @param Device Commands the Device itself to do something
+     * @param Setup Sets different values within the Device which are used externaly
+     * @param NONE
+     */
+    enum class CommandType
+    {
+        AXIS,
+        DEVICE,
+        SETUP,
+        EXTERNAL, //TODO: remove this as it will probably not be in the final release
+        NONE,
+    };
+
+    /**
+     * @brief representation of a TCode Device Command type as an Enum
+     * @param GetSoftwareVersion gets the software version string stored on the device
+     * @param GetTCodeVersion gets the TCode version string stored on the device
+     * @param GetAssignedAxisValues gets the assigned axis and their min and max values aswell as their names
+     * @param StopDevice stops the device causing it to stay at its current position
+     * @param NONE
+     */
+    enum class DeviceCommandType
+    {
+        GETSOFTWAREVERSION,
+        GETTCODEVERSION,
+        GETAXISVALUES,
+        STOPDEVICE,
+        NONE,
+    };
+
+    /**
+     * @brief representation of the data for an TCode Axis State
+     * @param startTime the time in ms when the state is active
+     * @param stopTime the time in ms when the state is inactive
+     * @param rampType used to control the ramp type of extention commands
+     * @param startValue the starting value of the state
+     * @param endValue the target value for this state
+    */
+    struct AxisState
+    {
+        unsigned long startTime;
+        unsigned long endTime;
+        AxisRampType rampType;
+        float rampInValue;
+        float rampOutValue;
+        float startValue;
+        float endValue;
+    };
+
+    /**
+     * @brief representation of the data for an TCode Axis Command
+     * @param extentionType the extention type of the command used for time and speed functions when setting axis values
+     * @param rampType used to control the ramp type of extention commands
+     * @param command_value the target value of the axis
+     * @param commandExtention the extention value used by the axis for time and speed functions 
+    */
+    struct AxisData
+    {
+        AxisExtentionType extentionType;
+        AxisRampType rampType;
+        float rampInValue;
+        float rampOutValue;
+        float commandValue;
+        unsigned long commandExtention;
+    };
+
+    /**
+     * @brief representation of a TCode Save Entry used to store the minimum and maximum values for an axis
+     * @param min minimum axis value
+     * @param max maximum axis value
+     */
+    struct SaveEntry
+    {
+        float min;
+        float max;
+        uint8_t minLog;
+        uint8_t maxLog;
+    };
+
+    /**
+     * @brief representation of a TCode Device Command
+     * @param type the type of command to be executed
+     */
+    struct DeviceCommand
+    {
+        DeviceCommandType type;
+    };
+
+    /**
+     * @brief representation of a TCode Axis Command
+     * @param ID the ID to be edited by the command
+     * @param Data stores the timing and value data for the command
+     */
+    struct AxisCommand
+    {
+        ChannelID id;
+        AxisData axisData;
+    };
+
+    /**
+     * @brief representation of a TCode Setup Command
+     * @param ID the ID to be edited by the command
+     * @param Save the save entry values to be stored
+     */
+    struct SetupCommand
+    {
+        ChannelID id;
+        SaveEntry saveEntryData;
+    };
+
+    /**
+     * @brief representation of a TCode External Command
+     * @param length the length of the command
+     * @param command the body of the command
+     */
+    struct ExternalCommand
+    {
+        unsigned int length;
+        const char *command;
+
+        ~ExternalCommand()
+        {
+            if(command != nullptr)
+                delete[] command;
+        }
+    };
 };
 
 #endif

@@ -15,25 +15,25 @@
 /**
  * @brief Class used to represent a TCode Axis
  */
-class TCodeAxis : public ITCodeAxis
+class UnbufferedAxis : public ITCodeAxis
 {
 public:
-    TCodeAxis() = delete;
+    UnbufferedAxis() = delete;
     /**
      * @brief constructor for the TCodeAxisBuffered class
      * @param name constant char string name for the axis
      * @param channel channel ID for this axis
      */
-    TCodeAxis(const char *name, TCode_ChannelID _channel);
+    UnbufferedAxis(const char *name, ChannelID _channel);
 
     /**
      * @brief sets the axis' dynamic parameters
      * @param target_value the target value for this axis
-     * @param extentionType the extention type for the axis e.g. Time,Speed
+     * @param extentionType the extention type for the axis e.g. TIME,SPEED
      * @param extentionValue the extention value
      * @param rampType the ramp type
      */
-    void set(float targetValue, TCode_Axis_Extention_Type extentionType = TCode_Axis_Extention_Type::Time, long extentionValue = 0, TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear);
+    void set(float targetValue, AxisExtentionType extentionType = AxisExtentionType::TIME, long extentionValue = 0, AxisRampType rampType = AxisRampType::LINEAR);
     
     /**
      * @brief gets the current position of the axis
@@ -58,7 +58,7 @@ public:
      * @brief gets channel ID of the axis
      * @returns returns the channel ID of the axis
      */
-    TCode_ChannelID getChannelID();
+    ChannelID getChannelID();
 
     /**
      * @brief gets last time a command was inputted for this axis
@@ -69,7 +69,7 @@ public:
 private:
     float lastPosition;
     int minInterval;               // minimum command interval
-    TCode_Axis_State currentState;
+    AxisState currentState;
 };
 
 #endif

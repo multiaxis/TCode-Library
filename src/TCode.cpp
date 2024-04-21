@@ -33,7 +33,7 @@ void TCode::inputChar(const char input)
         {
             while (!axisCommandBuffer.empty())
             {
-                TCode_Axis_Command result;
+                AxisCommand result;
                 if (axisCommandBuffer.pop(result))
                 {
                     runAxisCommand(result);
@@ -87,7 +87,7 @@ bool TCode::registerAxis(ITCodeAxis *axis)
     return axisBuffer.push(axis);
 }
 
-void TCode::axisWrite(const TCode_ChannelID &id, const float magnitude, const TCode_Axis_Extention_Type extentionValue, const long extMagnitude, const TCode_Axis_Ramp_Type rampType)
+void TCode::axisWrite(const ChannelID &id, const float magnitude, const AxisExtentionType extentionValue, const long extMagnitude, const AxisRampType rampType)
 {
     ITCodeAxis *axis = getAxisFromID(id);
     if (axis != nullptr)
@@ -96,7 +96,7 @@ void TCode::axisWrite(const TCode_ChannelID &id, const float magnitude, const TC
     }
 }
 
-void TCode::axisWrite(const char *name, const float magnitude, const TCode_Axis_Extention_Type extentionValue, const long extMagnitude, const TCode_Axis_Ramp_Type rampType)
+void TCode::axisWrite(const char *name, const float magnitude, const AxisExtentionType extentionValue, const long extMagnitude, const AxisRampType rampType)
 {
     ITCodeAxis *axis = getAxisFromName(name);
     if (axis != nullptr)
@@ -105,7 +105,7 @@ void TCode::axisWrite(const char *name, const float magnitude, const TCode_Axis_
     }
 }
 
-float TCode::axisRead(const TCode_ChannelID &channel_id)
+float TCode::axisRead(const ChannelID &channel_id)
 {
     ITCodeAxis *axis = getAxisFromID(channel_id);
     if (axis != nullptr)
@@ -125,7 +125,7 @@ float TCode::axisRead(const char *name)
     return -1;
 }
 
-unsigned long TCode::axisLastCommandTime(const TCode_ChannelID &channel_id)
+unsigned long TCode::axisLastCommandTime(const ChannelID &channel_id)
 {
     ITCodeAxis *axis = getAxisFromID(channel_id);
     if (axis != nullptr)
@@ -183,7 +183,7 @@ void TCode::stop()
         ITCodeAxis *temp;
         if (!axisBuffer.get(i, temp))
             break;
-        if (temp->getChannelID().type == TCode_Channel_Type::Vibration)
+        if (temp->getChannelID().type == ChannelType::VIBRATION)
             temp->set(0);
         else
             temp->stop();
@@ -257,14 +257,14 @@ ITCodeAxis *TCode::getAxisFromName(const char *name)
     return nullptr;
 }
 
-ITCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
+ITCodeAxis *TCode::getAxisFromID(const ChannelID &_id)
 {
     for (size_t i = 0; i < axisBuffer.count(); i++)
     {
         ITCodeAxis *temp;
         if (!axisBuffer.get(i, temp))
             break;
-        TCode_ChannelID id = temp->getChannelID();
+        ChannelID id = temp->getChannelID();
         if ((id.channel != _id.channel) || (id.type != _id.type))
             continue;
         return temp;
@@ -276,20 +276,20 @@ ITCodeAxis *TCode::getAxisFromID(const TCode_ChannelID &_id)
 void TCode::executeNextBufferCommand()
 {
     char command[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
-    size_t length = TCodeParser::getNextCommand(&inputBuffer,command, MAX_COMMAND_BUFFER_LENGTH_COUNT);
+    size_t length = Parser::getNextCommand(&inputBuffer,command, MAX_COMMAND_BUFFER_LENGTH_COUNT);
     readCommand(command, length + 1);
 }
 
 void TCode::readCommand(char *command, size_t length)
 {
-    TCode_Command_Type type = TCodeParser::getCommandType(command, length, 0); // find what command was read
+    CommandType type = Parser::getCommandType(command, length, 0); // find what command was read
     // Switch between command types
     switch (type) // depending on the command type found parse the inputted command and execute the correct command function
     {
-    case TCode_Command_Type::Axis:
+    case CommandType::AXIS:
     {
-        TCode_Axis_Command result;
-        if (TCodeParser::parseAxisCommand(command, length, result))
+        AxisCommand result;
+        if (Parser::parseAxisCommand(command, length, result))
         {
             if (!useOverwrite)
             {
@@ -300,10 +300,10 @@ void TCode::readCommand(char *command, size_t length)
                 bool found = false;
                 for (int i = 0; i < axisCommandBuffer.count(); i++)
                 {
-                    TCode_Axis_Command check;
+                    AxisCommand check;
                     if (axisCommandBuffer.get(i, check))
                     {
-                        if ((check.ID.channel == result.ID.channel) && (check.ID.type == result.ID.type))
+                        if ((check.id.channel == result.id.channel) && (check.id.type == result.id.type))
                         {
                             found = true;
                             axisCommandBuffer.set(i, result);
@@ -318,24 +318,24 @@ void TCode::readCommand(char *command, size_t length)
         }
         break;
     }
-    case TCode_Command_Type::Device:
+    case CommandType::DEVICE:
     {
-        TCode_Device_Command result;
-        if (TCodeParser::parseDeviceCommand(command, length, result))
+        DeviceCommand result;
+        if (Parser::parseDeviceCommand(command, length, result))
             runDeviceCommand(result);
         break;
     }
-    case TCode_Command_Type::Setup:
+    case CommandType::SETUP:
     {
-        TCode_Setup_Command result;
-        if (TCodeParser::parseSetupCommand(command, length, result))
+        SetupCommand result;
+        if (Parser::parseSetupCommand(command, length, result))
             runSetupCommand(result);
         break;
     }
-    case TCode_Command_Type::External:
+    case CommandType::EXTERNAL:
     {
-        TCode_External_Command result;
-        if (TCodeParser::parseExternalCommand(command, length, result))
+        ExternalCommand result;
+        if (Parser::parseExternalCommand(command, length, result))
             runExternalCommand(result);
         break;
     }
@@ -344,32 +344,32 @@ void TCode::readCommand(char *command, size_t length)
     }
 }
 
-void TCode::runAxisCommand(TCode_Axis_Command &command)
+void TCode::runAxisCommand(AxisCommand &command)
 {
-    axisWrite(command.ID, command.Data.commandValue, command.Data.extentionType, command.Data.commandExtention, command.Data.rampType);
+    axisWrite(command.id, command.axisData.commandValue, command.axisData.extentionType, command.axisData.commandExtention, command.axisData.rampType);
 }
 
-void TCode::runDeviceCommand(TCode_Device_Command &command)
+void TCode::runDeviceCommand(DeviceCommand &command)
 {
     switch (command.type)
     {
-    case TCode_Device_Command_Type::StopDevice:
+    case DeviceCommandType::STOPDEVICE:
     {
         stop();
         println("STOP");
     }
     break;
-    case TCode_Device_Command_Type::GetTCodeVersion:
+    case DeviceCommandType::GETTCODEVERSION:
     {
         println(tcodeVersion);
     }
     break;
-    case TCode_Device_Command_Type::GetSoftwareVersion:
+    case DeviceCommandType::GETSOFTWAREVERSION:
     {
         println(firmwareVersion);
     }
     break;
-    case TCode_Device_Command_Type::GetAssignedAxisValues:
+    case DeviceCommandType::GETAXISVALUES:
     {
         printSavedAxisValues();
     }
@@ -377,13 +377,13 @@ void TCode::runDeviceCommand(TCode_Device_Command &command)
     }
 }
 
-void TCode::runSetupCommand(TCode_Setup_Command &command)
+void TCode::runSetupCommand(SetupCommand &command)
 {
-    setSaveValues(command.ID, command.Save.min, command.Save.max);
+    setSaveValues(command.id, command.saveEntryData.min, command.saveEntryData.max);
     printSavedAxisValues();
 }
 
-void TCode::runExternalCommand(TCode_External_Command &command)
+void TCode::runExternalCommand(ExternalCommand &command)
 {
     for (int i = 0; i < command.length, command.command[i] != '\0'; i++)
     {
@@ -392,7 +392,7 @@ void TCode::runExternalCommand(TCode_External_Command &command)
     externalCommandBuffer.push('\n');
 }
 
-void TCode::setSaveValues(TCode_ChannelID &id, float min, float max, uint8_t min_log, uint8_t max_log)
+void TCode::setSaveValues(ChannelID &id, float min, float max, uint8_t min_log, uint8_t max_log)
 {
     if (settingManager == nullptr)
     {
@@ -420,7 +420,7 @@ void TCode::setSaveValues(TCode_ChannelID &id, float min, float max, uint8_t min
     if (temp != nullptr)
     {
         String str_id = "";
-        TCodeParser::getStrfromID(id, str_id);
+        Parser::getStrfromID(id, str_id);
         String name = "AXIS-MIN-";
         name += str_id;
         if (!settingManager->hasSetting(name.c_str()))
@@ -474,7 +474,7 @@ void TCode::printSavedAxisValues()
             unsigned long tcode_max;
 
             String str_id = "";
-            TCodeParser::getStrfromID(temp->getChannelID(), str_id);
+            Parser::getStrfromID(temp->getChannelID(), str_id);
             String name = "AXIS-MIN-";
             name += str_id;
             if (!settingManager->getSetting(name.c_str(), min))

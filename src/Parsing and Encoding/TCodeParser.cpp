@@ -4,7 +4,7 @@
 // Please copy, share, learn, innovate, give attribution.
 #include "TCodeParser.h"
 
-bool TCodeParser::idValidRange(const TCode_Channel_Type type, const uint8_t channel, const uint8_t maxChannel)
+bool Parser::idValidRange(const ChannelType type, const uint8_t channel, const uint8_t maxChannel)
 {
     uint8_t tempMaxChannel = maxChannel;
     if (maxChannel >= TCODE_MAX_CHANNEL_COUNT)
@@ -17,10 +17,10 @@ bool TCodeParser::idValidRange(const TCode_Channel_Type type, const uint8_t chan
 
     switch (type) // check if the type is correct
     {
-    case TCode_Channel_Type::Auxiliary:
-    case TCode_Channel_Type::Linear:
-    case TCode_Channel_Type::Rotation:
-    case TCode_Channel_Type::Vibration:
+    case ChannelType::AUXILIARY:
+    case ChannelType::LINEAR:
+    case ChannelType::ROTATION:
+    case ChannelType::VIBRATION:
         break;
     default:
         return false;
@@ -29,36 +29,36 @@ bool TCodeParser::idValidRange(const TCode_Channel_Type type, const uint8_t chan
     return true;
 }
 
-bool TCodeParser::idValidRange(const TCode_ChannelID id, const uint8_t maxChannel)
+bool Parser::idValidRange(const ChannelID id, const uint8_t maxChannel)
 {
     return idValidRange(id.type, id.channel, maxChannel);
 }
 
-bool TCodeParser::idValid(const TCode_Channel_Type type, const uint8_t channel)
+bool Parser::idValid(const ChannelType type, const uint8_t channel)
 {
     return idValidRange(type, channel, TCODE_MAX_CHANNEL_COUNT - 1);
 }
 
-bool TCodeParser::idValid(const TCode_ChannelID id)
+bool Parser::idValid(const ChannelID id)
 {
     return idValidRange(id.type, id.channel, TCODE_MAX_CHANNEL_COUNT - 1);
 }
 
-int TCodeParser::getStrfromID(char *buffer, const size_t length, const TCode_ChannelID &id)
+int Parser::getStrfromID(char *buffer, const size_t length, const ChannelID &id)
 {
     size_t index = 0;
     switch (id.type) // gets the Channel type char and appends to the output string
     {
-    case TCode_Channel_Type::Auxiliary:
+    case ChannelType::AUXILIARY:
         buffer[index] = 'A';
         break;
-    case TCode_Channel_Type::Linear:
+    case ChannelType::LINEAR:
         buffer[index] = 'L';
         break;
-    case TCode_Channel_Type::Rotation:
+    case ChannelType::ROTATION:
         buffer[index] = 'R';
         break;
-    case TCode_Channel_Type::Vibration:
+    case ChannelType::VIBRATION:
         buffer[index] = 'V';
         break;
     default:
@@ -70,7 +70,7 @@ int TCodeParser::getStrfromID(char *buffer, const size_t length, const TCode_Cha
     return index;
 }
 
-void TCodeParser::getStrfromID(const TCode_ChannelID &id, String &out)
+void Parser::getStrfromID(const ChannelID &id, String &out)
 {
     char buffer[10];
     for(int i = 0; i < 10; i++)
@@ -86,37 +86,37 @@ void TCodeParser::getStrfromID(const TCode_ChannelID &id, String &out)
     }
 }
 
-TCode_ChannelID TCodeParser::constructID(const TCode_Channel_Type type, const uint8_t channel)
+ChannelID Parser::constructID(const ChannelType type, const uint8_t channel)
 {
     return {type, channel};
 }
 
-TCode_Axis_Extention_Type TCodeParser::getExtentionTypeFromStr(char *buffer, const size_t length, size_t &startIndex)
+AxisExtentionType Parser::getExtentionTypeFromStr(char *buffer, const size_t length, size_t &startIndex)
 {
     char type_char = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex));
     startIndex++;
     switch (type_char)
     {
     case 'I':
-        return TCode_Axis_Extention_Type::Time;
+        return AxisExtentionType::TIME;
     case 'S':
-        return TCode_Axis_Extention_Type::Speed;
+        return AxisExtentionType::SPEED;
     }
-    return TCode_Axis_Extention_Type::None;
+    return AxisExtentionType::NONE;
 }
 
 
-void TCodeParser::combineRampSegments(TCode_Axis_Ramp_Type startingRampType, float startingRampValue, TCode_Axis_Ramp_Type endingRampType, float endingRampValue, TCode_Axis_Ramp_Type &outRampType, float &rampInValue, float &rampOutValue)
+void Parser::combineRampSegments(AxisRampType startingRampType, float startingRampValue, AxisRampType endingRampType, float endingRampValue, AxisRampType &outRampType, float &rampInValue, float &rampOutValue)
 {
-    if((startingRampType == TCode_Axis_Ramp_Type::Linear) || (endingRampType == TCode_Axis_Ramp_Type::Linear))
+    if((startingRampType == AxisRampType::LINEAR) || (endingRampType == AxisRampType::LINEAR))
     {
-        outRampType = TCode_Axis_Ramp_Type::Linear;
+        outRampType = AxisRampType::LINEAR;
         rampOutValue = -1;
         rampInValue = -1;
         return;
     }
 
-    if(startingRampType == TCode_Axis_Ramp_Type::None)
+    if(startingRampType == AxisRampType::NONE)
     {
         outRampType = endingRampType;
         rampOutValue = endingRampValue;
@@ -124,7 +124,7 @@ void TCodeParser::combineRampSegments(TCode_Axis_Ramp_Type startingRampType, flo
         return;
     }
 
-    if(endingRampType == TCode_Axis_Ramp_Type::None)
+    if(endingRampType == AxisRampType::NONE)
     {
         outRampType = startingRampType;
         rampOutValue = -1;
@@ -134,43 +134,43 @@ void TCodeParser::combineRampSegments(TCode_Axis_Ramp_Type startingRampType, flo
 
     if(startingRampType != endingRampType)
     {
-        if(startingRampType == TCode_Axis_Ramp_Type::EaseIn)
+        if(startingRampType == AxisRampType::EASEIN)
         {
             rampOutValue = endingRampValue;
             rampInValue = startingRampValue;
-            outRampType = TCode_Axis_Ramp_Type::EaseInOut;
+            outRampType = AxisRampType::EASEINOUT;
         }
         else
         {
             rampOutValue = startingRampValue;
             rampInValue = endingRampValue;
-            outRampType = TCode_Axis_Ramp_Type::EaseInOut;
+            outRampType = AxisRampType::EASEINOUT;
         }
     }
 }
 
-bool TCodeParser::parseRampSegment(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, float &rampValue)
+bool Parser::parseRampSegment(char *buffer, const size_t length, size_t &startIndex, AxisRampType &rampType, float &rampValue)
 {
-    rampType = TCode_Axis_Ramp_Type::None;
+    rampType = AxisRampType::NONE;
     char first = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex));
     switch (first) // Decode what Ramp type it is
     {
     case '<':
     {
         startIndex++;
-        rampType = TCode_Axis_Ramp_Type::EaseIn;
+        rampType = AxisRampType::EASEIN;
     }
     break;
     case '>':
     {
         startIndex++;
-        rampType = TCode_Axis_Ramp_Type::EaseOut;
+        rampType = AxisRampType::EASEOUT;
     }
     break;
     case '=':
     {
         startIndex++;
-        rampType = TCode_Axis_Ramp_Type::Linear;
+        rampType = AxisRampType::LINEAR;
     }
     break;
     default:
@@ -188,10 +188,10 @@ bool TCodeParser::parseRampSegment(char *buffer, const size_t length, size_t &st
     return true;
 }
 
-bool TCodeParser::getRampTypeFromStr(char *buffer, const size_t length, size_t &startIndex, TCode_Axis_Ramp_Type &rampType, float &rampInValue, float &rampOutValue)
+bool Parser::getRampTypeFromStr(char *buffer, const size_t length, size_t &startIndex, AxisRampType &rampType, float &rampInValue, float &rampOutValue)
 {
-    TCode_Axis_Ramp_Type startingRampType = TCode_Axis_Ramp_Type::None;
-    TCode_Axis_Ramp_Type endingRampType = TCode_Axis_Ramp_Type::None;
+    AxisRampType startingRampType = AxisRampType::NONE;
+    AxisRampType endingRampType = AxisRampType::NONE;
     float startingRampValue;
     float endingRampValue;
     if(!parseRampSegment(buffer, length, startIndex, startingRampType, startingRampValue))
@@ -209,32 +209,32 @@ bool TCodeParser::getRampTypeFromStr(char *buffer, const size_t length, size_t &
     return true;
 }
 
-TCode_ChannelID TCodeParser::getIDFromStr(char *buffer, const size_t length, size_t &startIndex)
+ChannelID Parser::getIDFromStr(char *buffer, const size_t length, size_t &startIndex)
 {
     char type_char = TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex++));
     uint8_t channel = static_cast<uint8_t>(TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex++)) - '0'); // get channel number 0 - 9
-    TCode_Channel_Type type = TCode_Channel_Type::None;
+    ChannelType type = ChannelType::NONE;
     switch (type_char) // get channel type
     {
     case 'L':
-        type = TCode_Channel_Type::Linear;
+        type = ChannelType::LINEAR;
         break;
     case 'R':
-        type = TCode_Channel_Type::Rotation;
+        type = ChannelType::ROTATION;
         break;
     case 'V':
-        type = TCode_Channel_Type::Vibration;
+        type = ChannelType::VIBRATION;
         break;
     case 'A':
-        type = TCode_Channel_Type::Auxiliary;
+        type = ChannelType::AUXILIARY;
         break;
     default:
-        type = TCode_Channel_Type::None;
+        type = ChannelType::NONE;
     }
     return {type, channel};
 }
 
-TCode_Command_Type TCodeParser::getCommandType(char *buffer, const size_t length, size_t startIndex)
+CommandType Parser::getCommandType(char *buffer, const size_t length, size_t startIndex)
 {
     // Switch between command types
     switch (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, startIndex)))
@@ -244,20 +244,20 @@ TCode_Command_Type TCodeParser::getCommandType(char *buffer, const size_t length
     case 'R':
     case 'V':
     case 'A':
-        return TCode_Command_Type::Axis;
+        return CommandType::AXIS;
     // Device commands
     case 'D':
-        return TCode_Command_Type::Device;
+        return CommandType::DEVICE;
     // Setup commands
     case '$':
-        return TCode_Command_Type::Setup;
+        return CommandType::SETUP;
     case '#':
-        return TCode_Command_Type::External;
+        return CommandType::EXTERNAL;
     }
-    return TCode_Command_Type::None;
+    return CommandType::NONE;
 }
 
-size_t TCodeParser::getNextCommand(TCodeBuffer<char> *inputBuffer, char *buffer, size_t buffer_length)
+size_t Parser::getNextCommand(TCodeBuffer<char> *inputBuffer, char *buffer, size_t buffer_length)
 {
     size_t index = 0;
     bool blevel = false;
@@ -286,7 +286,7 @@ size_t TCodeParser::getNextCommand(TCodeBuffer<char> *inputBuffer, char *buffer,
     return index;
 }
 
-size_t TCodeParser::getNextCommand(char *inputBuffer, const size_t length , const size_t startIndex, char *outbuffer, const size_t outBufferLength)
+size_t Parser::getNextCommand(char *inputBuffer, const size_t length , const size_t startIndex, char *outbuffer, const size_t outBufferLength)
 {
     size_t index = 0;
     size_t inputIndex = startIndex;
@@ -314,22 +314,22 @@ size_t TCodeParser::getNextCommand(char *inputBuffer, const size_t length , cons
     return index;
 }
 
-bool TCodeParser::parseAxisCommand(char *buffer, const size_t length, TCode_Axis_Command &out)
+bool Parser::parseAxisCommand(char *buffer, const size_t length, AxisCommand &out)
 {
     size_t index = 0;
-    TCode_ChannelID id = getIDFromStr(buffer, length, index);
+    ChannelID id = getIDFromStr(buffer, length, index);
 
     if (!idValid(id)) // make sure that the ID is valid if it isnt then the command is not valid
         return false;
 
-    TCode_Axis_Extention_Type extentionType = TCode_Axis_Extention_Type::None;
-    TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear;
+    AxisExtentionType extentionType = AxisExtentionType::NONE;
+    AxisRampType rampType = AxisRampType::LINEAR;
     float rampInValue = 0;
     float rampOutValue = 0;
     float commandValue = 0;
     unsigned long commandExtention = 0;
 
-    if (id.type == TCode_Channel_Type::None)
+    if (id.type == ChannelType::NONE)
         return false;
 
     size_t log_value;
@@ -352,24 +352,24 @@ bool TCodeParser::parseAxisCommand(char *buffer, const size_t length, TCode_Axis
     if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index)) != '\0') // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
         return false;
 
-    TCode_Axis_Data data;
+    AxisData data;
     data.commandValue = commandValue;
     data.commandExtention = commandExtention;
     data.extentionType = extentionType;
     data.rampType = rampType;
 
-    out.Data = data;
-    out.ID = id;
+    out.axisData = data;
+    out.id = id;
     return true;
 }
 
-bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Setup_Command &out)
+bool Parser::parseSetupCommand(char *buffer, const size_t length, SetupCommand &out)
 {
     size_t index = 0;
     if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index++)) != '$')
         return false;
 
-    TCode_ChannelID id = getIDFromStr(buffer, length, index); // get the ID
+    ChannelID id = getIDFromStr(buffer, length, index); // get the ID
 
     if(!idValid(id))
         return false;
@@ -399,15 +399,15 @@ bool TCodeParser::parseSetupCommand(char *buffer, const size_t length, TCode_Set
     if (minValue > maxValue) // if the minimum is larger than the maximum the command is not valid
         return false;
 
-    out.ID = id;
-    out.Save.min = minValue;
-    out.Save.max = maxValue;
-    out.Save.min_log = minValuelog;
-    out.Save.max_log = maxValuelog;
+    out.id = id;
+    out.saveEntryData.min = minValue;
+    out.saveEntryData.max = maxValue;
+    out.saveEntryData.min_log = minValuelog;
+    out.saveEntryData.max_log = maxValuelog;
     return true;
 }
 
-bool TCodeParser::parseExternalCommand(char *buffer, const size_t length, TCode_External_Command &out)
+bool Parser::parseExternalCommand(char *buffer, const size_t length, ExternalCommand &out)
 {
     size_t strLength = strlen((const char *)buffer);
     char *resizedBuffer = new char[strLength + 1];
@@ -420,7 +420,7 @@ bool TCodeParser::parseExternalCommand(char *buffer, const size_t length, TCode_
     return true;
 }
 
-bool TCodeParser::parseDeviceCommand(char *buffer, const size_t length, TCode_Device_Command &out)
+bool Parser::parseDeviceCommand(char *buffer, const size_t length, DeviceCommand &out)
 {
     size_t index = 0;
     if (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index++)) != 'D')
@@ -429,19 +429,19 @@ bool TCodeParser::parseDeviceCommand(char *buffer, const size_t length, TCode_De
     switch (TCodeCStringUtils::toupper(TCodeCStringUtils::getCharAt(buffer, length, index))) // looks at the first char and checks if it matches the values
     {
     case 'S':
-        out.type = TCode_Device_Command_Type::StopDevice;
+        out.type = DeviceCommandType::STOPDEVICE;
         return true;
     case '0':
-        out.type = TCode_Device_Command_Type::GetSoftwareVersion;
+        out.type = DeviceCommandType::GETSOFTWAREVERSION;
         return true;
     case '1':
-        out.type = TCode_Device_Command_Type::GetTCodeVersion;
+        out.type = DeviceCommandType::GETTCODEVERSION;
         return true;
     case '2':
-        out.type = TCode_Device_Command_Type::GetAssignedAxisValues;
+        out.type = DeviceCommandType::GETAXISVALUES;
         return true;
     }
 
-    out.type = TCode_Device_Command_Type::None;
+    out.type = DeviceCommandType::NONE;
     return false;
 }

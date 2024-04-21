@@ -1,11 +1,9 @@
 // TCode-Constants-H v1.0,
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 05/02/2022
+#pragma once
 #ifndef TCODE_CONSTANTS
 #define TCODE_CONSTANTS
-
-
-#define TCODE_MAX_AXIS 0.9999f
 
 
 /**
@@ -26,7 +24,7 @@
 /**
  * @brief Value used to define the default value for a TCode Axis
  */
-#define TCODE_DEFAULT_AXIS_RETURN_VALUE 5000;
+#define TCODE_DEFAULT_AXIS_RETURN_VALUE 0.5f;
 
 /**
  * @brief Value used to define the auto-smooth interval minimum range used in live commands (ms)

@@ -13,11 +13,11 @@ public:
     /**
      * @brief sets the axis' dynamic parameters
      * @param target_value the target value for this axis
-     * @param extentionType the extention type for the axis e.g. Time,Speed
+     * @param extentionType the extention type for the axis e.g. TIME,SPEED
      * @param extentionValue the extention value
      * @param rampType the ramp type
      */
-    virtual void set(float targetValue, TCode_Axis_Extention_Type extentionType = TCode_Axis_Extention_Type::Time, long extentionValue = 0, TCode_Axis_Ramp_Type rampType = TCode_Axis_Ramp_Type::Linear) = 0;
+    virtual void set(float targetValue, AxisExtentionType extentionType = AxisExtentionType::TIME, long extentionValue = 0, AxisRampType rampType = AxisRampType::LINEAR) = 0;
     /**
      * @brief gets the current position of the axis
      * @returns current position of this axis as a float
@@ -41,7 +41,7 @@ public:
      * @brief gets channel ID of the axis
      * @returns returns the channel ID of the axis
      */
-    virtual TCode_ChannelID getChannelID() = 0;
+    virtual ChannelID getChannelID() = 0;
 
     /**
      * @brief gets last time a command was inputted for this axis
@@ -51,7 +51,7 @@ public:
 protected:
     unsigned long lastCommandTime;
     const char *axisName;
-    TCode_ChannelID channel;
+    ChannelID channel;
 };
 
 
