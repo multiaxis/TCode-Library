@@ -185,10 +185,10 @@ bool SettingManagerESP32::getFile(String &out)
 
     while (file.available())
     {
-        uint8_t current_byte = file.read();
-        if (current_byte == '\n')
+        uint8_t currentByte = file.read();
+        if (currentByte == '\n')
             continue;
-        out += (char)current_byte;
+        out += (char)currentByte;
         if (out.length() >= DEFAULT_JSON_FILE_SIZE)
         {
             ESP_LOGE(SETTING_MANAGMENT_TAG,"file is larger than %d cannot be parsed.\n",DEFAULT_JSON_FILE_SIZE);

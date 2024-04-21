@@ -142,7 +142,7 @@ float TCodeFloatingOperations::doubleMapEaseInOutf(double in, double inStart, do
     return t;
 }
 
-float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, TCode_Axis_Ramp_Data r0, float x1, float y1, TCode_Axis_Ramp_Data r1)
+float TCodeFloatingOperations::interpolatef(float x, float x0, float y0, AxisRampData r0, float x1, float y1, AxisRampData r1)
 {
     if (!r0.hasTangent && !r1.hasTangent)
     {
@@ -221,7 +221,7 @@ float TCodeFloatingOperations::absf(float value)
     return value;
 }
 
-unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precision, unsigned char &log_out)
+unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precision, unsigned char &logOut)
 {
     float depsilon = pow10f(-precision);
     unsigned long out = 0;
@@ -232,9 +232,9 @@ unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precis
         while ((value > 0) && (log < precision))
         {
             value *= 10;
-            int integer_part = static_cast<int>(value);
-            value -= integer_part;
-            out = (out * 10) + integer_part;
+            int integerPart = static_cast<int>(value);
+            value -= integerPart;
+            out = (out * 10) + integerPart;
             log++;
 
             if ((value < depsilon) || (value > 1 - depsilon))
@@ -248,19 +248,19 @@ unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precis
         return (unsigned long)pow10(precision);
     }
 
-    log_out = log;
+    logOut = log;
     return out;
 }
 
 unsigned long TCodeFloatingOperations::getTCodeEstimateLogFromFloat(float value)
 {
     unsigned long log = 0;
-    const unsigned long max_log = 15;
-    while ((value > 0) && (log < max_log))
+    const unsigned long maxLog = 15;
+    while ((value > 0) && (log < maxLog))
     {
         value *= 10;
-        int integer_part = static_cast<int>(value);
-        value -= integer_part;
+        int integerPart = static_cast<int>(value);
+        value -= integerPart;
         if(value < 0.5f)
             break;
     }

@@ -49,8 +49,8 @@ inline void TCodeButton::setCallback(t_Button_Callback _callback)
 inline void TCodeButton::update(TCode& context, TCodeDataContainerSet& returnValues)
 {
     bool triggered = false;
-    unsigned long current_time = millis();
-    if (current_time > timeout + lastPressTime)
+    unsigned long currentTime = millis();
+    if (currentTime > timeout + lastPressTime)
     {
         isPressed = digitalRead(pin);
 
@@ -61,7 +61,7 @@ inline void TCodeButton::update(TCode& context, TCodeDataContainerSet& returnVal
         
         if ((lastState ^ isPressed == true) && (lastState == false))
         {
-            lastPressTime = current_time;
+            lastPressTime = currentTime;
             if (callback != nullptr)
                 callback(this);
             

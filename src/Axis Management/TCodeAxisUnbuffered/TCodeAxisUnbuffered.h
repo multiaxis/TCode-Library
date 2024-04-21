@@ -15,21 +15,21 @@
 /**
  * @brief Class used to represent a TCode Axis
  */
-class TCodeAxis : public ITCodeAxis
+class UnbufferedAxis : public ITCodeAxis
 {
 public:
-    TCodeAxis() = delete;
+    UnbufferedAxis() = delete;
     /**
      * @brief constructor for the TCodeAxisBuffered class
      * @param name constant char string name for the axis
      * @param channel channel ID for this axis
      */
-    TCodeAxis(const char *name, TCode_ChannelID _channel);
+    UnbufferedAxis(const char *name, ChannelID _channel);
 
     /**
      * @brief 
      */
-    void set(const TCode_Axis_Data &data);
+    void set(const AxisData &data);
     
     /**
      * @brief gets the current position of the axis
@@ -54,7 +54,7 @@ public:
      * @brief gets channel ID of the axis
      * @returns returns the channel ID of the axis
      */
-    TCode_ChannelID getChannelID();
+    ChannelID getChannelID();
 
     /**
      * @brief gets last time a command was inputted for this axis
@@ -65,7 +65,7 @@ public:
 private:
     float lastPosition;
     int minInterval;               // minimum command interval
-    TCode_Axis_State currentState;
+    AxisState currentState;
 };
 
 #endif

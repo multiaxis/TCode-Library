@@ -8,7 +8,7 @@
 #include "TCodeAxisUnbuffered.h"
 #include <Arduino.h>
 
-TCodeAxis::TCodeAxis(const char *name, TCode_ChannelID _channel)
+UnbufferedAxis::UnbufferedAxis(const char *name, ChannelID _channel)
 {
     axisName = name;
     channel.channel = _channel.channel;
@@ -21,9 +21,9 @@ TCodeAxis::TCodeAxis(const char *name, TCode_ChannelID _channel)
     minInterval = TCODE_MIN_AXIS_SMOOTH_INTERVAL;
 }
 
-void TCodeAxis::set(const TCode_Axis_Data &data)
+void UnbufferedAxis::set(const AxisData &data)
 {
-    unsigned long t = millis();
+    unsigned long currentTime = millis();
     unsigned long deltaTime = 0;
 
     float startValue = getPosition();
@@ -32,7 +32,7 @@ void TCodeAxis::set(const TCode_Axis_Data &data)
 
     switch (data.extentionType)
     {
-        case TCode_Axis_Extention_Type::Speed:
+        case AxisExtentionType::SPEED:
         {
             deltaTime = abs(endValue - startValue);
             deltaTime *= 100;
@@ -42,7 +42,7 @@ void TCodeAxis::set(const TCode_Axis_Data &data)
             }
         }
         break;
-        case TCode_Axis_Extention_Type::Time:
+        case AxisExtentionType::TIME:
         default:
         {
             if (extentionValue > 0)
@@ -51,7 +51,7 @@ void TCodeAxis::set(const TCode_Axis_Data &data)
             }
             else
             {
-                int lastInterval = t - currentState.startTime;
+                int lastInterval = currentTime - currentState.startTime;
                 if ((lastInterval > minInterval) && (minInterval < TCODE_MIN_AXIS_SMOOTH_INTERVAL))
                 {
                     minInterval += 1;
@@ -66,8 +66,8 @@ void TCodeAxis::set(const TCode_Axis_Data &data)
         }
     }
 
-    currentState.startTime = t;
-    currentState.endTime = t + deltaTime;
+    currentState.startTime = currentTime;
+    currentState.endTime = currentTime + deltaTime;
     currentState.startValue = startValue;
     currentState.endValue = endValue;
     currentState.startRamp = currentState.data.rampOut;
@@ -88,44 +88,44 @@ void TCodeAxis::set(const TCode_Axis_Data &data)
         }
     }
 
-    lastCommandTime = t;
+    lastCommandTime = currentTime;
 }
 
-float TCodeAxis::getPosition()
+float UnbufferedAxis::getPosition()
 {
-    unsigned long t = millis();
-    if (t >= currentState.endTime)
+    unsigned long currentTime = millis();
+    if (currentTime >= currentState.endTime)
         return currentState.endValue;
-    if (t <= currentState.startTime)
+    if (currentTime <= currentState.startTime)
         return currentState.startValue;
 
     //Serial.print("Test:");
-    //Serial.println(t);
+    //Serial.println(currentTime);
     //Serial.print("SV:");
     //Serial.println(currentState.startValue);
     //Serial.print("EV:");
     //Serial.println(currentState.endValue);
 
-    float position = TCodeFloatingOperations::interpolatef(t, currentState.startTime, currentState.startValue, currentState.startRamp, currentState.endTime, currentState.endValue, currentState.endRamp);
+    float position = TCodeFloatingOperations::interpolatef(currentTime, currentState.startTime, currentState.startValue, currentState.startRamp, currentState.endTime, currentState.endValue, currentState.endRamp);
     return constrain(position, 0, 1);
 }
 
-void TCodeAxis::stop()
+void UnbufferedAxis::stop()
 {
-    unsigned long t = millis(); // This is the time now
+    unsigned long currentTime = millis(); // This is the time now
     currentState.startValue = getPosition();
     currentState.endValue = currentState.startValue;
-    currentState.startTime = t;
-    currentState.endTime = t;
+    currentState.startTime = currentTime;
+    currentState.endTime = currentTime;
 
-    if (channel.type == TCode_Channel_Type::Vibration)
+    if (channel.type == ChannelType::VIBRATION)
     {
         currentState.endValue = 0;
-        currentState.endTime = t + TCODE_MIN_AXIS_SMOOTH_INTERVAL;
+        currentState.endTime = currentTime + TCODE_MIN_AXIS_SMOOTH_INTERVAL;
     }
 }
 
-bool TCodeAxis::changed()
+bool UnbufferedAxis::changed()
 {
     if (lastPosition != getPosition())
     {
@@ -135,17 +135,17 @@ bool TCodeAxis::changed()
     return false;
 }
 
-const char *TCodeAxis::getName()
+const char *UnbufferedAxis::getName()
 {
     return axisName;
 }
 
-TCode_ChannelID TCodeAxis::getChannelID()
+ChannelID UnbufferedAxis::getChannelID()
 {
     return channel;
 }
 
-unsigned long TCodeAxis::getLastCommandTime()
+unsigned long UnbufferedAxis::getLastCommandTime()
 {
     return lastCommandTime;
 }

@@ -13,7 +13,7 @@ public:
     /**
      * @brief 
      */
-    virtual void set(const TCode_Axis_Data &data) = 0;
+    virtual void set(const AxisData &data) = 0;
     /**
      * @brief gets the current position of the axis
      * @returns current position of this axis as a float
@@ -37,7 +37,7 @@ public:
      * @brief gets channel ID of the axis
      * @returns returns the channel ID of the axis
      */
-    virtual TCode_ChannelID getChannelID() = 0;
+    virtual ChannelID getChannelID() = 0;
 
     /**
      * @brief gets last time a command was inputted for this axis
@@ -47,7 +47,7 @@ public:
 protected:
     unsigned long lastCommandTime;
     const char *axisName;
-    TCode_ChannelID channel;
+    ChannelID channel;
 };
 
 

@@ -106,7 +106,7 @@ namespace TCodeFloatingOperations
      * @brief 
      * @return
      */
-    float interpolatef(float x, float x0, float y0, TCode_Axis_Ramp_Data r0, float x1, float y1, TCode_Axis_Ramp_Data r1);
+    float interpolatef(float x, float x0, float y0, AxisRampData r0, float x1, float y1, AxisRampData r1);
 
     float absf(float value);
 
