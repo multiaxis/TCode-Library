@@ -202,15 +202,15 @@ private:
         if(!getValue(value))
             return false;
 
-        size_t value_length = strlen(value);
-        if (length < value_length + 3) // add '\0' and two quotes'""'
+        size_t valueLength = strlen(value);
+        if (length < valueLength + 3) // add '\0' and two quotes'""'
             return false;
         buffer[0] = '\"';
         for (size_t i = 0; i < length; i++)
         {
             buffer[i+1] = value[i];
         }
-        buffer[value_length] = '\"';
+        buffer[valueLength] = '\"';
         return true;
     }
 
@@ -219,19 +219,19 @@ private:
         if (length < 6)
             return false;
 
-        const char *true_value = "TRUE";
-        const char *false_value = "FALSE";
+        const char *trueValue = "TRUE";
+        const char *falseValue = "FALSE";
         bool value;
         if(!getValue(value))
             return false;
 
         if (value)
         {
-            strcpy(buffer, true_value);
+            strcpy(buffer, trueValue);
         }
         else
         {
-            strcpy(buffer ,false_value);
+            strcpy(buffer ,falseValue);
         }
 
         return true;

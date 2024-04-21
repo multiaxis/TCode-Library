@@ -181,9 +181,9 @@ unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precis
         while ((value > 0) && (log < precision))
         {
             value *= 10;
-            int integer_part = static_cast<int>(value);
-            value -= integer_part;
-            out = (out * 10) + integer_part;
+            int integerPart = static_cast<int>(value);
+            value -= integerPart;
+            out = (out * 10) + integerPart;
             log++;
 
             if ((value < depsilon) || (value > 1 - depsilon))
@@ -196,7 +196,7 @@ unsigned long TCodeFloatingOperations::getTCodeFromFloat(float value, int precis
     {
         return (unsigned long)TCodeFloatingOperations::pow10(precision);
     }
-    log_out = log;
+    logOut = log;
     return out;
 }
 
@@ -207,8 +207,8 @@ unsigned long TCodeFloatingOperations::getTCodeEstimateLogFromFloat(float value)
     while ((value > 0) && (log < max_log))
     {
         value *= 10;
-        int integer_part = static_cast<int>(value);
-        value -= integer_part;
+        int integerPart = static_cast<int>(value);
+        value -= integerPart;
         if(value < 0.5f)
             break;
     }

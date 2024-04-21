@@ -24,18 +24,18 @@ UnbufferedAxis::UnbufferedAxis(const char *name, ChannelID _channel)
 
 void UnbufferedAxis::set(float targetValue, AxisExtentionType extentionType, long extentionValue, AxisRampType rampType)
 {
-    unsigned long t = millis();
-    unsigned long delta_time = 0;
+    unsigned long currentTime = millis();
+    unsigned long deltaTime = 0;
     float startPosition = getPosition();
     switch (extentionType)
     {
         case AxisExtentionType::SPEED:
         {
-            delta_time = abs(targetValue - startPosition);
-            delta_time *= 100;
+            deltaTime = abs(targetValue - startPosition);
+            deltaTime *= 100;
             if (extentionValue > 0)
             {
-                delta_time /= extentionValue;
+                deltaTime /= extentionValue;
             }
         }
         break;
@@ -44,11 +44,11 @@ void UnbufferedAxis::set(float targetValue, AxisExtentionType extentionType, lon
         {
             if (extentionValue > 0)
             {
-                delta_time = extentionValue;
+                deltaTime = extentionValue;
             }
             else
             {
-                int lastInterval = t - currentState.startTime;
+                int lastInterval = currentTime - currentState.startTime;
                 if ((lastInterval > minInterval) && (minInterval < TCODE_MIN_AXIS_SMOOTH_INTERVAL))
                 {
                     minInterval += 1;
@@ -58,7 +58,7 @@ void UnbufferedAxis::set(float targetValue, AxisExtentionType extentionType, lon
                     minInterval -= 1;
                 }
 
-                delta_time = minInterval;
+                deltaTime = minInterval;
             }
         }
     }
@@ -68,31 +68,31 @@ void UnbufferedAxis::set(float targetValue, AxisExtentionType extentionType, lon
     if(targetValue < 0.0)
         targetValue = 0.0;
 
-    currentState.startTime = t;
-    currentState.endTime = t + delta_time;
+    currentState.startTime = currentTime;
+    currentState.endTime = currentTime + deltaTime;
     currentState.rampType = rampType;
     currentState.startValue = startPosition;
     currentState.endValue = targetValue;
-    lastCommandTime = t;
+    lastCommandTime = currentTime;
 }
 
 float UnbufferedAxis::getPosition()
 {
-    float x; // This is the current axis position, 0-9999
-    unsigned long t = millis();
+    float x; // This is the current axis position, 0.0..1.0
+    unsigned long currentTime = millis();
 
 
-    if(t >= currentState.endTime)
+    if(currentTime >= currentState.endTime)
     {
         return currentState.endValue;
     }
 
-    if(t <= currentState.startTime)
+    if(currentTime <= currentState.startTime)
     {
         return currentState.startValue;
     }
     //Serial.print("Test:");
-    //Serial.println(t);
+    //Serial.println(currentTime);
     //Serial.print("SV:");
     //Serial.println(currentState.startValue);
     //Serial.print("EV:");
@@ -101,19 +101,19 @@ float UnbufferedAxis::getPosition()
     switch (currentState.rampType)
     {
     case AxisRampType::LINEAR:
-        x = TCodeFloatingOperations::doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapf(currentTime, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case AxisRampType::EASEIN:
-        x = TCodeFloatingOperations::doubleMapEaseInf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapEaseInf(currentTime, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case AxisRampType::EASEOUT:
-        x = TCodeFloatingOperations::doubleMapEaseOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapEaseOutf(currentTime, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     case AxisRampType::EASEINOUT:
-        x = TCodeFloatingOperations::doubleMapEaseInOutf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapEaseInOutf(currentTime, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
         break;
     default:
-        x = TCodeFloatingOperations::doubleMapf(t, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
+        x = TCodeFloatingOperations::doubleMapf(currentTime, currentState.startTime, currentState.endTime, currentState.startValue, currentState.endValue);
     }
 
     if (x < 0)
@@ -124,16 +124,16 @@ float UnbufferedAxis::getPosition()
 
 void UnbufferedAxis::stop()
 {
-    unsigned long t = millis(); // This is the time now
+    unsigned long currentTime = millis(); // This is the time now
     currentState.startValue = getPosition();
     currentState.endValue = currentState.startValue;
-    currentState.startTime = t;
-    currentState.endTime = t;
+    currentState.startTime = currentTime;
+    currentState.endTime = currentTime;
 
     if (channel.type == ChannelType::VIBRATION)
     {
         currentState.endValue = 0;
-        currentState.endTime = t + TCODE_MIN_AXIS_SMOOTH_INTERVAL;
+        currentState.endTime = currentTime + TCODE_MIN_AXIS_SMOOTH_INTERVAL;
     }
 }
 
