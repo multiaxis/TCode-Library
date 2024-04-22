@@ -1,0 +1,139 @@
+// TCode-Floating-Point-functions-H v1.0,
+// protocol by TempestMAx (https://www.patreon.com/tempestvr)
+// implemented by Eve 29/11/2023
+// Please copy, share, learn, innovate, give attribution.
+//
+#include "TMath.h"
+
+namespace TCode::TMath {
+
+float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
+    const float run = in_max - in_min;
+    if(run == 0){
+        log_e("map(): Invalid input range, min == max");
+        return -1; // AVR returns -1, SAM returns 0
+    }
+    const float rise = out_max - out_min;
+    const float delta = x - in_min;
+    return (delta * rise) / run + out_min;
+}
+
+float interpolate(float x, float x0, float y0, AxisRampData r0, float x1, float y1, AxisRampData r1)
+{
+    if (!r0.hasTangent && !r1.hasTangent)
+    {
+        //linear
+        return map(x, x0, x1, y0, y1);
+    }
+    else if (!r0.hasWeight && !r1.hasWeight)
+    {
+        //cubic hermite
+        float d = x1 - x0;
+        float dx = x - x0;
+        float t = dx / d;
+        float r = 1 - t;
+
+        float m0 = tan(PI / 2 * constrain(r0.tangent, -0.999f, 0.999f));
+        float m1 = tan(PI / 2 * constrain(r1.tangent, -0.999f, 0.999f));
+
+        return r * r * (y0 * (1 + 2 * t) + m0 * dx)
+             + t * t * (y1 * (3 - 2 * t) - d * m1 * r);
+    }
+    else
+    {
+        //bezier
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+
+        float m0 = tan(PI / 2 * constrain(r0.tangent, -0.999f, 0.999f));
+        float m1 = tan(PI / 2 * constrain(r1.tangent, -0.999f, 0.999f));
+
+        float w0 = constrain(r0.weight, 0.f, 0.999f);
+        float w1 = constrain(r1.weight, 0.f, 0.999f);
+        float w1s = 1 - w1;
+
+        float ts;
+        float t = 0.5f;
+        float tx = (x - x0) / dx;
+
+        if (abs(w0 - 1 / 3.0f) < 1e-6f && abs(w1 - 1 / 3.0f) < 1e-6f)
+        {
+            t = tx;
+            ts = 1 - t;
+        }
+        else
+        {
+            while (true)
+            {
+                ts = 1 - t;
+
+                float t2 = t * t;
+                float ts2 = ts * ts;
+
+                float fg = 3 * ts2 * t * w0 + 3 * ts * t2 * w1s + t2 * t - tx;
+                if (abs(fg) < 1e-6f)
+                    break;
+
+                // third order householder method
+                float fpg = 3 * ts2 * w0 + 6 * ts * t * (w1s - w0) + 3 * t2 * (1 - w1s);
+                float fppg = 6 * ts * (w1s - 2 * w0) + 6 * t * (1 - 2 * w1s + w0);
+                float fpppg = 18 * w0 - 18 * w1s + 6;
+
+                float fg2 = fg * fg;
+                float fpg2 = fpg * fpg;
+                t -= (6 * fg * fpg2 - 3 * fg2 * fppg) / (6 * fpg2 * fpg - 6 * fg * fpg * fppg + fg2 * fpppg);
+            }
+        }
+        
+        float t2 = t * t;
+        return y0 + 3 * ts * ts * t * w0 * m0 * dx + 3 * ts * t2 * (dy - w1 * m1 * dx) + t2 * t * dy;
+    }
+}
+
+unsigned long getTCodeFromFloat(float value, int precision, unsigned char &logOut)
+{
+    float depsilon = pow10f(-precision);
+    unsigned long out = 0;
+    int log = 0;
+
+    value = constrain(value, 0, 1);
+    if (value < 1.0f){
+        while ((value > 0) && (log < precision))
+        {
+            value *= 10;
+            int integerPart = static_cast<int>(value);
+            value -= integerPart;
+            out = (out * 10) + integerPart;
+            log++;
+
+            if ((value < depsilon) || (value > 1 - depsilon))
+                break;
+        }
+        if (value > 0.5)
+            out += 1;
+    }
+    else
+    {
+        return (unsigned long)pow10(precision);
+    }
+
+    logOut = log;
+    return out;
+}
+
+unsigned long getTCodeEstimateLogFromFloat(float value)
+{
+    unsigned long log = 0;
+    const unsigned long maxLog = 15;
+    while ((value > 0) && (log < maxLog))
+    {
+        value *= 10;
+        int integerPart = static_cast<int>(value);
+        value -= integerPart;
+        if(value < 0.5f)
+            break;
+    }
+    return log;
+}
+
+}

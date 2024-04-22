@@ -18,23 +18,7 @@
 #error Target CONFIG_IDF_TARGET is not supported
 #endif
 
-SettingManagerESP32 settings(DEFAULT_FILE_NAME);
-TCodeButton button(12,"Test");
-UnbufferedAxis stroke_axis("Stroke",{ChannelType::LINEAR,0});
-UnbufferedAxis surge_axis("Surge",{ChannelType::LINEAR,1});
-UnbufferedAxis sway_axis("Sway",{ChannelType::LINEAR,2});
-UnbufferedAxis twist_axis("Twist",{ChannelType::ROTATION,0});
-UnbufferedAxis roll_axis("Roll",{ChannelType::ROTATION,1});
-UnbufferedAxis pitch_axis("Pitch",{ChannelType::ROTATION,2});
-UnbufferedAxis vibe0_axis("Vibe 1",{ChannelType::VIBRATION,0});
-UnbufferedAxis vibe1_axis("Vibe 2",{ChannelType::VIBRATION,1});
-UnbufferedAxis valve_axis("Valve",{ChannelType::AUXILIARY,0});
-UnbufferedAxis suck_axis("Suck",{ChannelType::AUXILIARY,1});
-UnbufferedAxis lube_axis("Lube",{ChannelType::AUXILIARY,2});
-#define axis_count 11
-ITCodeAxis* axis_pointers[axis_count] = {&stroke_axis,&surge_axis,&sway_axis,&twist_axis,&roll_axis,&pitch_axis,&vibe0_axis,&vibe1_axis,&valve_axis,&suck_axis,&lube_axis};
-
-TCode tcode;
+SettingsESP32 settings(DEFAULT_FILE_NAME);
 
 void verbose_print_reset_reason(int reason)
 {
@@ -82,17 +66,14 @@ void print_heap()
   Serial.print(percent_bytes_allocated);
   Serial.println('%');
   Serial.println("==================");
-
-
 }
-
 
 void setup() {
   Serial.begin(115200);
   esp_log_level_set(SETTING_MANAGMENT_TAG, ESP_LOG_VERBOSE);
   print_reset_reason();
-  tcode.setSettingManager(&settings);
-  tcode.setOutputStream(&Serial);
+  TCode.setSettingManager(&settings);
+  TCode.setOutputStream(&Serial);
 
   SettingsUsage usage;
   settings.getSystemUsage(usage);
@@ -107,10 +88,20 @@ void setup() {
   Serial.println(usage.spaceUsed);
   Serial.println("================");
 
-  for(int i = 0; i < axis_count; i++)
-  {
-    Serial.print(tcode.registerAxis(axis_pointers[i]));
-  }
+  TCode.registerAxis("Stroke", {ChannelType::LINEAR, 0}, 0.5f);
+  TCode.registerAxis("Surge", {ChannelType::LINEAR, 1}, 0.5f);
+  TCode.registerAxis("Sway", {ChannelType::LINEAR, 2}, 0.5f);
+  TCode.registerAxis("Twist", {ChannelType::ROTATION, 0}, 0.5f;
+  TCode.registerAxis("Roll", {ChannelType::ROTATION, 1}, 0.5f);
+  TCode.registerAxis("Pitch", {ChannelType::ROTATION, 2}, 0.5f);
+  TCode.registerAxis("Vibe 1",{ChannelType::VIBRATION, 0}, 0);
+  TCode.registerAxis("Vibe 2",{ChannelType::VIBRATION, 1}, 0);
+  TCode.registerAxis("Valve", {ChannelType::AUXILIARY, 0}, 0);
+  TCode.registerAxis("Suck", {ChannelType::AUXILIARY, 1}, 0);
+  TCode.registerAxis("Lube", {ChannelType::AUXILIARY, 2}, 0);
+
+  TCode.registerButton(12, "Test");
+
   Serial.println();
   Serial.println("================");
   delay(1000);
@@ -120,7 +111,7 @@ void loop() {
   bool received = false;
   while(Serial.available())
   {
-    tcode.inputByte(Serial.read());
+    TCode.inputByte(Serial.read());
     if(received == false)
       received = true;
   }
@@ -128,19 +119,6 @@ void loop() {
   if(received)
   {
     print_heap();
-  }
-
-  
-  for(int i = 0; i < axis_count; i++)
-  {
-    if(axis_pointers[i]->changed())
-    {
-      float value = axis_pointers[i]->getPosition();
-      Serial.print(">");
-      Serial.print(i);
-      Serial.print(":");
-      Serial.println(value);
-    }
   }
   
   /*
