@@ -31,7 +31,7 @@ void TAxis::set(const AxisData &data)
 
     switch (data.extentionType)
     {
-        case AxisExtentionType::SPEED:
+        case AxisExtentionType::Speed:
         {
             deltaTime = abs(endValue - startValue);
             deltaTime *= 100;
@@ -41,7 +41,7 @@ void TAxis::set(const AxisData &data)
             }
         }
         break;
-        case AxisExtentionType::TIME:
+        case AxisExtentionType::Time:
         default:
         {
             if (extentionValue > 0)
@@ -106,7 +106,7 @@ void TAxis::stop()
     currentState.startTime = currentTime;
     currentState.endTime = currentTime;
 
-    if (channel.type == ChannelType::VIBRATION) //TODO:
+    if (channel.type == ChannelType::Vibration) //TODO:
     {
         currentState.endValue = 0;
         currentState.endTime = currentTime + TCODE_MIN_AXIS_SMOOTH_INTERVAL;

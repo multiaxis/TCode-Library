@@ -10,19 +10,19 @@ namespace TCode {
 
 /**
  * @brief representation of a TCode channel type as an Enum
- * @param LINEAR
- * @param ROTATION
- * @param VIBRATION
- * @param AUXILIARY
- * @param NONE
+ * @param Linear
+ * @param Rotation
+ * @param Vibration
+ * @param Auxiliary,
+ * @param None
  */
 enum class ChannelType
 {
-    LINEAR,
-    ROTATION,
-    VIBRATION,
-    AUXILIARY,
-    NONE,
+    Linear,
+    Rotation,
+    Vibration,
+    Auxiliary,
+    None,
 };
 
 /**
@@ -38,30 +38,30 @@ struct ChannelID
 
 /**
  * @brief representation of a TCode Axis Extention as an Enum
- * @param SPEED Controls the Rate of change of the Axis value
- * @param TIME Controls the Rate of change based on a target time for the Axis Value
- * @param NONE
+ * @param Speed Controls the Rate of change of the Axis value
+ * @param Time Controls the Rate of change based on a target time for the Axis Value
+ * @param None
  */
 enum class AxisExtentionType
 {
-    SPEED,
-    TIME,
-    NONE,
+    Speed,
+    Time,
+    None,
 };
 
 /**
  * @brief representation of a TCode Axis ramp type as an Enum
- * @param IN
- * @param OUT
- * @param INOUT
- * @param NONE
+ * @param In
+ * @param Out
+ * @param InOut
+ * @param None
  */
 enum class AxisRampType
 {
-    IN,
-    OUT,
-    INOUT,
-    NONE,
+    In,
+    Out,
+    InOut,
+    None,
 };
 
 /**
@@ -69,14 +69,14 @@ enum class AxisRampType
  * @param Axis Is an axis command which changes the values of the axis
  * @param Device Commands the Device itself to do something
  * @param Setup Sets different values within the Device which are used externaly
- * @param NONE
+ * @param None
  */
 enum class CommandType
 {
-    AXIS,
-    DEVICE,
-    SETUP,
-    NONE,
+    Axis,
+    Device,
+    Setup,
+    None,
 };
 
 /**
@@ -89,11 +89,11 @@ enum class CommandType
  */
 enum class DeviceCommandType
 {
-    GETSOFTWAREVERSION,
-    GETTCODEVERSION,
-    GETAXISVALUES,
-    STOPDEVICE,
-    NONE,
+    GetSoftwareVersion,
+    GetTCodeVersion,
+    GetAssignedAxisValues,
+    StopDevice,
+    None,
 };
 
 /**

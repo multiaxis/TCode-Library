@@ -15,10 +15,10 @@ bool TParser::idValid(const ChannelType type, const uint8_t channel)
 
     switch (type) // check if the type is correct
     {
-    case ChannelType::AUXILIARY:
-    case ChannelType::LINEAR:
-    case ChannelType::ROTATION:
-    case ChannelType::VIBRATION:
+    case ChannelType::Auxiliary:
+    case ChannelType::Linear:
+    case ChannelType::Rotation:
+    case ChannelType::Vibration:
         break;
     default:
         return false;
@@ -37,16 +37,16 @@ int TParser::getStrfromID(char *buffer, const size_t length, const ChannelID &id
     size_t index = 0;
     switch (id.type) // gets the Channel type char and appends to the output string
     {
-    case ChannelType::AUXILIARY:
+    case ChannelType::Auxiliary:
         buffer[index] = 'A';
         break;
-    case ChannelType::LINEAR:
+    case ChannelType::Linear:
         buffer[index] = 'L';
         break;
-    case ChannelType::ROTATION:
+    case ChannelType::Rotation:
         buffer[index] = 'R';
         break;
-    case ChannelType::VIBRATION:
+    case ChannelType::Vibration:
         buffer[index] = 'V';
         break;
     default:
@@ -85,13 +85,13 @@ AxisExtentionType TParser::getExtentionTypeFromStr(char *buffer, const size_t le
     switch (type_char)
     {
     case 'I':
-        return AxisExtentionType::TIME;
+        return AxisExtentionType::Time;
     case 'S':
-        return AxisExtentionType::SPEED;
+        return AxisExtentionType::Speed;
     }
 
     index++;
-    return AxisExtentionType::NONE;
+    return AxisExtentionType::None;
 }
 
 bool TParser::getRampTypeFromStr(char *buffer, const size_t length, size_t &index, AxisRampType &rampType)
@@ -101,21 +101,21 @@ bool TParser::getRampTypeFromStr(char *buffer, const size_t length, size_t &inde
     {
     case '<':
     {
-        rampType = AxisRampType::IN;
+        rampType = AxisRampType::In;
     }
     break;
     case '>':
     {
-        rampType = AxisRampType::OUT;
+        rampType = AxisRampType::Out;
     }
     break;
     case '=':
     {
-        rampType = AxisRampType::INOUT;
+        rampType = AxisRampType::InOut;
     }
     break;
     default:
-        rampType = AxisRampType::NONE;
+        rampType = AxisRampType::None;
         return false;
     }
 
@@ -127,23 +127,23 @@ ChannelID TParser::getIDFromStr(char *buffer, const size_t length, size_t &start
 {
     char type_char = toupper(TString::getCharAt(buffer, length, startIndex++));
     uint8_t channel = static_cast<uint8_t>(toupper(TString::getCharAt(buffer, length, startIndex++)) - '0'); // get channel number 0 - 9
-    ChannelType type = ChannelType::NONE;
+    ChannelType type = ChannelType::None;
     switch (type_char) // get channel type
     {
     case 'L':
-        type = ChannelType::LINEAR;
+        type = ChannelType::Linear;
         break;
     case 'R':
-        type = ChannelType::ROTATION;
+        type = ChannelType::Rotation;
         break;
     case 'V':
-        type = ChannelType::VIBRATION;
+        type = ChannelType::Vibration;
         break;
     case 'A':
-        type = ChannelType::AUXILIARY;
+        type = ChannelType::Auxiliary;
         break;
     default:
-        type = ChannelType::NONE;
+        type = ChannelType::None;
     }
     return {type, channel};
 }
@@ -158,15 +158,15 @@ CommandType TParser::getCommandType(char *buffer, const size_t length, size_t st
     case 'R':
     case 'V':
     case 'A':
-        return CommandType::AXIS;
+        return CommandType::Axis;
     // Device commands
     case 'D':
-        return CommandType::DEVICE;
+        return CommandType::Device;
     // Setup commands
     case '$':
-        return CommandType::SETUP;
+        return CommandType::Setup;
     }
-    return CommandType::NONE;
+    return CommandType::None;
 }
 
 size_t TParser::getNextCommand(deque<char> inputBuffer, char *buffer, size_t buffer_length)
@@ -206,14 +206,14 @@ bool TParser::parseAxisCommand(char *buffer, const size_t length, AxisCommand &o
     if (!idValid(id)) // make sure that the ID is valid if it isnt then the command is not valid
         return false;
 
-    AxisExtentionType extentionType = AxisExtentionType::NONE;
-    AxisRampType rampType = AxisRampType::NONE;
+    AxisExtentionType extentionType = AxisExtentionType::None;
+    AxisRampType rampType = AxisRampType::None;
     AxisRampData rampIn = {};
     AxisRampData rampOut = {};
     float commandValue = 0;
     unsigned long commandExtention = 0;
 
-    if (id.type == ChannelType::NONE)
+    if (id.type == ChannelType::None)
         return false;
 
     size_t log_value;
@@ -224,7 +224,7 @@ bool TParser::parseAxisCommand(char *buffer, const size_t length, AxisCommand &o
     {
         if (TString::isextention(TString::getCharAt(buffer, length, index)))
         {
-            if (extentionType != AxisExtentionType::NONE)
+            if (extentionType != AxisExtentionType::None)
                 return false;
 
             if (!parseAxisExtention(buffer, length, index, extentionType, commandExtention))
@@ -272,7 +272,7 @@ bool TParser::parseAxisExtention(char *buffer, const size_t length, size_t &inde
 bool TParser::parseAxisRamp(char *buffer, const size_t length, size_t &index, AxisRampType &rampType, AxisRampData &rampIn, AxisRampData &rampOut)
 {
     //(<|>|=)(<tangent>(.<weight>))
-    if (rampType == AxisRampType::INOUT)
+    if (rampType == AxisRampType::InOut)
         return false;
 
     AxisRampType currentRampType;
@@ -285,20 +285,20 @@ bool TParser::parseAxisRamp(char *buffer, const size_t length, size_t &index, Ax
     if (!parseAxisRampData(buffer, length, index, currentRampType, data))
         return false;
 
-    if (currentRampType == AxisRampType::IN || currentRampType == AxisRampType::INOUT)
+    if (currentRampType == AxisRampType::In || currentRampType == AxisRampType::InOut)
         rampIn = data;
-    if (currentRampType == AxisRampType::OUT || currentRampType == AxisRampType::INOUT)
+    if (currentRampType == AxisRampType::Out || currentRampType == AxisRampType::InOut)
         rampOut = data;
 
-    if (rampType != AxisRampType::NONE)
-        rampType = AxisRampType::INOUT;
+    if (rampType != AxisRampType::None)
+        rampType = AxisRampType::InOut;
 
     return true;
 }
 
 bool TParser::parseAxisRampData(char *buffer, const size_t length, size_t &index, const AxisRampType &rampType, AxisRampData &data)
 {
-    data = {0, true, 1 / 3.0f, false, /* autoTangent */ rampType != AxisRampType::INOUT};
+    data = {0, true, 1 / 3.0f, false, /* autoTangent */ rampType != AxisRampType::InOut};
     if (!isdigit(TString::getCharAt(buffer, length, index)))
         return true;
 
@@ -377,19 +377,19 @@ bool TParser::parseDeviceCommand(char *buffer, const size_t length, DeviceComman
     switch (toupper(TString::getCharAt(buffer, length, index))) // looks at the first char and checks if it matches the values
     {
     case 'S':
-        out.type = DeviceCommandType::STOPDEVICE;
+        out.type = DeviceCommandType::StopDevice;
         return true;
     case '0':
-        out.type = DeviceCommandType::GETSOFTWAREVERSION;
+        out.type = DeviceCommandType::GetSoftwareVersion;
         return true;
     case '1':
-        out.type = DeviceCommandType::GETTCODEVERSION;
+        out.type = DeviceCommandType::GetTCodeVersion;
         return true;
     case '2':
-        out.type = DeviceCommandType::GETAXISVALUES;
+        out.type = DeviceCommandType::GetAssignedAxisValues;
         return true;
     }
 
-    out.type = DeviceCommandType::NONE;
+    out.type = DeviceCommandType::None;
     return false;
 }

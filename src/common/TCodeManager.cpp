@@ -216,7 +216,7 @@ void TCodeManager::readCommand(char *command, size_t length)
     // Switch between command types
     switch (type) // depending on the command type found parse the inputted command and execute the correct command function
     {
-    case CommandType::AXIS:
+    case CommandType::Axis:
     {
         AxisCommand result;
         if (TParser::parseAxisCommand(command, length, result))
@@ -245,14 +245,14 @@ void TCodeManager::readCommand(char *command, size_t length)
         }
         break;
     }
-    case CommandType::DEVICE:
+    case CommandType::Device:
     {
         DeviceCommand result;
         if (TParser::parseDeviceCommand(command, length, result))
             runDeviceCommand(result);
         break;
     }
-    case CommandType::SETUP:
+    case CommandType::Setup:
     {
         SetupCommand result;
         if (TParser::parseSetupCommand(command, length, result))
@@ -273,23 +273,23 @@ void TCodeManager::runDeviceCommand(DeviceCommand &command)
 {
     switch (command.type)
     {
-    case DeviceCommandType::STOPDEVICE:
+    case DeviceCommandType::StopDevice:
     {
         stop();
         println("STOP");
     }
     break;
-    case DeviceCommandType::GETTCODEVERSION:
+    case DeviceCommandType::GetTCodeVersion:
     {
         println(tcodeVersion);
     }
     break;
-    case DeviceCommandType::GETSOFTWAREVERSION:
+    case DeviceCommandType::GetSoftwareVersion:
     {
         println(firmwareVersion);
     }
     break;
-    case DeviceCommandType::GETAXISVALUES:
+    case DeviceCommandType::GetAssignedAxisValues:
     {
         printSavedAxisValues();
     }
