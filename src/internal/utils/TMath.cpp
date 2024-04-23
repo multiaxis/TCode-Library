@@ -90,7 +90,7 @@ float interpolate(float x, float x0, float y0, AxisRampData r0, float x1, float 
     }
 }
 
-unsigned long getTCodeFromFloat(float value, int precision, unsigned char &logOut)
+unsigned long getTCodeFromFloat(float value, int precision, uint8_t &logOut)
 {
     float depsilon = pow10f(-precision);
     unsigned long out = 0;

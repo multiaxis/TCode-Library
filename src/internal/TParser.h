@@ -12,155 +12,34 @@
 
 using namespace std;
 
-namespace TCode {
+namespace TCode::TParser {
 
-/**
- * @brief Wrapper for parsing commands from TCode
- */
-class TParser
-{
-public:
-    /**
-     * @brief Checks if the inputted type and channel number are valid
-     * @param type the TCode Channel Type
-     * @param channel the Channel number
-     * @returns returns true if the type and channel number are within accepted ranges and values 0-9 on channel number and a valid channel type
-     */
-    static bool idValid(const ChannelType type, const uint8_t channel);
+bool isExtention(const char value);
 
-    /**
-     * @brief Checks if the inputted type and channel number are valid
-     * @param id Is the combined form of ChannelType and the channel number
-     * @returns returns true if the type and channel number are within accepted ranges and values 0-9 on channel number and a valid channel type
-     */
-    static bool idValid(const ChannelID id);
+bool isRamp(const char value);
 
-    /**
-     * @brief For a given ID returns the string representation of the ID
-     * @param buffer output buffer
-     * @param length length of buffer
-     * @param id Is the combined form of ChannelType and the channel number
-     * @returns The length of chars used in the buffer
-     */
-    static int getStrfromID(char *buffer, const size_t length, const ChannelID &id);
+bool isChannelIdValid(const ChannelID id);
 
-    /**
-     * @brief For a given ID returns the string representation of the ID
-     * @param id Is the combined form of ChannelType and the channel number
-     * @param out The Output String
-     */
-    static void getStrfromID(const ChannelID &id, String &out);
+AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length);
 
-    /**
-     * @brief Takes a channel type and channel number and creates a Channel ID
-     * @param type the TCode Channel Type
-     * @param channel the Channel number
-     * @returns returns a TCode_ChannelID from the channel type and channel number
-     */
-    static ChannelID constructID(const ChannelType type, const uint8_t channel);
+AxisRampType getRampType(size_t &index, const char *buffer, const size_t length);
 
-    /**
-     * @brief Gets the Extention type from a string at the index specified
-     * @param buffer string to be processed
-     * @param length length of buffer
-     * @param index starting index of the char to be processed
-     * @returns returns a TCode Axis Extention Type used in the Axis to work out if an extention means Time or Speed
-     */
-    static AxisExtentionType getExtentionTypeFromStr(char *buffer, const size_t length, size_t &index);
-    /**
-     * @brief Gets the Ramp type from a string at the index specified
-     * @param buffer string to be processed
-     * @param length length of buffer
-     * @param index starting index of the char to be processed
-     * @param rampType returning ramp type
-     * @returns returns a true if ramp type was parsed correctly
-     */
-    static bool getRampTypeFromStr(char *buffer, const size_t length, size_t &index, AxisRampType &rampType);
+ChannelID getChannelId(size_t &index, const char *buffer, const size_t length);
 
-    /**
-     * @brief Gets the ID from an inputted string from a given index
-     * @param buffer string to be processed
-     * @param length length of buffer
-     * @param index starting index
-     * @returns returns a TCode Channel ID found at the location at the starting index
-     */
-    static ChannelID getIDFromStr(char *buffer, const size_t length, size_t &index);
+CommandType getCommandType(const char *buffer, const size_t length);
 
-    /**
-     * @brief Returns the type of command provided by the input string
-     * @param buffer string to be processed
-     * @param length length of buffer
-     * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
-     */
-    static CommandType getCommandType(char *buffer, const size_t length, size_t index);
+size_t getNextCommand(deque<char> &inputBuffer, char *buffer, const size_t length);
 
-    /**
-     * @brief Parses the next command out of a buffer and puts it into a provided char buffer
-     * @param inputBuffer buffer for command to be parsed from
-     * @param buffer buffer for command to go into
-     * @param length length of buffer
-     * @param index starting index of the char to be processed
-     * @returns a TCode Command Type e.g. Axis, Device, Setup if it is not a valid command None is returned
-     */
-    static size_t getNextCommand(deque<char> inputBuffer, char *buffer, size_t buffer_length);
+bool parseAxisCommand(const char *buffer, const size_t length, AxisCommand &out);
 
-    /**
-     * @brief Parses an Axis Command
-     * @param buffer string to be processed
-     * @param length length of buffer
-     * @param out a TCode Axis command struct so that the command can be executed easier
-     */
-    static bool parseAxisCommand(char *buffer, const size_t length, AxisCommand &out);
+bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, AxisExtentionType &extentionType, unsigned long &commandExtention);
 
-    /**
-     * @brief Parses axis extention from command buffer
-     * @param inputBuffer buffer for command to be parsed from
-     * @param length length of input buffer
-     * @param index starting index
-     * @param extentionType returning extention type
-     * @param commandExtention returning extendion value
-     * @returns returns a true if axis extention was parsed correctly
-     */
-    static bool parseAxisExtention(char *buffer, const size_t length, size_t &index, AxisExtentionType &extentionType, unsigned long &commandExtention);
-    
-    /**
-     * @brief Parses axis ramp from command buffer
-     * @param inputBuffer buffer for command to be parsed from
-     * @param length length of input buffer
-     * @param index starting index
-     * @param rampType returning ramp type
-     * @param rampIn returning ramp in data
-     * @param rampOut returning ramp out data
-     * @returns returns a true if axis ramp was parsed correctly
-     */
-    static bool parseAxisRamp(char *buffer, const size_t length, size_t &index, AxisRampType &rampType, AxisRampData &rampIn, AxisRampData &rampOut);
-    
-    /**
-     * @brief Parses axis ramp data from command buffer
-     * @param inputBuffer buffer for command to be parsed from
-     * @param length length of input buffer
-     * @param index starting index
-     * @param data returning ramp data
-     * @returns returns a true if axis ramp data was parsed correctly
-     */
-    static bool parseAxisRampData(char *buffer, const size_t length, size_t &index, const AxisRampType &rampType, AxisRampData &data);
-    
-    /**
-     * @brief Parses a Device Command
-     * @param buffer string to be processed
-     * @param length length of buffer
-     * @param out Command to be outputted to
-     * @returns a TCode Device Command which is a data representation of the device command to be processed easier
-     */
-    static bool parseDeviceCommand(char *buffer, const size_t length, DeviceCommand &out);
+bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, AxisRampType &rampType, AxisRampData &rampIn, AxisRampData &rampOut);
 
-    /**
-     * @brief Parses a Setup Command
-     * @param buffer string to be processed
-     * @param length length of buffer
-     * @param out a TCode Setup command struct in a data representation to be processed easier
-     */
-    static bool parseSetupCommand(char *buffer, const size_t length, SetupCommand &out);
-};
+bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const AxisRampType rampType, AxisRampData &data);
+
+bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommand &out);
+
+bool parseSetupCommand(const char *buffer, const size_t length, SetupCommand &out);
 
 }

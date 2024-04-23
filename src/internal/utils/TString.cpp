@@ -6,116 +6,46 @@
 
 namespace TCode::TString {
 
-/**
- * @brief Checks if an inputted char is one used for an extention Command in the decoding of TCode
- * @param value is the char value which needs checking
- * @return returns true if the inputted char is used as an extention character
- */
-bool isextention(const char value)
+bool getNextInt(size_t &index, const char *buffer, const size_t length, unsigned long &value, size_t &log)
 {
-    switch (toupper(value)) // checks if the inputted char is used as an extention character
-    {
-    case 'I':
-    case 'S':
-        return true;
-    default:
-        return false;
-    }
-}
-
-/**
- * @brief Checks if an inputted char is one used for an ramp Command in the decoding of TCode
- * @param value is the char value which needs checking
- * @return returns true if the inputted char is used as an ramp character
- */
-bool isramp(const char value)
-{
-    switch (toupper(value)) // checks if the inputted char is used as an extention character
-    {
-    case '<':
-    case '>':
-    case '=':
-        return true;
-    default:
-        return false;
-    }
-}
-
-/**
- * @brief In a string at the index pointed to by the index paramater gets the Integer contained at and after incrementing the index value
- * @param buffer string to be processed
- * @param length length of buffer
- * @param index the index pointing to a position in the string
- * @return returns a long the integer found in the string represented as base 10 unsigned if a integer string is found which is less than 4 characters long then it will be multiplied til it reaches that minimum e.g. "1" = 1000 , "01" = 100
- */
-bool getNextInt(unsigned long &value, size_t &log, char *buffer, const size_t length, size_t &index)
-{
-    size_t count = 0;
+    size_t startIndex = index;
     long accum = 0;
-    while (isdigit(*(buffer + index))) // while there is a number at the index we are at in the string
-    {
-        accum *= 10;                                                  // multiply the accumulator first to get the correct output value
-        accum += static_cast<long>(toupper(*(buffer + index)) - '0'); // get next int value '0' - '9' subtracting '0' gets the integer value of the next unit
-        index++;
-        count++; // increase the indeces count to count the digits
-    }
-
-    if (count == 0) // no chars were found with 0 - 9
-        return false;
-
-    log = count;
-    value = accum;
-
-    return true;
-}
-
-/**
- * @brief In a string at the index pointed to by the index paramater gets the Integer contained at and after incrementing the index value
- * @param buffer string to be processed
- * @param length length of buffer
- * @param index the index pointing to a position in the string
- * @return returns a long the integer found in the string represented as base 10 unsigned if a integer string is found which is less than 4 characters long then it will be multiplied til it reaches that minimum e.g. "1" = 1000 , "01" = 100
- */
-bool getNextTCodeFloat(float &value, size_t &log, char *buffer, const size_t length, size_t &index)
-{
-    size_t count = 0;
-    long accum = 0;
-    while (isdigit(*(buffer + index))) // while there is a number at the index we are at in the string
-    {
-        accum *= 10;                                                  // multiply the accumulator first to get the correct output value
-        accum += static_cast<long>(toupper(*(buffer + index)) - '0'); // get next int value '0' - '9' subtracting '0' gets the integer value of the next unit
-        index++;
-        count++; // increase the indeces count to count the digits
-    }
-
-    if (count == 0) // no chars were found with 0 - 9
-        return false;
-
-    while (count < 4) // if less than 4 digits were found make up for it by multiplying eg 1 = 1000, 90 = 9000, 001 = 10
+    while (isdigit(buffer[index]))
     {
         accum *= 10;
-        count++;
+        accum += static_cast<long>(toupper(buffer[index]) - '0');
+        index++;
     }
 
-    value = (double)accum / pow10f((int)count);
-    log = count;
-    value = accum;
+    log = index - startIndex;
+    if (log == 0)
+        return false;
 
+    value = accum;
     return true;
 }
 
-/**
- * @brief Gets the char at an index in an inputted buffer
- * @param buffer pointer to buffer to be processed
- * @param length length of buffer
- * @param index index to get char from
- * @return returns a char pointed to at the index position in the buffer (returns '\0' if out of range)
- **/
-char getCharAt(char *buffer, const size_t length, size_t index)
+bool getNextTCodeFloat(size_t &index, const char *buffer, const size_t length, float &value, size_t &log)
+{
+    unsigned long valueLong;
+    if (!getNextInt(index, buffer, length, valueLong, log))
+        return false;
+
+    while (log < 4) {
+        valueLong *= 10;
+        log++;
+    }
+
+    value = (double)valueLong / pow10f((int)log);
+    return true;
+}
+
+char getCharAtOrDefault(const size_t index, const char *buffer, const size_t length, const char defaultValue)
 {
     if (index >= length)
-        return '\0';
-    return *(buffer + index);
+        return defaultValue;
+        
+    return buffer[index];
 }
 
 /**
@@ -342,6 +272,28 @@ unsigned long getHash(const char *str, size_t length)
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
     }
     return hash;
+}
+
+char channelTypeToChar(const ChannelType &type)
+{
+    switch (type)
+    {
+    case ChannelType::Auxiliary:
+        return 'A';
+    case ChannelType::Linear:
+        return 'L';
+    case ChannelType::Rotation:
+        return 'R';
+    case ChannelType::Vibration:
+        return 'V';
+    default:
+        return '?';
+    }
+}
+
+String channelIdToString(const ChannelID &id)
+{
+    return channelTypeToChar(id.type) + String((int)id.channel);
 }
 
 }

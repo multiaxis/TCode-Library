@@ -33,7 +33,7 @@ enum class ChannelType
 struct ChannelID
 {
     ChannelType type;
-    char channel;
+    uint8_t channel;
 };
 
 /**

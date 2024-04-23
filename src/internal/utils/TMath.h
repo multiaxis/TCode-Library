@@ -14,7 +14,7 @@ float mapf(float x, float in_min, float in_max, float out_min, float out_max);
 
 float interpolate(float x, float x0, float y0, AxisRampData r0, float x1, float y1, AxisRampData r1);
 
-unsigned long getTCodeFromFloat(float value, int precision, unsigned char &logOut);
+unsigned long getTCodeFromFloat(float value, int precision, uint8_t &logOut);
 
 unsigned long getTCodeEstimateLogFromFloat(float value);
 
