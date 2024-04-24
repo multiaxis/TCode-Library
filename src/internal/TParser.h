@@ -28,8 +28,6 @@ AxisId getAxisId(size_t &index, const char *buffer, const size_t length);
 
 CommandType getCommandType(const char *buffer, const size_t length);
 
-size_t getNextCommand(deque<char> &inputBuffer, char *buffer, const size_t length);
-
 bool parseAxisCommand(const char *buffer, const size_t length, AxisCommand &out);
 
 bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, AxisExtentionType &extentionType, unsigned long &commandExtention);

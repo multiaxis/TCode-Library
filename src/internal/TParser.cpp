@@ -95,36 +95,6 @@ CommandType getCommandType(const char *buffer, const size_t length)
     }
 }
 
-size_t getNextCommand(deque<char> &inputBuffer, char *buffer, const size_t length)
-{
-    size_t index = 0;
-    bool blevel = false; //TODO: ????
-    while (!inputBuffer.empty() && (index < length - 1))
-    {
-        char charValue = inputBuffer.front();
-        if(charValue == '\"')
-            blevel = !blevel;
-
-        if ((charValue == ' ') && !blevel)
-        {
-            inputBuffer.pop_front();
-            break;
-        }
-
-        if (charValue == '\n')
-        {
-            inputBuffer.pop_front();
-            break;
-        } 
-
-        buffer[index++] = inputBuffer.front();
-        inputBuffer.pop_front();
-    }
-    
-    //TODO: buffer[index] = '\0' ????
-    return index;
-}
-
 bool parseAxisCommand(const char *buffer, const size_t length, AxisCommand &out)
 {
     if (getCommandType(buffer, length) != CommandType::Axis)
