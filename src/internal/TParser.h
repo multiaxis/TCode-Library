@@ -8,7 +8,7 @@
 #include <Arduino.h>
 #include <deque>
 
-#include "TCodeEnums.h"
+#include "DataTypes.h"
 
 using namespace std;
 
@@ -18,13 +18,13 @@ bool isExtention(const char value);
 
 bool isRamp(const char value);
 
-bool isChannelIdValid(const ChannelID id);
+bool isAxisIdValid(const AxisId &id);
 
 AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length);
 
 AxisRampType getRampType(size_t &index, const char *buffer, const size_t length);
 
-ChannelID getChannelId(size_t &index, const char *buffer, const size_t length);
+AxisId getAxisId(size_t &index, const char *buffer, const size_t length);
 
 CommandType getCommandType(const char *buffer, const size_t length);
 

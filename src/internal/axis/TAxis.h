@@ -4,7 +4,7 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "../TCodeEnums.h"
+#include "../DataTypes.h"
 
 namespace TCode {
 
@@ -18,20 +18,20 @@ class TAxis
 {
 public:
     TAxis() = delete;
-    TAxis(const char *name, ChannelID channel, float defaultValue);
+    TAxis(const char *name, AxisId id, float defaultValue);
 
     void set(const AxisData &data);
     float getPosition();
     void stop();
     bool changed();
     const char *getName();
-    ChannelID getChannelID();
+    AxisId getId();
     unsigned long getLastCommandTime();
 
 private:
     unsigned long lastCommandTime;
     const char *name;
-    ChannelID channel;
+    AxisId id;
     float lastPosition;
     int minInterval;               // minimum command interval
     AxisState currentState;

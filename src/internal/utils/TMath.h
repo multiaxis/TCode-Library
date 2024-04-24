@@ -6,7 +6,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include "../TCodeEnums.h"
+#include "../DataTypes.h"
 
 namespace TCode::TMath {
 

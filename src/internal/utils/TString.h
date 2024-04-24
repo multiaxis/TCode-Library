@@ -31,8 +31,8 @@ bool encodeValue(TaggedDataContainer &data, char *buffer, const size_t length);
 
 unsigned long getHash(const char *str, size_t length);
 
-char channelTypeToChar(const ChannelType &type);
+char axisTypeToChar(const AxisType &type);
 
-String channelIdToString(const ChannelID &id);
+String axisIdToString(const AxisId &id);
 
 }

@@ -7,10 +7,10 @@
 
 using namespace TCode;
 
-TAxis::TAxis(const char *name, ChannelID channel, float defaultValue)
+TAxis::TAxis(const char *name, AxisId id, float defaultValue)
 {
     this->name = name;
-    this->channel = channel;
+    this->id = id;
 
     currentState.startValue = defaultValue;
     currentState.endValue = defaultValue;
@@ -106,7 +106,7 @@ void TAxis::stop()
     currentState.startTime = currentTime;
     currentState.endTime = currentTime;
 
-    if (channel.type == ChannelType::Vibration) //TODO:
+    if (id.type == AxisType::Vibration) //TODO:
     {
         currentState.endValue = 0;
         currentState.endTime = currentTime + TCODE_MIN_AXIS_SMOOTH_INTERVAL;
@@ -128,9 +128,9 @@ const char *TAxis::getName()
     return name;
 }
 
-ChannelID TAxis::getChannelID()
+AxisId TAxis::getId()
 {
-    return channel;
+    return id;
 }
 
 unsigned long TAxis::getLastCommandTime()

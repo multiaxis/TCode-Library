@@ -88,17 +88,17 @@ void setup() {
   Serial.println(usage.spaceUsed);
   Serial.println("================");
 
-  TCode.registerAxis("Stroke", {ChannelType::LINEAR, 0}, 0.5f);
-  TCode.registerAxis("Surge", {ChannelType::LINEAR, 1}, 0.5f);
-  TCode.registerAxis("Sway", {ChannelType::LINEAR, 2}, 0.5f);
-  TCode.registerAxis("Twist", {ChannelType::ROTATION, 0}, 0.5f;
-  TCode.registerAxis("Roll", {ChannelType::ROTATION, 1}, 0.5f);
-  TCode.registerAxis("Pitch", {ChannelType::ROTATION, 2}, 0.5f);
-  TCode.registerAxis("Vibe 1",{ChannelType::VIBRATION, 0}, 0);
-  TCode.registerAxis("Vibe 2",{ChannelType::VIBRATION, 1}, 0);
-  TCode.registerAxis("Valve", {ChannelType::AUXILIARY, 0}, 0);
-  TCode.registerAxis("Suck", {ChannelType::AUXILIARY, 1}, 0);
-  TCode.registerAxis("Lube", {ChannelType::AUXILIARY, 2}, 0);
+  TCode.registerAxis("Stroke", AxisType::Linear, 0, 0.5f);
+  TCode.registerAxis("Surge", AxisType::Linear, 1, 0.5f);
+  TCode.registerAxis("Sway", AxisType::Linear, 2, 0.5f);
+  TCode.registerAxis("Twist", AxisType::Rotation, 0, 0.5f);
+  TCode.registerAxis("Roll", AxisType::Rotation, 1, 0.5f);
+  TCode.registerAxis("Pitch", AxisType::Rotation, 2, 0.5f);
+  TCode.registerAxis("Vibe 1", AxisType::Vibration, 0, 0);
+  TCode.registerAxis("Vibe 2", AxisType::Vibration, 1, 0);
+  TCode.registerAxis("Valve", AxisType::Auxiliary, 0, 0);
+  TCode.registerAxis("Suck", AxisType::Auxiliary, 1, 0);
+  TCode.registerAxis("Lube", AxisType::Auxiliary, 2, 0);
 
   TCode.registerButton(12, "Test");
 

@@ -76,18 +76,20 @@ void TCodeManager::clearBuffer()
     inputBuffer.clear();
 }
 
-bool TCodeManager::registerAxis(const char *name, ChannelID channel, float defaultValue)
+bool TCodeManager::registerAxis(const char *name, AxisType type, uint8_t channel, float defaultValue)
 {
     if (getAxisFromName(name) != nullptr)
         return false;
-    if (getAxisFromID(channel) != nullptr)
+        
+    AxisId id = {type, channel};
+    if (getAxisFromID(id) != nullptr)
         return false;
 
-    registeredAxes.push_back(TAxis(name, channel, defaultValue));
+    registeredAxes.push_back(TAxis(name, id, defaultValue));
     return true;
 }
 
-void TCodeManager::axisWrite(const ChannelID &id, const AxisData &data)
+void TCodeManager::axisWrite(const AxisId &id, const AxisData &data)
 {
     TAxis *axis = getAxisFromID(id);
     if (axis != nullptr)
@@ -101,7 +103,7 @@ void TCodeManager::axisWrite(const char *name, const AxisData &data)
         axis->set(data);
 }
 
-float TCodeManager::axisRead(const ChannelID &channel_id)
+float TCodeManager::axisRead(const AxisId &channel_id)
 {
     TAxis *axis = getAxisFromID(channel_id);
     if (axis != nullptr)
@@ -121,7 +123,7 @@ float TCodeManager::axisRead(const char *name)
     return -1;
 }
 
-unsigned long TCodeManager::axisLastCommandTime(const ChannelID &channel_id)
+unsigned long TCodeManager::axisLastCommandTime(const AxisId &channel_id)
 {
     TAxis *axis = getAxisFromID(channel_id);
     if (axis != nullptr)
@@ -191,12 +193,12 @@ TAxis *TCodeManager::getAxisFromName(const char *name)
     return nullptr;
 }
 
-TAxis *TCodeManager::getAxisFromID(const ChannelID &id)
+TAxis *TCodeManager::getAxisFromID(const AxisId &id)
 {
     for (size_t i = 0; i < registeredAxes.size(); i++)
     {
         TAxis *axis = &registeredAxes[i];
-        if (axis->getChannelID().channel == id.channel & axis->getChannelID().type == id.type)
+        if (axis->getId() == id)
             return axis;
     }
 
@@ -304,7 +306,7 @@ void TCodeManager::runSetupCommand(SetupCommand &command)
     printSavedAxisValues();
 }
 
-void TCodeManager::setSaveValues(ChannelID &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog)
+void TCodeManager::setSaveValues(const AxisId &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog)
 {
     if (settingManager == nullptr)
     {
@@ -322,7 +324,7 @@ void TCodeManager::setSaveValues(ChannelID &id, float minimum, float maximum, ui
     minLog = min(minLog, TCODE_MAX_LOG);
     maxLog = min(maxLog, TCODE_MAX_LOG);
     
-    String idString = TString::channelIdToString(id);
+    String idString = TString::axisIdToString(id);
 
     String settingName = "AXIS-MIN-" + idString;
     settingManager->setSetting(settingName.c_str(), minimum);
@@ -354,7 +356,7 @@ void TCodeManager::printSavedAxisValues()
         float max = 1.0;
         int maxLog = 4;
 
-        String idString = TString::channelIdToString(axis->getChannelID());
+        String idString = TString::axisIdToString(axis->getId());
         String settingName = "AXIS-MIN-" + idString;
         if (!settingManager->getSetting(settingName.c_str(), min))
             settingManager->setSetting(settingName.c_str(), 0.0f);

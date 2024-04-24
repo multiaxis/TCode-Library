@@ -34,17 +34,17 @@ bool isRamp(const char value)
     }
 }
 
-bool isChannelIdValid(const ChannelID id)
+bool isAxisIdValid(const AxisId &id)
 {
     if (id.channel > 9 || id.channel < 0)
         return false;
 
     switch (id.type)
     {
-    case ChannelType::Auxiliary:
-    case ChannelType::Linear:
-    case ChannelType::Rotation:
-    case ChannelType::Vibration:
+    case AxisType::Auxiliary:
+    case AxisType::Linear:
+    case AxisType::Rotation:
+    case AxisType::Vibration:
         break;
     default:
         return false;
@@ -53,7 +53,7 @@ bool isChannelIdValid(const ChannelID id)
     return true;
 }
 
-ChannelID getChannelId(size_t &index, const char *buffer, const size_t length)
+AxisId getAxisId(size_t &index, const char *buffer, const size_t length)
 {
     char type = toupper(TString::getCharAtOrDefault(index++, buffer, length));
     uint8_t channel = static_cast<uint8_t>(toupper(TString::getCharAtOrDefault(index++, buffer, length)) - '0');
@@ -61,19 +61,19 @@ ChannelID getChannelId(size_t &index, const char *buffer, const size_t length)
     switch (type)
     {
     case 'L':
-        return {ChannelType::Linear, channel};
+        return {AxisType::Linear, channel};
         break;
     case 'R':
-        return {ChannelType::Rotation, channel};
+        return {AxisType::Rotation, channel};
         break;
     case 'V':
-        return {ChannelType::Vibration, channel};
+        return {AxisType::Vibration, channel};
         break;
     case 'A':
-        return {ChannelType::Auxiliary, channel};
+        return {AxisType::Auxiliary, channel};
         break;
     default:
-        return {ChannelType::None, UINT8_MAX};
+        return {AxisType::None, UINT8_MAX};
     }
 }
 
@@ -131,8 +131,8 @@ bool parseAxisCommand(const char *buffer, const size_t length, AxisCommand &out)
         return false;
 
     size_t index = 0;
-    ChannelID id = getChannelId(index, buffer, length);
-    if (!isChannelIdValid(id))
+    AxisId id = getAxisId(index, buffer, length);
+    if (!isAxisIdValid(id))
         return false;
 
     AxisExtentionType extentionType = AxisExtentionType::None;
@@ -294,8 +294,8 @@ bool parseSetupCommand(const char *buffer, const size_t length, SetupCommand &ou
         return false;
 
     size_t index = 1;
-    ChannelID id = getChannelId(index, buffer, length);
-    if (!isChannelIdValid(id))
+    AxisId id = getAxisId(index, buffer, length);
+    if (!isAxisIdValid(id))
         return false;
 
     if (toupper(TString::getCharAtOrDefault(index++, buffer, length)) != '-')

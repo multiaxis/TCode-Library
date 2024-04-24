@@ -274,26 +274,26 @@ unsigned long getHash(const char *str, size_t length)
     return hash;
 }
 
-char channelTypeToChar(const ChannelType &type)
+char axisTypeToChar(const AxisType &type)
 {
     switch (type)
     {
-    case ChannelType::Auxiliary:
+    case AxisType::Auxiliary:
         return 'A';
-    case ChannelType::Linear:
+    case AxisType::Linear:
         return 'L';
-    case ChannelType::Rotation:
+    case AxisType::Rotation:
         return 'R';
-    case ChannelType::Vibration:
+    case AxisType::Vibration:
         return 'V';
     default:
         return '?';
     }
 }
 
-String channelIdToString(const ChannelID &id)
+String axisIdToString(const AxisId &id)
 {
-    return channelTypeToChar(id.type) + String((int)id.channel);
+    return axisTypeToChar(id.type) + String((int)id.channel);
 }
 
 }

@@ -7,7 +7,7 @@
 #include <Arduino.h>
 #include <vector>
 #include <deque>
-#include "../internal/TCodeEnums.h"
+#include "../internal/DataTypes.h"
 #include "../internal/axis/TAxis.h"
 #include "../internal/input/TInputBase.h"
 #include "../common/settings/ISettings.h"
@@ -67,7 +67,7 @@ public:
      * @param axis UnbufferedAxis pointer to be added to the TCode class to be processed
      * @return returns false if axis could not be registered
      */
-    bool registerAxis(const char *name, ChannelID channel, float defaultValue);
+    bool registerAxis(const char *name, AxisType type, uint8_t channel, float defaultValue);
 
     /**
      * @brief function to write to a specified axis
@@ -77,7 +77,7 @@ public:
      * @param extMagnitude the value for the extention type
      * @param rampType the ramp type
      */
-    void axisWrite(const ChannelID &id, const AxisData &data);
+    void axisWrite(const AxisId &id, const AxisData &data);
 
     /**
      * @brief function to write to a specified axis
@@ -94,7 +94,7 @@ public:
      * @param id channel ID to read the current position from
      * @returns current position or -1 if position could not be read
      */
-    float axisRead(const ChannelID &channelID);
+    float axisRead(const AxisId &axisId);
 
     /**
      * @brief function to read the position of a specified axis
@@ -105,10 +105,10 @@ public:
 
     /**
      * @brief function to read the last command time of a specified axis
-     * @param channelID id of the channel to read the last command time from
+     * @param AxisId id of the channel to read the last command time from
      * @returns last command time or -1 if position could not be read
      */
-    unsigned long axisLastCommandTime(const ChannelID &channelID);
+    unsigned long axisLastCommandTime(const AxisId &axisId);
     
     /**
      * @brief function to read the last command time of a specified axis
@@ -175,7 +175,7 @@ private:
     
 
     TAxis *getAxisFromName(const char *name);
-    TAxis *getAxisFromID(const ChannelID &id);
+    TAxis *getAxisFromID(const AxisId &id);
     void executeNextBufferCommand();
     void readCommand(char *buffer, size_t length);
 
@@ -183,7 +183,7 @@ private:
     void runDeviceCommand(DeviceCommand &command);
     void runSetupCommand(SetupCommand &command);
 
-    void setSaveValues(ChannelID &id, float min, float max,uint8_t min_log = 4, uint8_t max_log = 4);
+    void setSaveValues(const AxisId &id, float minimum, float maximum, uint8_t minLog = 4, uint8_t maxLog = 4);
 
     void printSavedAxisValues();
 

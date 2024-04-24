@@ -16,7 +16,7 @@ namespace TCode {
  * @param Auxiliary,
  * @param None
  */
-enum class ChannelType
+enum class AxisType
 {
     Linear,
     Rotation,
@@ -30,11 +30,16 @@ enum class ChannelType
  * @param type type of channel
  * @param channel channel number
  */
-struct ChannelID
+struct AxisId
 {
-    ChannelType type;
+    AxisType type;
     uint8_t channel;
 };
+
+inline bool operator==(const AxisId& lhs, const AxisId& rhs)
+{
+    return lhs.type == rhs.type && lhs.channel == rhs.channel;
+}
 
 /**
  * @brief representation of a TCode Axis Extention as an Enum
@@ -168,7 +173,7 @@ struct DeviceCommand
  */
 struct AxisCommand
 {
-    ChannelID id;
+    AxisId id;
     AxisData data;
 };
 
@@ -179,7 +184,7 @@ struct AxisCommand
  */
 struct SetupCommand
 {
-    ChannelID id;
+    AxisId id;
     SaveEntry saveEntryData;
 };
 
