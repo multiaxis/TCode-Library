@@ -11,41 +11,26 @@
 
 namespace TCode {
 
-class TaggedDataContainer
+class TaggedDataContainer : DataContainer
 {
 public:
     TaggedDataContainer();
-    TaggedDataContainer(const char *tag, DataContainer data);
-
-    DataContainer* getDataContainer();
-
+    
     template<typename T>
-    void setValue(T value);
-
-    template<typename T>
-    bool getValue(T& value);
-
-    VariantType getDataType();
+    TaggedDataContainer(const char *tag, T value);
 
     const char* getTag();
 
     unsigned int getHash();
 
-    bool operator==(const TaggedDataContainer& LHS) const
+    bool operator==(const TaggedDataContainer& o) const
     {
-        if(LHS.taghash != taghash)
-            return false;
-        
-        if(LHS.tag == tag)
-            return false;
-
-        return true;
+        return tagHash == o.tagHash;
     }
 
 private:
-    unsigned int taghash;
-    String tag;
-    DataContainer data;
+    const char *tag;
+    unsigned int tagHash;
 };
 
 }

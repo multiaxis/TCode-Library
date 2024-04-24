@@ -1,34 +1,40 @@
 #pragma once
 
+#include <Arduino.h>
+
 namespace TCode {
 
 enum class VariantType
 {
-    CHAR,
-    CHARPOINTER,
-    BOOL,
-    INT,
-    LONG,
-    UINT,
-    ULONG,
-    FLOAT,
-    EMPTY,
+    Empty,
+    Int8,
+    String,
+    Boolean,
+    Int32,
+    Int64,
+    UInt32,
+    UInt64,
+    Float32,
+    Float64
+};
+
+union VariantValue
+{
+    char int8;
+    const char *string;
+    bool boolean;
+    int int32;
+    long int64;
+    unsigned int uint32;
+    unsigned long uint64;
+    float float32;
+    double float64;
 };
 
 struct variant_t
 {
-    VariantType tag = VariantType::EMPTY;
-    union DataValue
-    {
-        char dataChar;
-        const char *dataCharP;
-        bool dataBool;
-        int dataInt;
-        long dataLong;
-        unsigned int dataUInt;
-        unsigned long dataULong;
-        float dataFloat;
-    } data;
+    VariantType type;
+    VariantValue value;
 
     template <typename T>
     variant_t &operator=(const T &value) = delete;
@@ -36,136 +42,28 @@ struct variant_t
     template <typename T>
     T &operator=(const variant_t &value) = delete;
 
-    variant_t &operator=(char &value)
-    {
-        data.dataChar = value;
-        tag = VariantType::CHAR;
-        return *this;
-    }
-
-    variant_t &operator=(const char *&value)
-    {
-        data.dataCharP = value;
-        tag = VariantType::CHARPOINTER;
-        return *this;
-    }
-
-    variant_t &operator=(bool &value)
-    {
-        data.dataBool = value;
-        tag = VariantType::BOOL;
-        return *this;
-    }
-
-    variant_t &operator=(int &value)
-    {
-        data.dataInt = value;
-        tag = VariantType::INT;
-        return *this;
-    }
-
-    variant_t &operator=(long &value)
-    {
-        data.dataLong = value;
-        tag = VariantType::LONG;
-        return *this;
-    }
-
-    variant_t &operator=(float &value)
-    {
-        data.dataFloat = value;
-        tag = VariantType::FLOAT;
-        return *this;
-    }
-
-    variant_t &operator=(unsigned int &value)
-    {
-        data.dataUInt = value;
-        tag = VariantType::UINT;
-        return *this;
-    }
-
-    variant_t &operator=(unsigned long &value)
-    {
-        data.dataULong = value;
-        tag = VariantType::ULONG;
-        return *this;
-    }
+    variant_t &operator=(char &value);
+    variant_t &operator=(const char *value);
+    variant_t &operator=(bool &value);
+    variant_t &operator=(int &value);
+    variant_t &operator=(long &value);
+    variant_t &operator=(unsigned int &value);
+    variant_t &operator=(unsigned long &value);
+    variant_t &operator=(float &value);
+    variant_t &operator=(double &value);
 
     template <typename T>
     bool get(T &value) = delete;
 
-    bool get(char &value)
-    {
-        if (tag != VariantType::CHAR)
-            return false;
-
-        value = data.dataChar;
-        return true;
-    }
-
-    bool get(const char *&value)
-    {
-        if (tag != VariantType::CHARPOINTER)
-            return false;
-
-        value = data.dataCharP;
-        return true;
-    }
-
-    bool get(bool &value)
-    {
-        if (tag != VariantType::BOOL)
-            return false;
-
-        value = data.dataBool;
-        return true;
-    }
-
-    bool get(int &value)
-    {
-        if (tag != VariantType::INT)
-            return false;
-
-        value = data.dataInt;
-        return true;
-    }
-
-    bool get(long &value)
-    {
-        if (tag != VariantType::LONG)
-            return false;
-
-        value = data.dataLong;
-        return true;
-    }
-
-    bool get(unsigned int &value)
-    {
-        if (tag != VariantType::UINT)
-            return false;
-
-        value = data.dataUInt;
-        return true;
-    }
-
-    bool get(unsigned long &value)
-    {
-        if (tag != VariantType::ULONG)
-            return false;
-
-        value = data.dataULong;
-        return true;
-    }
-
-    bool get(float &value)
-    {
-        if (tag != VariantType::FLOAT)
-            return false;
-
-        value = data.dataFloat;
-        return true;
-    }
+    bool get(char &value);
+    bool get(const char *value);
+    bool get(bool &value);
+    bool get(int &value);
+    bool get(long &value);
+    bool get(unsigned int &value);
+    bool get(unsigned long &value);
+    bool get(float &value);
+    bool get(double &value);
 };
 
 }

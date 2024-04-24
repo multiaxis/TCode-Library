@@ -7,261 +7,45 @@
 
 using namespace TCode;
 
-bool DataContainer::toStringChar(size_t &index, char *buffer, size_t length) //TODO: use index
+DataContainer::DataContainer() {}
+
+template<typename T>
+DataContainer::DataContainer(T value)
 {
-    if (length < 2)
-        return false;
-    char value;
-
-    if(!getValue(value))
-        return false;
-
-    buffer[0] = value;
-    buffer[1] = '\0';
-    return true;
-}
-
-bool DataContainer::toStringCharPointer(size_t &index, char *buffer, size_t length) //TODO: use index
-{
-    const char *value;
-    if(!getValue(value))
-        return false;
-
-    size_t valueLength = strlen(value);
-    if (length < valueLength + 3) // add '\0' and two quotes'""'
-        return false;
-    buffer[0] = '\"';
-    for (size_t i = 0; i < length; i++)
-    {
-        buffer[i+1] = value[i];
-    }
-    buffer[valueLength] = '\"';
-    return true;
-}
-
-bool DataContainer::toStringBool(size_t &index, char *buffer, size_t length) //TODO: use index
-{
-    if (length < 6)
-        return false;
-
-    const char *trueValue = "TRUE";
-    const char *falseValue = "FALSE";
-    bool value;
-    if(!getValue(value))
-        return false;
-
-    if (value)
-    {
-        strcpy(buffer, trueValue);
-    }
-    else
-    {
-        strcpy(buffer ,falseValue);
-    }
-
-    return true;
-}
-
-bool DataContainer::toStringSignedNumber(size_t &index, char *buffer, size_t length)
-{
-    long value;
-    switch(data.tag)
-    {
-        case VariantType::BOOL:
-            {
-            bool retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (long)retrieved;
-            break;
-            }
-        case VariantType::INT:
-            {
-            int retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (long)retrieved;
-            break;
-            }
-        case VariantType::LONG:
-            {
-            long retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (long)retrieved;
-            break;
-            }
-        case VariantType::UINT:
-            {
-            unsigned int retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (long)retrieved;
-            break;   
-            }
-        case VariantType::ULONG:
-            {
-            unsigned long retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (long)retrieved;
-            break;   
-            }
-        default:
-            return false;
-    }
-
-    return TString::writeInt(value, index, buffer, length);
-}
-
-bool DataContainer::toStringUnsignedNumber(size_t &index, char *buffer, size_t length)
-{
-    unsigned long value;
-    switch(data.tag)
-    {
-        case VariantType::BOOL:
-            {
-            bool retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (unsigned long)retrieved;
-            break;
-            }
-        case VariantType::INT:
-            {
-            int retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (unsigned long)retrieved;
-            break;
-            }
-        case VariantType::LONG:
-            {
-            long retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (unsigned long)retrieved;
-            break;
-            }
-        case VariantType::UINT:
-            {
-            unsigned int retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (unsigned long)retrieved;
-            break;   
-            }
-        case VariantType::ULONG:
-            {
-            unsigned long retrieved;
-            if(!getValue(retrieved))
-                return false;
-            value = (unsigned long)retrieved;
-            break;   
-            }
-        default:
-            return false;
-    }
-
-    return TString::writeInt(value, index, buffer, length);
-    return true;
-}
-
-bool DataContainer::toStringFloat(size_t &index, char *buffer, size_t length) //TODO: use index
-{
-    float value;
-    if(!getValue(value))
-        return false;
-    if (snprintf(buffer, length - 1, "%.4f", value) > length)
-    {
-        return false;
-    }
-    return true;
-}
-
-bool DataContainer::writeEmptyText(size_t &index, char *buffer, size_t length) //TODO: use index
-{
-    const char *errorText = "EMPTY";
-    if(length < 6)
-        return false;
-    strcpy(buffer, errorText);
-    return true;
-}
-
-void DataContainer::setDataType(VariantType tag)
-{
-    data.tag = tag;
+    data = value;
 }
 
 VariantType DataContainer::getDataType()
 {
-    return data.tag;
+    return data.type;
 }
 
 template <typename T>
 bool DataContainer::getValue(T &value)
 {
-    static_assert((std::is_same<T, unsigned long>::value||std::is_same<T, unsigned int>::value||std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,uint,ulong,float");
     return data.get(value);
 }
 
-bool DataContainer::getValue(DataContainer &value)
+bool DataContainer::getValue(DataContainer &other)
 {
-    value.data.tag = data.tag;
-    value.data.data = data.data;
+    other.data = data;
     return true;
 }
 
 template <typename T>
-void DataContainer::setValue(T &value)
+void DataContainer::setValue(const T &value)
 {
-    static_assert((std::is_same<T, unsigned long>::value||std::is_same<T, unsigned int>::value||std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,uint,ulong,float");
     data = value;
 }
 
-void DataContainer::setValue(DataContainer &value)
+void DataContainer::setValue(const DataContainer &other)
 {
-    data.tag = value.getDataType();
-    data.data = value.getUnderlyingType().data;
+    data = other.data;
 }
 
-variant_t &DataContainer::getUnderlyingType()
+template<typename T>
+DataContainer &DataContainer::operator=(T &value)
 {
-    return data;
-}
-
-bool DataContainer::toString(size_t &index, char *buffer, size_t length)
-{
-    bool valid = false;
-    switch (getDataType())
-    {
-    case VariantType::CHAR:
-        valid = toStringChar(index, buffer, length);
-        break;
-    case VariantType::CHARPOINTER:
-        valid = toStringCharPointer(index, buffer, length);
-        break;
-    case VariantType::BOOL:
-        valid = toStringBool(index, buffer, length);
-        break;
-    case VariantType::INT:
-        valid = toStringSignedNumber(index, buffer, length);
-        break;
-    case VariantType::LONG:
-        valid = toStringSignedNumber(index, buffer, length);
-        break;
-    case VariantType::UINT:
-        valid = toStringUnsignedNumber(index, buffer, length);
-        break;
-    case VariantType::ULONG:
-        valid = toStringUnsignedNumber(index, buffer, length);
-        break;
-    case VariantType::FLOAT:
-        valid = toStringFloat(index, buffer, length);
-        break;
-    case VariantType::EMPTY:
-        valid = writeEmptyText(index, buffer, length);
-        break;
-    }
-    return valid;
+    setValue(value);
+    return *this;
 }

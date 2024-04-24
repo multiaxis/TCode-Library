@@ -9,44 +9,22 @@ namespace TCode {
 
 TaggedDataContainer::TaggedDataContainer() {}
 
-TaggedDataContainer::TaggedDataContainer(const char *tag, DataContainer data)
-{
-    this->tag = tag;
-    this->data = data;
-    
-    taghash = TString::getHash(this->tag.c_str(), this->tag.length());
-}
-
-DataContainer* TaggedDataContainer::getDataContainer()
-{
-    return &data;
-}
-
 template<typename T>
-void TaggedDataContainer::setValue(T value)
+TaggedDataContainer::TaggedDataContainer(const char *tag, T value)
+    : DataContainer(value)
 {
-    data.setValue<T>(value);
-}
-
-template<typename T>
-bool TaggedDataContainer::getValue(T& value)
-{
-    return data.getValue<T>(value);
-}
-
-VariantType TaggedDataContainer::getDataType()
-{
-    return data.getDataType();
+    this->tag = tag;    
+    tagHash = TString::getHash(tag, strlen(tag));
 }
 
 const char* TaggedDataContainer::getTag()
 {
-    return tag.c_str();
+    return tag;
 }
 
 unsigned int TaggedDataContainer::getHash()
 {
-    return taghash;
+    return tagHash;
 }
 
 }

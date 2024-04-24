@@ -60,7 +60,7 @@ bool SettingsESP32::keyInCache(const char* setting)
     return false;
 }
 
-bool SettingsESP32::getValueFromCache(const char* setting,DataContainer& value)
+bool SettingsESP32::getValueFromCache(const char* setting, DataContainer& value)
 {
     size_t length = strlen(setting);
     unsigned long settingHash = TString::getHash(setting,length);
@@ -71,7 +71,7 @@ bool SettingsESP32::getValueFromCache(const char* setting,DataContainer& value)
         {
             if(strcmp(result.getTag(), setting) == 0)
             {
-                value.setValue(*result.getDataContainer());
+                value.setValue(result);
                 return true;
             }
         }
@@ -275,7 +275,7 @@ inline bool SettingsESP32::getSettingTemplated(const char *setting, T &settingVa
         Serial.println("SM: value found in cache:");
 #endif
         DataContainer result;
-        if(getValueFromCache(setting,result))
+        if(getValueFromCache(setting, result))
             return result.getValue<T>(settingValue);
     }
 

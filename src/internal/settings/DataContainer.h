@@ -14,14 +14,10 @@ namespace TCode {
 class DataContainer
 {
 public:
-    DataContainer() {}
-
+    DataContainer();
+    
     template<typename T>
-    DataContainer(T value)
-    {
-        static_assert((std::is_same<T, unsigned long>::value||std::is_same<T, unsigned int>::value||std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,uint,ulong,float");
-        data = value;
-    }
+    DataContainer(T value);
 
     VariantType getDataType();
 
@@ -31,34 +27,15 @@ public:
     bool getValue(DataContainer &value);
 
     template <typename T>
-    void setValue(T &value);
+    void setValue(const T &value);
 
-    void setValue(DataContainer &value);
-
-    variant_t &getUnderlyingType();
-
-    bool toString(size_t &index, char *buffer, size_t length);
+    void setValue(const DataContainer &value);
 
     template<typename T>
-    DataContainer &operator=(T &value)
-    {
-        static_assert((std::is_same<T, DataContainer>::value||std::is_same<T, unsigned long>::value||std::is_same<T, unsigned int>::value||std::is_same<T, char>::value||std::is_same<T, const char *>::value||std::is_same<T, bool>::value||std::is_same<T, int>::value||std::is_same<T, long>::value||std::is_same<T, float>::value)==true,"Invalid Type Used, Only supports char,const char*,bool,int,long,uint,ulong,float");
-        setValue(value);
-        return *this;
-    }
+    DataContainer &operator=(T &value);
 
 private:
     variant_t data;
-
-    bool toStringChar(size_t &index, char *buffer, size_t length);
-    bool toStringCharPointer(size_t &index, char *buffer, size_t length);
-    bool toStringBool(size_t &index, char *buffer, size_t length);
-    bool toStringSignedNumber(size_t &index, char *buffer, size_t length);
-    bool toStringUnsignedNumber(size_t &index, char *buffer, size_t length);
-    bool toStringFloat(size_t &index, char *buffer, size_t length);
-    bool writeEmptyText(size_t &index, char *buffer, size_t length);
-    
-    void setDataType(VariantType tag);
 };
 
 }

@@ -63,6 +63,7 @@ private:
     bool getFile(String &out);
     bool writeFile(const String &fileData);
     unsigned long getFileSize();
+    
 protected:
     template <typename T>
     bool getSettingTemplated(const char *setting, T &settingValue);
