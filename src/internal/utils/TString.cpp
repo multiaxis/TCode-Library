@@ -9,17 +9,14 @@ using namespace std;
 
 namespace TCode::TString {
 
-
 bool readInt(size_t &&index, const char *buffer, const size_t length, unsigned long &value, size_t &log) {
     return readInt(index, buffer, length, value, log);
 }
 
-bool readInt(size_t &index, const char *buffer, const size_t length, unsigned long &value, size_t &log)
-{
+bool readInt(size_t &index, const char *buffer, const size_t length, unsigned long &value, size_t &log) {
     size_t startIndex = index;
     long accum = 0;
-    while (isdigit(buffer[index]))
-    {
+    while (isdigit(buffer[index])) {
         accum *= 10;
         accum += toupper(buffer[index]) - '0';
         index++;
@@ -38,8 +35,7 @@ bool readTCodeFloat(size_t &&index, const char *buffer, const size_t length, flo
     return readTCodeFloat(index, buffer, length, value, log);
 }
 
-bool readTCodeFloat(size_t &index, const char *buffer, const size_t length, float &value, size_t &log)
-{
+bool readTCodeFloat(size_t &index, const char *buffer, const size_t length, float &value, size_t &log) {
     unsigned long valueLong;
     if (!readInt(index, buffer, length, valueLong, log))
         return false;
@@ -53,8 +49,7 @@ bool readTCodeFloat(size_t &index, const char *buffer, const size_t length, floa
     return true;
 }
 
-char readCharOrDefault(const size_t index, const char *buffer, const size_t length, const char defaultValue)
-{
+char readCharOrDefault(const size_t index, const char *buffer, const size_t length, const char defaultValue) {
     if (index >= length)
         return defaultValue;
         
@@ -65,8 +60,7 @@ bool writeChar(const char value, size_t &&index, char *buffer, const size_t leng
     return writeChar(value, index, buffer, length);
 }
 
-bool writeChar(const char value, size_t &index, char *buffer, const size_t length)
-{
+bool writeChar(const char value, size_t &index, char *buffer, const size_t length) {
     if (index >= length)
         return false;
 
@@ -109,8 +103,7 @@ bool writeInt(long value, size_t &&index, char *buffer, const size_t length) {
     return writeInt(value, index, buffer, length);
 }
 
-bool writeInt(long value, size_t &index, char *buffer, const size_t length)
-{
+bool writeInt(long value, size_t &index, char *buffer, const size_t length) {
     stack<char> output;
     if (value == 0)
         output.push('0');
@@ -137,37 +130,32 @@ bool writeInt(long value, size_t &index, char *buffer, const size_t length)
     return true;
 }
 
-unsigned long getHash(const char *str, size_t length)
-{
+unsigned long getHash(const char *str, size_t length) {
     //implementation of djb2 from http://www.cse.yorku.ca/~oz/hash.html
-    unsigned long hash = 5381;
     char c;
-    for(int i = 0, c = str[i]; c != '\0', i < length; i++)
-    {
+    unsigned long hash = 5381;
+    for(int i = 0; c = str[i], i < length; i++)
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-    }
+
     return hash;
 }
 
-char axisTypeToChar(const AxisType &type)
-{
-    switch (type)
-    {
-    case AxisType::Auxiliary:
-        return 'A';
-    case AxisType::Linear:
-        return 'L';
-    case AxisType::Rotation:
-        return 'R';
-    case AxisType::Vibration:
-        return 'V';
-    default:
-        return '?';
+char axisTypeToChar(const AxisType &type) {
+    switch (type) {
+        case AxisType::Auxiliary:
+            return 'A';
+        case AxisType::Linear:
+            return 'L';
+        case AxisType::Rotation:
+            return 'R';
+        case AxisType::Vibration:
+            return 'V';
+        default:
+            return '?';
     }
 }
 
-String axisIdToString(const AxisId &id)
-{
+String axisIdToString(const AxisId &id) {
     return axisTypeToChar(id.type) + String((int)id.channel);
 }
 

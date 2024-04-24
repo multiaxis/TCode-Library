@@ -23,8 +23,7 @@ namespace TCode {
 using namespace std;
 using namespace TCode;
 
-class TCodeManager
-{
+class TCodeManager {
 public:
     TCodeManager(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION);
 

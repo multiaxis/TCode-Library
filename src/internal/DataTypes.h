@@ -9,31 +9,14 @@
 
 namespace TCode {
 
-/**
- * @brief representation of a TCode Command type as an Enum
- * @param Axis Is an axis command which changes the values of the axis
- * @param Device Commands the Device itself to do something
- * @param Setup Sets different values within the Device which are used externaly
- * @param None
- */
-enum class CommandType
-{
+enum class CommandType {
     Axis,
     Device,
     Setup,
     None,
 };
 
-/**
- * @brief representation of a TCode Device Command type as an Enum
- * @param GetSoftwareVersion gets the software version string stored on the device
- * @param GetTCodeVersion gets the TCode version string stored on the device
- * @param GetAssignedAxisValues gets the assigned axis and their min and max values aswell as their names
- * @param StopDevice stops the device causing it to stay at its current position
- * @param NONE
- */
-enum class DeviceCommandType
-{
+enum class DeviceCommandType {
     GetSoftwareVersion,
     GetTCodeVersion,
     GetAssignedAxisValues,
@@ -41,64 +24,33 @@ enum class DeviceCommandType
     None,
 };
 
-/**
- * @brief representation of a TCode Save Entry used to store the minimum and maximum values for an axis
- * @param min minimum axis value
- * @param max maximum axis value
- */
-struct SaveEntry
-{
+struct SaveEntry {
     float min;
     float max;
     uint8_t minLog;
     uint8_t maxLog;
 };
 
-/**
- * @brief representation of the data for an TCode Axis State
- * @param startTime the time in ms when the state is active
- * @param stopTime the time in ms when the state is inactive
- * @param startValue the starting value of the state
- * @param endValue the target value for this state
-*/
-struct AxisState
-{
+struct AxisState {
     unsigned long startTime;
     unsigned long endTime;
-    float startValue;
-    float endValue;
+    float startPosition;
+    float endPosition;
     AxisRampData startRamp;
     AxisRampData endRamp;
     AxisData data;
 };
 
-/**
- * @brief representation of a TCode Device Command
- * @param type the type of command to be executed
- */
-struct DeviceCommand
-{
+struct DeviceCommand {
     DeviceCommandType type;
 };
 
-/**
- * @brief representation of a TCode Axis Command
- * @param ID the ID to be edited by the command
- * @param Data stores the timing and value data for the command
- */
-struct AxisCommand
-{
+struct AxisCommand {
     AxisId id;
     AxisData data;
 };
 
-/**
- * @brief representation of a TCode Setup Command
- * @param ID the ID to be edited by the command
- * @param Save the save entry values to be stored
- */
-struct SetupCommand
-{
+struct SetupCommand {
     AxisId id;
     SaveEntry saveEntryData;
 };

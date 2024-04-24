@@ -18,8 +18,6 @@ bool isExtention(const char value);
 
 bool isRamp(const char value);
 
-bool isAxisIdValid(const AxisId &id);
-
 AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length);
 
 AxisRampType getRampType(size_t &index, const char *buffer, const size_t length);

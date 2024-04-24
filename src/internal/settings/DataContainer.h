@@ -11,8 +11,7 @@
 
 namespace TCode {
 
-class DataContainer
-{
+class DataContainer {
 public:
     DataContainer();
     

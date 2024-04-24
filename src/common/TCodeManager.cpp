@@ -14,14 +14,12 @@ using namespace TCode;
 const int MAX_INPUT_BUFFER_LENGTH_COUNT = 512;
 
 TCodeManager::TCodeManager(const char *firmware, const char *tcode_version)
-    : firmwareVersion(firmware), tcodeVersion(tcode_version), filepath(DEFAULT_FILE_NAME)
-{
+    : firmwareVersion(firmware), tcodeVersion(tcode_version), filepath(DEFAULT_FILE_NAME) {
     const int MAX_AXIS_COMMAND_BUFFER_COUNT = 20;
     axisCommandBuffer.reserve(MAX_AXIS_COMMAND_BUFFER_COUNT);
 }
 
-bool TCodeManager::registerAxis(const char *name, const AxisId &id, float defaultValue)
-{
+bool TCodeManager::registerAxis(const char *name, const AxisId &id, float defaultValue) {
     if (getAxisFromName(name) != nullptr || getAxisFromId(id) != nullptr)
         return false;
 
@@ -29,18 +27,15 @@ bool TCodeManager::registerAxis(const char *name, const AxisId &id, float defaul
     return true;
 }
 
-void TCodeManager::registerButton(unsigned int pin, const char* name, void (*callback)())
-{
+void TCodeManager::registerButton(unsigned int pin, const char* name, void (*callback)()) {
     return registeredInputs.push_back(new TButton(pin, name, callback));
 }
 
-void TCodeManager::read(const byte input)
-{
+void TCodeManager::read(const byte input) {
     read((const char)input);
 }
 
-void TCodeManager::read(const char input)
-{
+void TCodeManager::read(const char input) {
     static const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 512; //TODO: private field
     static char commandBuffer[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
 
@@ -58,89 +53,76 @@ void TCodeManager::read(const char input)
     }
 }
 
-void TCodeManager::read(const String &input)
-{
+void TCodeManager::read(const String &input) {
     for (int i = 0; i < input.length(); i++)
         read(input.charAt(i));
 }
 
-void TCodeManager::read(const char *input)
-{
+void TCodeManager::read(const char *input) {
     size_t length = strlen(input);
     for (int i = 0; i < length; i++)
         read(input[i]);
 }
 
-void TCodeManager::write(const char value) const
-{
+void TCodeManager::write(const char value) const {
     if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
-void TCodeManager::write(const char *value) const
-{
+void TCodeManager::write(const char *value) const {
     if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
-void TCodeManager::write(const __FlashStringHelper *value) const
-{
+void TCodeManager::write(const __FlashStringHelper *value) const {
     if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
-void TCodeManager::write(const String &value) const
-{
+void TCodeManager::write(const String &value) const {
     if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
-void TCodeManager::writeLine(const char value) const
-{
+void TCodeManager::writeLine(const char value) const {
     if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
-void TCodeManager::writeLine(const char *value) const
-{
+void TCodeManager::writeLine(const char *value) const {
     if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
-void TCodeManager::writeLine(const __FlashStringHelper *value) const
-{
+void TCodeManager::writeLine(const __FlashStringHelper *value) const {
     if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
-void TCodeManager::writeLine(const String &value) const
-{
+void TCodeManager::writeLine(const String &value) const {
     if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
-void TCodeManager::clearBuffer()
-{
+void TCodeManager::clearBuffer() {
     inputBuffer.clear();
 }
 
-void TCodeManager::setAxisData(const AxisId &id, const AxisData &data)
-{
+void TCodeManager::setAxisData(const AxisId &id, const AxisData &data) {
     TAxis *axis = getAxisFromId(id);
     if (axis != nullptr)
         axis->set(data);
 }
 
-float TCodeManager::getAxisPosition(const AxisId &id)
-{
+float TCodeManager::getAxisPosition(const AxisId &id) {
     TAxis *axis = getAxisFromId(id);
     if (axis != nullptr)
         return axis->getPosition();
@@ -148,8 +130,7 @@ float TCodeManager::getAxisPosition(const AxisId &id)
     return NAN;
 }
 
-unsigned long TCodeManager::getAxisLastCommandTime(const AxisId &id)
-{
+unsigned long TCodeManager::getAxisLastCommandTime(const AxisId &id) {
     TAxis *axis = getAxisFromId(id);
     if (axis != nullptr)
         return axis->getLastCommandTime();
@@ -157,20 +138,17 @@ unsigned long TCodeManager::getAxisLastCommandTime(const AxisId &id)
     return LONG_MAX;
 }
 
-void TCodeManager::update()
-{
+void TCodeManager::update() {
     for (size_t i = 0; i < registeredInputs.size(); i++)
         registeredInputs[i]->update(*this);
 }
 
-void TCodeManager::stop()
-{
+void TCodeManager::stop() {
     for (size_t i = 0; i < registeredAxes.size(); i++)
         registeredAxes[i].stop();
 }
 
-void TCodeManager::setSettingManager(ISettings *settings)
-{
+void TCodeManager::setSettingManager(ISettings *settings) {
     if (settings == nullptr)
         return;
 
@@ -178,16 +156,13 @@ void TCodeManager::setSettingManager(ISettings *settings)
     settingManager->init();
 }
 
-void TCodeManager::setOutputStream(Print *stream)
-{
+void TCodeManager::setOutputStream(Print *stream) {
     if(stream != nullptr)
         outputStream = stream;
 }
 
-TAxis *TCodeManager::getAxisFromName(const char *name)
-{
-    for (size_t i = 0; i < registeredAxes.size(); i++)
-    {
+TAxis *TCodeManager::getAxisFromName(const char *name) {
+    for (size_t i = 0; i < registeredAxes.size(); i++) {
         TAxis *axis = &registeredAxes[i];
         if (strcmp(axis->getName(), name) == 0)
             return axis;
@@ -196,10 +171,8 @@ TAxis *TCodeManager::getAxisFromName(const char *name)
     return nullptr;
 }
 
-TAxis *TCodeManager::getAxisFromId(const AxisId &id)
-{
-    for (size_t i = 0; i < registeredAxes.size(); i++)
-    {
+TAxis *TCodeManager::getAxisFromId(const AxisId &id) {
+    for (size_t i = 0; i < registeredAxes.size(); i++) {
         TAxis *axis = &registeredAxes[i];
         if (axis->getId() == id)
             return axis;
@@ -210,11 +183,9 @@ TAxis *TCodeManager::getAxisFromId(const AxisId &id)
 
 size_t TCodeManager::consumeNextCommandFromInputBuffer(char *buffer, const size_t length) {
     size_t index = 0;
-    while (!inputBuffer.empty() && index < length - 1)
-    {
+    while (!inputBuffer.empty() && index < length - 1) {
         char c = inputBuffer.front();
-        if (c == ' ' || c == '\n')
-        {
+        if (c == ' ' || c == '\n') {
             inputBuffer.pop_front();
             return true;
         }
@@ -227,81 +198,73 @@ size_t TCodeManager::consumeNextCommandFromInputBuffer(char *buffer, const size_
     return index;
 }
 
-void TCodeManager::runCommand(const char *buffer, const size_t length)
-{
+void TCodeManager::runCommand(const char *buffer, const size_t length) {
     CommandType type = TParser::getCommandType(buffer, length);
 
-    switch (type)
-    {
-    case CommandType::Axis:
-    {
-        AxisCommand result;
-        if (TParser::parseAxisCommand(buffer, length, result))
-            runAxisCommand(result);
-        break;
-    }
-    case CommandType::Device:
-    {
-        DeviceCommand result;
-        if (TParser::parseDeviceCommand(buffer, length, result))
-            runDeviceCommand(result);
-        break;
-    }
-    case CommandType::Setup:
-    {
-        SetupCommand result;
-        if (TParser::parseSetupCommand(buffer, length, result))
-            runSetupCommand(result);
-        break;
-    }
-    default:
-        break;
+    switch (type) {
+        case CommandType::Axis:
+        {
+            AxisCommand result;
+            if (TParser::parseAxisCommand(buffer, length, result))
+                runAxisCommand(result);
+            break;
+        }
+        case CommandType::Device:
+        {
+            DeviceCommand result;
+            if (TParser::parseDeviceCommand(buffer, length, result))
+                runDeviceCommand(result);
+            break;
+        }
+        case CommandType::Setup:
+        {
+            SetupCommand result;
+            if (TParser::parseSetupCommand(buffer, length, result))
+                runSetupCommand(result);
+            break;
+        }
+        default:
+            break;
     }
 }
 
-void TCodeManager::runAxisCommand(AxisCommand &command)
-{
+void TCodeManager::runAxisCommand(AxisCommand &command) {
     setAxisData(command.id, command.data);
 }
 
-void TCodeManager::runDeviceCommand(DeviceCommand &command)
-{
-    switch (command.type)
-    {
-    case DeviceCommandType::StopDevice:
-    {
-        stop();
-        writeLine("STOP");
-    }
-    break;
-    case DeviceCommandType::GetTCodeVersion:
-    {
-        writeLine(tcodeVersion);
-    }
-    break;
-    case DeviceCommandType::GetSoftwareVersion:
-    {
-        writeLine(firmwareVersion);
-    }
-    break;
-    case DeviceCommandType::GetAssignedAxisValues:
-    {
-        printSavedAxisValues();
-    }
-    break;
+void TCodeManager::runDeviceCommand(DeviceCommand &command) {
+    switch (command.type) {
+        case DeviceCommandType::StopDevice:
+        {
+            stop();
+            writeLine("STOP");
+        }
+        break;
+        case DeviceCommandType::GetTCodeVersion:
+        {
+            writeLine(tcodeVersion);
+            break;
+        }
+        case DeviceCommandType::GetSoftwareVersion:
+        {
+            writeLine(firmwareVersion);
+            break;
+        }
+        case DeviceCommandType::GetAssignedAxisValues:
+        {
+            printSavedAxisValues();
+            break;
+        }
     }
 }
 
-void TCodeManager::runSetupCommand(SetupCommand &command)
-{
+void TCodeManager::runSetupCommand(SetupCommand &command) {
     setSaveValues(command.id, command.saveEntryData.min, command.saveEntryData.max);
     printSavedAxisValues();
 }
 
-void TCodeManager::setSaveValues(const AxisId &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog)
-{
-    if (settingManager == nullptr)
-    {
+void TCodeManager::setSaveValues(const AxisId &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog) {
+    if (settingManager == nullptr) {
         writeLine(F("TCODE : Setting Manager Is Null"));
         return;
     }
@@ -330,16 +293,13 @@ void TCodeManager::setSaveValues(const AxisId &id, float minimum, float maximum,
     settingManager->setSetting(settingName.c_str(), (int)maxLog);
 }
 
-void TCodeManager::printSavedAxisValues()
-{
-    if (settingManager == nullptr)
-    {
+void TCodeManager::printSavedAxisValues() {
+    if (settingManager == nullptr) {
         writeLine(F("TCODE : Setting Manager Is Null"));
         return;
     }
 
-    for (size_t i = 0; i < registeredAxes.size(); i++)
-    {
+    for (size_t i = 0; i < registeredAxes.size(); i++) {
         TAxis *axis = &registeredAxes[i];
 
         float min = 0.0f;

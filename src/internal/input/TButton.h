@@ -11,8 +11,7 @@
 
 namespace TCode {
 
-class TButton : public TInputBase
-{
+class TButton : public TInputBase {
 public:
     TButton() = delete;
     TButton(unsigned int pin, const char* name, void (*callback)() = nullptr);

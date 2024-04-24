@@ -10,8 +10,7 @@ class TCodeManager;
 
 namespace TCode {
 
-class TInputBase
-{
+class TInputBase {
 public:
     virtual void update(const TCodeManager &context) = 0;
 };

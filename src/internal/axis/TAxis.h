@@ -11,14 +11,10 @@ namespace TCode {
 const int TCODE_MIN_AXIS_SMOOTH_INTERVAL = 3;
 const int TCODE_MAX_AXIS_SMOOTH_INTERVAL = 100;
 
-/**
- * @brief Class used to represent a TCode Axis
- */
-class TAxis
-{
+class TAxis {
 public:
     TAxis() = delete;
-    TAxis(const char *name, AxisId id, float defaultValue);
+    TAxis(const char *name, AxisId id, float defaultPosition);
 
     void set(const AxisData &data);
     float getPosition();
@@ -33,7 +29,8 @@ private:
     const char *name;
     AxisId id;
     float lastPosition;
-    int minInterval;               // minimum command interval
+    float defaultPosition;
+    int minInterval;
     AxisState currentState;
 };
 

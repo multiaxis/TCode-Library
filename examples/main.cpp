@@ -22,89 +22,88 @@ SettingsESP32 settings(DEFAULT_FILE_NAME);
 
 void verbose_print_reset_reason(int reason)
 {
-  switch ( reason)
-  {
-    case 1  : Serial.println ("Vbat power on reset");break;
-    case 3  : Serial.println ("Software reset digital core");break;
-    case 4  : Serial.println ("Legacy watch dog reset digital core");break;
-    case 5  : Serial.println ("Deep Sleep reset digital core");break;
-    case 6  : Serial.println ("Reset by SLC module, reset digital core");break;
-    case 7  : Serial.println ("Timer Group0 Watch dog reset digital core");break;
-    case 8  : Serial.println ("Timer Group1 Watch dog reset digital core");break;
-    case 9  : Serial.println ("RTC Watch dog Reset digital core");break;
-    case 10 : Serial.println ("Instrusion tested to reset CPU");break;
-    case 11 : Serial.println ("Time Group reset CPU");break;
-    case 12 : Serial.println ("Software reset CPU");break;
-    case 13 : Serial.println ("RTC Watch dog Reset CPU");break;
-    case 14 : Serial.println ("for APP CPU, reseted by PRO CPU");break;
-    case 15 : Serial.println ("Reset when the vdd voltage is not stable");break;
-    case 16 : Serial.println ("RTC Watch dog reset digital core and rtc module");break;
-    default : Serial.println ("NO_MEAN");
-  }
+    switch ( reason) {
+        case 1  : Serial.println ("Vbat power on reset");break;
+        case 3  : Serial.println ("Software reset digital core");break;
+        case 4  : Serial.println ("Legacy watch dog reset digital core");break;
+        case 5  : Serial.println ("Deep Sleep reset digital core");break;
+        case 6  : Serial.println ("Reset by SLC module, reset digital core");break;
+        case 7  : Serial.println ("Timer Group0 Watch dog reset digital core");break;
+        case 8  : Serial.println ("Timer Group1 Watch dog reset digital core");break;
+        case 9  : Serial.println ("RTC Watch dog Reset digital core");break;
+        case 10 : Serial.println ("Instrusion tested to reset CPU");break;
+        case 11 : Serial.println ("Time Group reset CPU");break;
+        case 12 : Serial.println ("Software reset CPU");break;
+        case 13 : Serial.println ("RTC Watch dog Reset CPU");break;
+        case 14 : Serial.println ("for APP CPU, reseted by PRO CPU");break;
+        case 15 : Serial.println ("Reset when the vdd voltage is not stable");break;
+        case 16 : Serial.println ("RTC Watch dog reset digital core and rtc module");break;
+        default : Serial.println ("NO_MEAN");
+    }
 }
 
 void print_reset_reason()
 {
-  delay(1000);
-  Serial.print("CPU0 reset reason: ");
-  verbose_print_reset_reason(rtc_get_reset_reason(0));
+    delay(1000);
+    Serial.print("CPU0 reset reason: ");
+    verbose_print_reset_reason(rtc_get_reset_reason(0));
 
-  Serial.print("CPU1 reset reason: ");
-  verbose_print_reset_reason(rtc_get_reset_reason(1));
+    Serial.print("CPU1 reset reason: ");
+    verbose_print_reset_reason(rtc_get_reset_reason(1));
 }
 
 void print_heap()
 {
-  multi_heap_info_t info_value;
-  heap_caps_get_info(&info_value,MALLOC_CAP_DEFAULT);
-  size_t total_size = heap_caps_get_total_size(MALLOC_CAP_DEFAULT);
-  Serial.println("=== HEAP INFO ===");
+    multi_heap_info_t info_value;
+    heap_caps_get_info(&info_value,MALLOC_CAP_DEFAULT);
+    size_t total_size = heap_caps_get_total_size(MALLOC_CAP_DEFAULT);
+    Serial.println("=== HEAP INFO ===");
 
-  float percent_bytes_allocated = ((float)info_value.total_free_bytes / (float)total_size)  * 100.0f;
+    float percent_bytes_allocated = ((float)info_value.total_free_bytes / (float)total_size)  * 100.0f;
 
-  Serial.print("Bytes Free :");
-  Serial.print(percent_bytes_allocated);
-  Serial.println('%');
-  Serial.println("==================");
+    Serial.print("Bytes Free :");
+    Serial.print(percent_bytes_allocated);
+    Serial.println('%');
+    Serial.println("==================");
 }
 
 void setup() {
-  Serial.begin(115200);
-  esp_log_level_set(SETTING_MANAGMENT_TAG, ESP_LOG_VERBOSE);
-  print_reset_reason();
-  TCode.setSettingManager(&settings);
-  TCode.setOutputStream(&Serial);
+    Serial.begin(115200);
+    esp_log_level_set(SETTING_MANAGMENT_TAG, ESP_LOG_VERBOSE);
+    print_reset_reason();
+    TCode.setSettingManager(&settings);
+    TCode.setOutputStream(&Serial);
 
-  SettingsUsage usage;
-  settings.getSystemUsage(usage);
-  Serial.println("================");
-  Serial.println("    File Sys    ");
-  Serial.println("================");
-  Serial.print("Space Available:");
-  Serial.println(usage.spaceAvailable);
-  Serial.print("File Size:");
-  Serial.println(usage.sizeOfFile);
-  Serial.print("Space Used by SPIFFS:");
-  Serial.println(usage.spaceUsed);
-  Serial.println("================");
+    SettingsUsage usage;
+    settings.getSystemUsage(usage);
+    Serial.println("================");
+    Serial.println("    File Sys    ");
+    Serial.println("================");
+    Serial.print("Space Available:");
+    Serial.println(usage.spaceAvailable);
+    Serial.print("File Size:");
+    Serial.println(usage.sizeOfFile);
+    Serial.print("Space Used by SPIFFS:");
+    Serial.println(usage.spaceUsed);
+    Serial.println("================");
 
-  TCode.registerAxis("Stroke", AxisType::Linear, 0, 0.5f);
-  TCode.registerAxis("Surge", AxisType::Linear, 1, 0.5f);
-  TCode.registerAxis("Sway", AxisType::Linear, 2, 0.5f);
-  TCode.registerAxis("Twist", AxisType::Rotation, 0, 0.5f);
-  TCode.registerAxis("Roll", AxisType::Rotation, 1, 0.5f);
-  TCode.registerAxis("Pitch", AxisType::Rotation, 2, 0.5f);
-  TCode.registerAxis("Vibe 1", AxisType::Vibration, 0, 0);
-  TCode.registerAxis("Vibe 2", AxisType::Vibration, 1, 0);
-  TCode.registerAxis("Valve", AxisType::Auxiliary, 0, 0);
-  TCode.registerAxis("Suck", AxisType::Auxiliary, 1, 0);
-  TCode.registerAxis("Lube", AxisType::Auxiliary, 2, 0);
+    TCode.registerAxis("Stroke", {AxisType::Linear, 0}, 0.5f);
+    TCode.registerAxis("Surge", {AxisType::Linear, 1}, 0.5f);
+    TCode.registerAxis("Sway", {AxisType::Linear, 2}, 0.5f);
+    TCode.registerAxis("Twist", {AxisType::Rotation, 0}, 0.5f);
+    TCode.registerAxis("Roll", {AxisType::Rotation, 1}, 0.5f);
+    TCode.registerAxis("Pitch", {AxisType::Rotation, 2}, 0.5f);
+    TCode.registerAxis("Vibe 1", {AxisType::Vibration, 0}, 0);
+    TCode.registerAxis("Vibe 2", {AxisType::Vibration, 1}, 0);
+    TCode.registerAxis("Valve", {AxisType::Auxiliary, 0}, 0);
+    TCode.registerAxis("Suck", {AxisType::Auxiliary, 1}, 0);
+    TCode.registerAxis("Lube", {AxisType::Auxiliary, 2}, 0);
 
-  TCode.registerButton(12, "Test");
+    TCode.registerButton(12, "Test");
 
-  Serial.println();
-  Serial.println("================");
-  delay(1000);
+    Serial.println();
+    Serial.println("================");
+    delay(1000);
 }
 
 void loop() {

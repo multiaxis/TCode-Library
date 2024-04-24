@@ -4,8 +4,7 @@
 
 namespace TCode {
 
-enum class VariantType
-{
+enum class VariantType {
     Empty,
     Int8,
     String,
@@ -18,8 +17,7 @@ enum class VariantType
     Float64
 };
 
-union VariantValue
-{
+union VariantValue {
     char int8;
     const char *string;
     bool boolean;
@@ -31,8 +29,7 @@ union VariantValue
     double float64;
 };
 
-struct variant_t
-{
+struct variant_t {
     VariantType type;
     VariantValue value;
 

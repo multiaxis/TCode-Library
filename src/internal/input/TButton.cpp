@@ -7,8 +7,7 @@
 
 using namespace TCode;
 
-TButton::TButton(unsigned int pin, const char* name, void (*callback)())
-{
+TButton::TButton(unsigned int pin, const char* name, void (*callback)()) {
     this->pin = pin;
     this->callback = callback;
     
@@ -27,8 +26,7 @@ TButton::TButton(unsigned int pin, const char* name, void (*callback)())
     TString::writeChar('\n', index, printBuffer, printBufferLength);
 }
 
-void TButton::update(const TCodeManager &context)
-{
+void TButton::update(const TCodeManager &context) {
     //TODO debounce?
     unsigned long currentTime = millis();
     if (currentTime < lastPressTime + TBUTTON_TIMEOUT)
@@ -37,8 +35,7 @@ void TButton::update(const TCodeManager &context)
     isPressed = digitalRead(pin);
 
     bool changed = lastState ^ isPressed;
-    if (changed && !lastState)
-    {
+    if (changed && !lastState) {
         lastPressTime = currentTime;
         if (callback != nullptr)
             callback();
@@ -47,8 +44,7 @@ void TButton::update(const TCodeManager &context)
         context.writeLine(printBuffer);
     }
 
-    if (changed && lastState)
-    {
+    if (changed && lastState) {
         TString::writeInt((int)isPressed, printBufferLength - 2, printBuffer, printBufferLength);
         context.writeLine(printBuffer);
     }

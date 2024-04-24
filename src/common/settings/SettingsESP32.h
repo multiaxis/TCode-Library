@@ -22,9 +22,7 @@ class SettingsESP32 : public ISettings
 public:
     SettingsESP32() = delete;
     SettingsESP32(const char *filepath) : filepath(filepath) {}
-    //=================================================
-    //             Interface definitions
-    //=================================================
+    
     bool init();
     bool isMounted();
     bool hasSetting(const char *setting);
@@ -48,7 +46,6 @@ public:
     bool setSetting(const char *setting, const String settingValue) { return false; }
 
     bool getSystemUsage(SettingsUsage &out);
-    //=================================================
 
 private:
     const char *filepath;

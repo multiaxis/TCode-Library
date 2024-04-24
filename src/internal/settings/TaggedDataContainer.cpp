@@ -10,20 +10,16 @@ namespace TCode {
 TaggedDataContainer::TaggedDataContainer() {}
 
 template<typename T>
-TaggedDataContainer::TaggedDataContainer(const char *tag, T value)
-    : DataContainer(value)
-{
+TaggedDataContainer::TaggedDataContainer(const char *tag, T value) : DataContainer(value) {
     this->tag = tag;    
     tagHash = TString::getHash(tag, strlen(tag));
 }
 
-const char* TaggedDataContainer::getTag()
-{
+const char* TaggedDataContainer::getTag() {
     return tag;
 }
 
-unsigned int TaggedDataContainer::getHash()
-{
+unsigned int TaggedDataContainer::getHash() {
     return tagHash;
 }
 

@@ -14,8 +14,7 @@
  * @param Auxiliary,
  * @param None
  */
-enum class AxisType
-{
+enum class AxisType {
     Linear,
     Rotation,
     Vibration,
@@ -29,8 +28,7 @@ enum class AxisType
  * @param Time Controls the Rate of change based on a target time for the Axis Value
  * @param None
  */
-enum class AxisExtentionType
-{
+enum class AxisExtentionType {
     Speed,
     Time,
     None,
@@ -43,8 +41,7 @@ enum class AxisExtentionType
  * @param InOut
  * @param None
  */
-enum class AxisRampType
-{
+enum class AxisRampType {
     In,
     Out,
     InOut,
@@ -56,22 +53,23 @@ enum class AxisRampType
  * @param type type of channel
  * @param channel channel number
  */
-struct AxisId
-{
+struct AxisId {
     AxisType type;
     uint8_t channel;
+
+    bool isValid() {
+        return type != AxisType::None && channel >= 0 && channel <= 9;
+    }
 };
 
-inline bool operator==(const AxisId& lhs, const AxisId& rhs)
-{
+inline bool operator==(const AxisId& lhs, const AxisId& rhs) {
     return lhs.type == rhs.type && lhs.channel == rhs.channel;
 }
 
 /**
  * @brief representation of the data for an TCode Axis ramp 
 */
-struct AxisRampData 
-{
+struct AxisRampData {
     float tangent;
     bool hasTangent;
     float weight;
@@ -82,8 +80,7 @@ struct AxisRampData
 /**
  * @brief representation of the data for an TCode Axis Command
 */
-struct AxisData
-{
+struct AxisData {
     float commandValue;
     unsigned long commandExtention;
     AxisExtentionType extentionType;

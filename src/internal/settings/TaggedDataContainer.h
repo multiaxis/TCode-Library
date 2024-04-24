@@ -11,8 +11,7 @@
 
 namespace TCode {
 
-class TaggedDataContainer : DataContainer
-{
+class TaggedDataContainer : DataContainer {
 public:
     TaggedDataContainer();
     
@@ -23,8 +22,7 @@ public:
 
     unsigned int getHash();
 
-    bool operator==(const TaggedDataContainer& o) const
-    {
+    bool operator==(const TaggedDataContainer& o) const {
         return tagHash == o.tagHash;
     }
 
