@@ -55,8 +55,8 @@ bool isAxisIdValid(const AxisId &id)
 
 AxisId getAxisId(size_t &index, const char *buffer, const size_t length)
 {
-    char type = toupper(TString::getCharAtOrDefault(index++, buffer, length));
-    uint8_t channel = static_cast<uint8_t>(toupper(TString::getCharAtOrDefault(index++, buffer, length)) - '0');
+    char type = toupper(TString::readCharOrDefault(index++, buffer, length));
+    uint8_t channel = static_cast<uint8_t>(toupper(TString::readCharOrDefault(index++, buffer, length)) - '0');
 
     switch (type)
     {
@@ -79,7 +79,7 @@ AxisId getAxisId(size_t &index, const char *buffer, const size_t length)
 
 CommandType getCommandType(const char *buffer, const size_t length)
 {
-    switch (toupper(TString::getCharAtOrDefault(0, buffer, length)))
+    switch (toupper(TString::readCharOrDefault(0, buffer, length)))
     {
     case 'L':
     case 'R':
@@ -143,12 +143,12 @@ bool parseAxisCommand(const char *buffer, const size_t length, AxisCommand &out)
     unsigned long commandExtention = 0;
 
     size_t logValue;
-    if (!TString::getNextTCodeFloat(index, buffer, length, commandValue, logValue))
+    if (!TString::readTCodeFloat(index, buffer, length, commandValue, logValue))
         return false;
 
     while (true)
     {
-        if (isExtention(TString::getCharAtOrDefault(index, buffer, length)))
+        if (isExtention(TString::readCharOrDefault(index, buffer, length)))
         {
             if (extentionType != AxisExtentionType::None)
                 return false;
@@ -156,7 +156,7 @@ bool parseAxisCommand(const char *buffer, const size_t length, AxisCommand &out)
             if (!parseAxisExtention(index, buffer, length, extentionType, commandExtention))
                 return false;
         }
-        else if (isRamp(TString::getCharAtOrDefault(index, buffer, length)))
+        else if (isRamp(TString::readCharOrDefault(index, buffer, length)))
         {            
             if (!parseAxisRamp(index, buffer, length, rampType, rampIn, rampOut))
                 return false;
@@ -168,7 +168,7 @@ bool parseAxisCommand(const char *buffer, const size_t length, AxisCommand &out)
     }
 
     // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
-    if (toupper(TString::getCharAtOrDefault(index, buffer, length)) != '\0')
+    if (toupper(TString::readCharOrDefault(index, buffer, length)) != '\0')
         return false;
 
     AxisData data { 
@@ -187,7 +187,7 @@ bool parseAxisCommand(const char *buffer, const size_t length, AxisCommand &out)
 
 AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length)
 {
-    switch (toupper(TString::getCharAtOrDefault(index++, buffer, length)))
+    switch (toupper(TString::readCharOrDefault(index++, buffer, length)))
     {
     case 'I':
         return AxisExtentionType::Time;
@@ -203,7 +203,7 @@ bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, 
     extentionType = getExtentionType(index, buffer, length);
 
     size_t logValue;
-    if (!TString::getNextInt(index, buffer, length, commandExtention, logValue))
+    if (!TString::readInt(index, buffer, length, commandExtention, logValue))
         return false;
 
     return true;
@@ -211,7 +211,7 @@ bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, 
 
 AxisRampType getRampType(size_t &index, const char *buffer, const size_t length)
 {
-    char first = TString::getCharAtOrDefault(index++, buffer, length);
+    char first = TString::readCharOrDefault(index++, buffer, length);
 
     switch (first)
     {
@@ -263,24 +263,24 @@ bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, c
         .autoTangent = rampType != AxisRampType::InOut
     };
 
-    if (!isdigit(TString::getCharAtOrDefault(index, buffer, length)))
+    if (!isdigit(TString::readCharOrDefault(index, buffer, length)))
         return true;
 
     size_t logValue;
     float tangent;
-    if (!TString::getNextTCodeFloat(index, buffer, length, tangent, logValue))
+    if (!TString::readTCodeFloat(index, buffer, length, tangent, logValue))
         return false;
     
     data.tangent = map(tangent, 0, 1, -0.999f, 0.999f);
-    if (TString::getCharAtOrDefault(index, buffer, length) != '.')
+    if (TString::readCharOrDefault(index, buffer, length) != '.')
         return true;
     
     index++;
-    if (!isdigit(TString::getCharAtOrDefault(index, buffer, length)))
+    if (!isdigit(TString::readCharOrDefault(index, buffer, length)))
         return false;
     
     float weight;
-    if (!TString::getNextTCodeFloat(index, buffer, length, weight, logValue))
+    if (!TString::readTCodeFloat(index, buffer, length, weight, logValue))
         return false; 
 
     data.weight = constrain(weight, 0, 0.999f);
@@ -298,27 +298,27 @@ bool parseSetupCommand(const char *buffer, const size_t length, SetupCommand &ou
     if (!isAxisIdValid(id))
         return false;
 
-    if (toupper(TString::getCharAtOrDefault(index++, buffer, length)) != '-')
+    if (toupper(TString::readCharOrDefault(index++, buffer, length)) != '-')
         return false;
 
     unsigned long minValueLong; 
     size_t minValueLog;
-    if (!TString::getNextInt(index, buffer, length, minValueLong, minValueLog)) 
+    if (!TString::readInt(index, buffer, length, minValueLong, minValueLog)) 
         return false;
 
-    if (toupper(TString::getCharAtOrDefault(index++, buffer, length)) != '-')
+    if (toupper(TString::readCharOrDefault(index++, buffer, length)) != '-')
         return false;
 
     unsigned long maxValueLong; 
     size_t maxValueLog;
-    if (!TString::getNextInt(index, buffer, length, maxValueLong, maxValueLog))
+    if (!TString::readInt(index, buffer, length, maxValueLong, maxValueLog))
         return false;
 
-    if ((toupper(TString::getCharAtOrDefault(index, buffer, length)) != '\0'))
+    if ((toupper(TString::readCharOrDefault(index, buffer, length)) != '\0'))
         return false;
 
-    float minValue = (double)minValueLong / pow10f(minValueLog);
-    float maxValue = (double)maxValueLong / pow10f(maxValueLog);
+    float minValue = TMath::getFloatFromTCode(minValueLong, minValueLog);
+    float maxValue = TMath::getFloatFromTCode(maxValueLong, maxValueLog);
 
     if (minValue > maxValue)
         return false;
@@ -337,7 +337,7 @@ bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommand &
         return false;
         
     size_t index = 1;
-    switch (toupper(TString::getCharAtOrDefault(index, buffer, length)))
+    switch (toupper(TString::readCharOrDefault(index, buffer, length)))
     {
     case 'S':
         out = { DeviceCommandType::StopDevice };

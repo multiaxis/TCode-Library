@@ -16,6 +16,8 @@ float interpolate(float x, float x0, float y0, AxisRampData r0, float x1, float 
 
 unsigned long getTCodeFromFloat(float value, int precision, uint8_t &logOut);
 
+float getFloatFromTCode(unsigned long value, int precision);
+
 unsigned long getTCodeEstimateLogFromFloat(float value);
 
 }

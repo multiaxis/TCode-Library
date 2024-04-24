@@ -17,10 +17,11 @@ public:
     TButton() = delete;
     TButton(unsigned int pin, const char* name, void (*callback)() = nullptr);
 
-    void update(TCodeManager context) override;
+    void update(const TCodeManager &context) override;
 
 private:
-    const char *name;
+    char *printBuffer;
+    size_t printBufferLength;
     unsigned int pin = 0;
     bool isPressed = false;
     bool lastState = false;

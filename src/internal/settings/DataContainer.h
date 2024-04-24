@@ -13,22 +13,7 @@ namespace TCode {
 
 class DataContainer
 {
-private:
-    variant_t data;
-
-    bool toStringChar(char *buffer, size_t length);
-    bool toStringCharPointer(char *buffer, size_t length);
-    bool toStringBool(char *buffer, size_t length);
-    bool toStringSignedNumber(char *buffer, size_t length);
-    bool toStringUnsignedNumber(char *buffer, size_t length);
-    bool toStringFloat(char *buffer, size_t length);
-    bool writeEmptyText(char *buffer, size_t length);
-
-protected:
-    void setDataType(VariantType tag);
-
 public:
-
     DataContainer() {}
 
     template<typename T>
@@ -52,7 +37,7 @@ public:
 
     variant_t &getUnderlyingType();
 
-    bool toString(char *buffer, size_t length);
+    bool toString(size_t &index, char *buffer, size_t length);
 
     template<typename T>
     DataContainer &operator=(T &value)
@@ -61,6 +46,19 @@ public:
         setValue(value);
         return *this;
     }
+
+private:
+    variant_t data;
+
+    bool toStringChar(size_t &index, char *buffer, size_t length);
+    bool toStringCharPointer(size_t &index, char *buffer, size_t length);
+    bool toStringBool(size_t &index, char *buffer, size_t length);
+    bool toStringSignedNumber(size_t &index, char *buffer, size_t length);
+    bool toStringUnsignedNumber(size_t &index, char *buffer, size_t length);
+    bool toStringFloat(size_t &index, char *buffer, size_t length);
+    bool writeEmptyText(size_t &index, char *buffer, size_t length);
+    
+    void setDataType(VariantType tag);
 };
 
 }

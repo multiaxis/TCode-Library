@@ -37,25 +37,25 @@ public:
      * @brief function to input a byte into the input buffer
      * @param input byte to be inputted
      */
-    void inputByte(const byte input);
+    void read(const byte input);
 
     /**
      * @brief function to input a char into the input buffer
      * @param input char to be inputted
      */
-    void inputChar(const char input);
+    void read(const char input);
 
     /**
      * @brief function to input a string into the input buffer
      * @param input string to be inputted
      */
-    void inputString(const String &input);
+    void read(const String &input);
 
     /**
      * @brief function to input a c-string into the input buffer
      * @param input c-string to be inputted
      */
-    void inputCString(const char *&input);
+    void read(const char *input);
 
     /**
      * @brief function to clear the input buffer
@@ -160,6 +160,15 @@ public:
      */
     void useOverwriteMethod(bool set) { useOverwrite = set; }
 
+    void write(const char value) const;
+    void write(const char *value) const;
+    void write(const __FlashStringHelper *value) const;
+    void write(const String &value) const;
+    void writeLine(const char value) const;
+    void writeLine(const char *value) const;
+    void writeLine(const __FlashStringHelper *value) const;
+    void writeLine(const String &value) const;
+
 private:
     bool useOverwrite = true;
     
@@ -186,13 +195,4 @@ private:
     void setSaveValues(const AxisId &id, float minimum, float maximum, uint8_t minLog = 4, uint8_t maxLog = 4);
 
     void printSavedAxisValues();
-
-    void print(const char value);
-    void print(const char *value);
-    void print(const __FlashStringHelper *value);
-    void print(const String &value);
-    void println(const char value);
-    void println(const char *value);
-    void println(const __FlashStringHelper *value);
-    void println(const String &value);
 };

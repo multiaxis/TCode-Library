@@ -22,12 +22,12 @@ TCodeManager::TCodeManager(const char *firmware, const char *tcode_version) : fi
     axisCommandBuffer.reserve(MAX_AXIS_COMMAND_BUFFER_COUNT);
 }
 
-void TCodeManager::inputByte(const byte input)
+void TCodeManager::read(const byte input)
 {
-    inputChar((const char)input);
+    read((const char)input);
 }
 
-void TCodeManager::inputChar(const char input)
+void TCodeManager::read(const char input)
 {
     if (inputBuffer.size() == MAX_INPUT_BUFFER_LENGTH_COUNT)   // if the buffer is full then execute the first command and then push the char to the buffer
     {
@@ -54,21 +54,17 @@ void TCodeManager::inputChar(const char input)
     }
 }
 
-void TCodeManager::inputString(const String &input)
+void TCodeManager::read(const String &input)
 {
     for (int i = 0; i < input.length(); i++)
-    {
-        inputChar(input.charAt(i));
-    }
+        read(input.charAt(i));
 }
 
-void TCodeManager::inputCString(const char *&input)
+void TCodeManager::read(const char *input)
 {
     size_t length = strlen(input);
     for (int i = 0; i < length; i++)
-    {
-        inputChar(*(input + i));
-    }
+        read(input[i]);
 }
 
 void TCodeManager::clearBuffer()
@@ -279,17 +275,17 @@ void TCodeManager::runDeviceCommand(DeviceCommand &command)
     case DeviceCommandType::StopDevice:
     {
         stop();
-        println("STOP");
+        writeLine("STOP");
     }
     break;
     case DeviceCommandType::GetTCodeVersion:
     {
-        println(tcodeVersion);
+        writeLine(tcodeVersion);
     }
     break;
     case DeviceCommandType::GetSoftwareVersion:
     {
-        println(firmwareVersion);
+        writeLine(firmwareVersion);
     }
     break;
     case DeviceCommandType::GetAssignedAxisValues:
@@ -310,7 +306,7 @@ void TCodeManager::setSaveValues(const AxisId &id, float minimum, float maximum,
 {
     if (settingManager == nullptr)
     {
-        print(F("TCODE : Setting Manager Is Null"));
+        writeLine(F("TCODE : Setting Manager Is Null"));
         return;
     }
     
@@ -325,7 +321,6 @@ void TCodeManager::setSaveValues(const AxisId &id, float minimum, float maximum,
     maxLog = min(maxLog, TCODE_MAX_LOG);
     
     String idString = TString::axisIdToString(id);
-
     String settingName = "AXIS-MIN-" + idString;
     settingManager->setSetting(settingName.c_str(), minimum);
 
@@ -343,7 +338,7 @@ void TCodeManager::printSavedAxisValues()
 {
     if (settingManager == nullptr)
     {
-        print(F("TCODE : Setting Manager Is Null"));
+        writeLine(F("TCODE : Setting Manager Is Null"));
         return;
     }
 
@@ -377,66 +372,66 @@ void TCodeManager::printSavedAxisValues()
         unsigned long tcodeMin = TMath::getTCodeFromFloat(min, minLog, logOut);
         unsigned long tcodeMax = TMath::getTCodeFromFloat(max, maxLog, logOut);
 
-        print(idString);
-        print(' ');
-        print(String(tcodeMin));
-        print(' ');
-        print(String(tcodeMax));
-        print(' ');
-        println(axis->getName());
+        write(idString);
+        write(' ');
+        write(String(tcodeMin));
+        write(' ');
+        write(String(tcodeMax));
+        write(' ');
+        writeLine(axis->getName());
     }
 }
 
-void TCodeManager::print(const char value)
+void TCodeManager::write(const char value) const
 {
     if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
-void TCodeManager::print(const char *value)
+void TCodeManager::write(const char *value) const
 {
     if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
-void TCodeManager::print(const __FlashStringHelper *value)
+void TCodeManager::write(const __FlashStringHelper *value) const
 {
     if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
-void TCodeManager::print(const String &value)
+void TCodeManager::write(const String &value) const
 {
     if(outputStream == nullptr)
         return;
     outputStream->print(value);
 }
 
-void TCodeManager::println(const char value)
+void TCodeManager::writeLine(const char value) const
 {
     if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
-void TCodeManager::println(const char *value)
+void TCodeManager::writeLine(const char *value) const
 {
     if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
-void TCodeManager::println(const __FlashStringHelper *value)
+void TCodeManager::writeLine(const __FlashStringHelper *value) const
 {
     if(outputStream == nullptr)
         return;
     outputStream->println(value);
 }
 
-void TCodeManager::println(const String &value)
+void TCodeManager::writeLine(const String &value) const
 {
     if(outputStream == nullptr)
         return;

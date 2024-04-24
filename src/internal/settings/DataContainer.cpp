@@ -7,7 +7,7 @@
 
 using namespace TCode;
 
-bool DataContainer::toStringChar(char *buffer, size_t length)
+bool DataContainer::toStringChar(size_t &index, char *buffer, size_t length) //TODO: use index
 {
     if (length < 2)
         return false;
@@ -21,7 +21,7 @@ bool DataContainer::toStringChar(char *buffer, size_t length)
     return true;
 }
 
-bool DataContainer::toStringCharPointer(char *buffer, size_t length)
+bool DataContainer::toStringCharPointer(size_t &index, char *buffer, size_t length) //TODO: use index
 {
     const char *value;
     if(!getValue(value))
@@ -39,7 +39,7 @@ bool DataContainer::toStringCharPointer(char *buffer, size_t length)
     return true;
 }
 
-bool DataContainer::toStringBool(char *buffer, size_t length)
+bool DataContainer::toStringBool(size_t &index, char *buffer, size_t length) //TODO: use index
 {
     if (length < 6)
         return false;
@@ -62,7 +62,7 @@ bool DataContainer::toStringBool(char *buffer, size_t length)
     return true;
 }
 
-bool DataContainer::toStringSignedNumber(char *buffer, size_t length)
+bool DataContainer::toStringSignedNumber(size_t &index, char *buffer, size_t length)
 {
     long value;
     switch(data.tag)
@@ -111,19 +111,10 @@ bool DataContainer::toStringSignedNumber(char *buffer, size_t length)
             return false;
     }
 
-    unsigned long valueabs = abs(value);
-    if (TString::uintToStrLen(valueabs) + 1 > length)
-        return false;
-
-    size_t index = 0;
-    if (value < 0)
-        buffer[index++] = '-';
-
-    TString::uintToStr(valueabs, buffer, length, index);
-    return true;
+    return TString::writeInt(value, index, buffer, length);
 }
 
-bool DataContainer::toStringUnsignedNumber(char *buffer, size_t length)
+bool DataContainer::toStringUnsignedNumber(size_t &index, char *buffer, size_t length)
 {
     unsigned long value;
     switch(data.tag)
@@ -172,15 +163,11 @@ bool DataContainer::toStringUnsignedNumber(char *buffer, size_t length)
             return false;
     }
 
-    unsigned long valueabs;
-    if (TString::uintToStrLen(valueabs) + 1 > length)
-        return false;
-
-    TString::uintToStr(valueabs, buffer, length, 0);
+    return TString::writeInt(value, index, buffer, length);
     return true;
 }
 
-bool DataContainer::toStringFloat(char *buffer, size_t length)
+bool DataContainer::toStringFloat(size_t &index, char *buffer, size_t length) //TODO: use index
 {
     float value;
     if(!getValue(value))
@@ -192,7 +179,7 @@ bool DataContainer::toStringFloat(char *buffer, size_t length)
     return true;
 }
 
-bool DataContainer::writeEmptyText(char *buffer, size_t length)
+bool DataContainer::writeEmptyText(size_t &index, char *buffer, size_t length) //TODO: use index
 {
     const char *errorText = "EMPTY";
     if(length < 6)
@@ -243,37 +230,37 @@ variant_t &DataContainer::getUnderlyingType()
     return data;
 }
 
-bool DataContainer::toString(char *buffer, size_t length)
+bool DataContainer::toString(size_t &index, char *buffer, size_t length)
 {
     bool valid = false;
     switch (getDataType())
     {
     case VariantType::CHAR:
-        valid = toStringChar(buffer, length);
+        valid = toStringChar(index, buffer, length);
         break;
     case VariantType::CHARPOINTER:
-        valid = toStringCharPointer(buffer, length);
+        valid = toStringCharPointer(index, buffer, length);
         break;
     case VariantType::BOOL:
-        valid = toStringBool(buffer, length);
+        valid = toStringBool(index, buffer, length);
         break;
     case VariantType::INT:
-        valid = toStringSignedNumber(buffer, length);
+        valid = toStringSignedNumber(index, buffer, length);
         break;
     case VariantType::LONG:
-        valid = toStringSignedNumber(buffer, length);
+        valid = toStringSignedNumber(index, buffer, length);
         break;
     case VariantType::UINT:
-        valid = toStringUnsignedNumber(buffer, length);
+        valid = toStringUnsignedNumber(index, buffer, length);
         break;
     case VariantType::ULONG:
-        valid = toStringUnsignedNumber(buffer, length);
+        valid = toStringUnsignedNumber(index, buffer, length);
         break;
     case VariantType::FLOAT:
-        valid = toStringFloat(buffer, length);
+        valid = toStringFloat(index, buffer, length);
         break;
     case VariantType::EMPTY:
-        valid = writeEmptyText(buffer, length);
+        valid = writeEmptyText(index, buffer, length);
         break;
     }
     return valid;

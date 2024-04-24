@@ -9,25 +9,27 @@
 
 namespace TCode::TString {
 
-bool getNextInt(size_t &index, const char *buffer, const size_t length, unsigned long &value, size_t &log);
+bool readInt(size_t &&index, const char *buffer, const size_t length, unsigned long &value, size_t &log);
+bool readInt(size_t &index, const char *buffer, const size_t length, unsigned long &value, size_t &log);
 
-bool getNextTCodeFloat(size_t &index, const char *buffer, const size_t length, float &value, size_t &log);
+bool readTCodeFloat(size_t &&index, const char *buffer, const size_t length, float &value, size_t &log);
+bool readTCodeFloat(size_t &index, const char *buffer, const size_t length, float &value, size_t &log);
 
-char getCharAtOrDefault(const size_t index, const char *buffer, const size_t length, const char defaultValue = '\0');
+char readCharOrDefault(const size_t index, const char *buffer, const size_t length, const char defaultValue = '\0');
 
-bool setCharAt(char value, char *buffer, const size_t length, size_t index);
+bool writeChar(const char value, size_t &&index, char *buffer, const size_t length);
+bool writeChar(const char value, size_t &index, char *buffer, const size_t length);
 
-size_t uintToStr(unsigned long value, char *buffer, const size_t length, const size_t placeIndex);
+bool writeString(const String &value, size_t &&index, char *buffer, const size_t length);
+bool writeString(const char *value, size_t &&index, char *buffer, const size_t length);
+bool writeString(const char *value, size_t count, size_t &&index, char *buffer, const size_t length);
 
-size_t uintToStrLen(unsigned long value);
+bool writeString(const String &value, size_t &index, char *buffer, const size_t length);
+bool writeString(const char *value, size_t &index, char *buffer, const size_t length);
+bool writeString(const char *value, size_t count, size_t &index, char *buffer, const size_t length);
 
-bool encodeValue(const char *name, bool value, char *buffer, const size_t length);
-
-bool encodeValue(const char *name, short value, char *buffer, const size_t length);
-
-bool encodeValue(const char *name, unsigned short value, char *buffer, const size_t length);
-
-bool encodeValue(TaggedDataContainer &data, char *buffer, const size_t length);
+bool writeInt(long value, size_t &&index, char *buffer, const size_t length);
+bool writeInt(long value, size_t &index, char *buffer, const size_t length);
 
 unsigned long getHash(const char *str, size_t length);
 

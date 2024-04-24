@@ -3,18 +3,31 @@
 // implemented by Eve 13/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #include "TButton.h"
+#include "../utils/TString.h"
 
 using namespace TCode;
 
 TButton::TButton(unsigned int pin, const char* name, void (*callback)())
- : name(name), pin(pin), callback(callback)
 {
+    this->pin = pin;
+    this->callback = callback;
+    
     pinMode(pin, INPUT);
     isPressed = digitalRead(pin);
     lastState = isPressed;
+
+    printBufferLength = strlen(name) + 4;
+    printBuffer = new char[printBufferLength];
+    
+    size_t index = 0;
+    TString::writeChar('#', index, printBuffer, printBufferLength);
+    TString::writeString(name, index, printBuffer, printBufferLength);
+    TString::writeChar(':', index, printBuffer, printBufferLength);
+    TString::writeInt((int)isPressed, index, printBuffer, printBufferLength);
+    TString::writeChar('\n', index, printBuffer, printBufferLength);
 }
 
-void TButton::update(TCodeManager context)
+void TButton::update(const TCodeManager &context)
 {
     //TODO debounce?
     unsigned long currentTime = millis();
@@ -30,12 +43,14 @@ void TButton::update(TCodeManager context)
         if (callback != nullptr)
             callback();
         
-        //TODO: println true
+        TString::writeInt((int)isPressed, printBufferLength - 2, printBuffer, printBufferLength);
+        context.writeLine(printBuffer);
     }
 
     if (changed && lastState)
     {
-        //TODO: println false
+        TString::writeInt((int)isPressed, printBufferLength - 2, printBuffer, printBufferLength);
+        context.writeLine(printBuffer);
     }
 
     lastState = isPressed;

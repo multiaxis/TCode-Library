@@ -121,6 +121,10 @@ unsigned long getTCodeFromFloat(float value, int precision, uint8_t &logOut)
     return out;
 }
 
+float getFloatFromTCode(unsigned long value, int precision) {
+    return (double)value / pow10f(precision)
+}
+
 unsigned long getTCodeEstimateLogFromFloat(float value)
 {
     unsigned long log = 0;
