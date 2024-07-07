@@ -31,38 +31,6 @@ void TCodeManager::registerButton(unsigned int pin, const char* name, void (*cal
     return registeredInputs.push_back(new TButton(pin, name, callback));
 }
 
-void TCodeManager::read(const byte input) {
-    read((const char)input);
-}
-
-void TCodeManager::read(const char input) {
-    static const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 512; //TODO: private field
-    static char commandBuffer[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
-
-    if (inputBuffer.size() == MAX_INPUT_BUFFER_LENGTH_COUNT) {
-        size_t length = consumeNextCommandFromInputBuffer(commandBuffer, MAX_COMMAND_BUFFER_LENGTH_COUNT);
-        runCommand(commandBuffer, length);
-    }
-    
-    inputBuffer.push_back(input);
-    if (input == '\n') {
-        while (!inputBuffer.empty()) {
-            size_t length = consumeNextCommandFromInputBuffer(commandBuffer, MAX_COMMAND_BUFFER_LENGTH_COUNT);
-            runCommand(commandBuffer, length);
-        }
-    }
-}
-
-void TCodeManager::read(const String &input) {
-    for (int i = 0; i < input.length(); i++)
-        read(input.charAt(i));
-}
-
-void TCodeManager::read(const char *input) {
-    size_t length = strlen(input);
-    for (int i = 0; i < length; i++)
-        read(input[i]);
-}
 
 void TCodeManager::write(const char value) const {
     if(outputStream == nullptr)
@@ -181,7 +149,7 @@ TAxis *TCodeManager::getAxisFromId(const AxisId &id) {
     return nullptr;
 }
 
-size_t TCodeManager::consumeNextCommandFromInputBuffer(char *buffer, const size_t length) {
+size_t TCodeManager::consumeNextCommandFromInputBuffer(char *buffer, const size_t length) { 
     size_t index = 0;
     while (!inputBuffer.empty() && index < length - 1) {
         char c = inputBuffer.front();
@@ -204,21 +172,21 @@ void TCodeManager::runCommand(const char *buffer, const size_t length) {
     switch (type) {
         case CommandType::Axis:
         {
-            AxisCommand result;
+            AxisCommandEvent result;
             if (TParser::parseAxisCommand(buffer, length, result))
                 runAxisCommand(result);
             break;
         }
         case CommandType::Device:
         {
-            DeviceCommand result;
+            DeviceCommandEvent result;
             if (TParser::parseDeviceCommand(buffer, length, result))
                 runDeviceCommand(result);
             break;
         }
         case CommandType::Setup:
         {
-            SetupCommand result;
+            SetupCommandEvent result;
             if (TParser::parseSetupCommand(buffer, length, result))
                 runSetupCommand(result);
             break;
@@ -228,11 +196,11 @@ void TCodeManager::runCommand(const char *buffer, const size_t length) {
     }
 }
 
-void TCodeManager::runAxisCommand(AxisCommand &command) {
+void TCodeManager::runAxisCommand(AxisCommandEvent &command) {
     setAxisData(command.id, command.data);
 }
 
-void TCodeManager::runDeviceCommand(DeviceCommand &command) {
+void TCodeManager::runDeviceCommand(DeviceCommandEvent &command) {
     switch (command.type) {
         case DeviceCommandType::StopDevice:
         {
@@ -258,7 +226,7 @@ void TCodeManager::runDeviceCommand(DeviceCommand &command) {
     }
 }
 
-void TCodeManager::runSetupCommand(SetupCommand &command) {
+void TCodeManager::runSetupCommand(SetupCommandEvent &command) {
     setSaveValues(command.id, command.saveEntryData.min, command.saveEntryData.max);
     printSavedAxisValues();
 }

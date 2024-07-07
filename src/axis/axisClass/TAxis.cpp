@@ -5,9 +5,11 @@
 #include "TAxis.h"
 #include "../utils/TMath.h"
 
-using namespace TCode;
+namespace TCode 
+{
 
-TAxis::TAxis(const char *name, AxisId id, float defaultPosition) {
+TAxis::TAxis(const char *name, AxisId id, float defaultPosition)
+{
     this->name = name;
     this->id = id;
     this->defaultPosition = defaultPosition;
@@ -20,40 +22,46 @@ TAxis::TAxis(const char *name, AxisId id, float defaultPosition) {
     minInterval = TCODE_MIN_AXIS_SMOOTH_INTERVAL;
 }
 
-void TAxis::set(const AxisData &data) {
+void TAxis::set(const AxisData &data)
+{
     unsigned long currentTime = millis();
     unsigned long deltaTime = 0;
 
     float startValue = getPosition();
-    float endValue = constrain(data.commandValue, 0, 1);
+    float endValue = constrain(data.commandValue, 0.0, 1.0);
     unsigned long extentionValue = data.commandExtention;
 
-    switch (data.extentionType) {
-        case AxisExtentionType::Speed:
+    switch (data.extentionType)
+    {
+    case AxisExtentionType::Speed:
+    {
+        deltaTime = abs(endValue - startValue);
+        deltaTime *= 100;
+        if (extentionValue > 0)
         {
-            deltaTime = abs(endValue - startValue);
-            deltaTime *= 100;
-            if (extentionValue > 0) {
-                deltaTime /= extentionValue;
-            }
-            break;
+            deltaTime /= extentionValue;
         }
-        case AxisExtentionType::Time:
-        default:
+        break;
+    }
+    case AxisExtentionType::Time:
+    default:
+    {
+        if (extentionValue > 0)
         {
-            if (extentionValue > 0) {
-                deltaTime = extentionValue;
-            } else {
-                int lastInterval = currentTime - currentState.startTime;
-                if (lastInterval > minInterval && minInterval < TCODE_MIN_AXIS_SMOOTH_INTERVAL)
-                    minInterval += 1;
-                else if (lastInterval < minInterval && minInterval > TCODE_MAX_AXIS_SMOOTH_INTERVAL)
-                    minInterval -= 1;
+            deltaTime = extentionValue;
+        }
+        else
+        {
+            int lastInterval = currentTime - currentState.startTime;
+            if (lastInterval > minInterval && minInterval < TCODE_MIN_AXIS_SMOOTH_INTERVAL)
+                minInterval += 1;
+            else if (lastInterval < minInterval && minInterval > TCODE_MAX_AXIS_SMOOTH_INTERVAL)
+                minInterval -= 1;
 
-                deltaTime = minInterval;
-            }
-            break;
+            deltaTime = minInterval;
         }
+        break;
+    }
     }
 
     currentState.startTime = currentTime;
@@ -64,7 +72,8 @@ void TAxis::set(const AxisData &data) {
     currentState.endRamp = data.rampIn;
     currentState.data = data;
 
-    if (deltaTime != 0) {
+    if (deltaTime != 0)
+    {
         float deltaValue = endValue - startValue;
         float easingTangent = 2 / PI * atan(2 * deltaValue / deltaTime); // approximates easing functions
         if (currentState.startRamp.autoTangent)
@@ -81,20 +90,23 @@ float TAxis::getPosition()
 {
     unsigned long currentTime = constrain(millis(), currentState.startTime, currentState.endTime);
     float position = TMath::interpolate(currentTime, currentState.startTime, currentState.startPosition, currentState.startRamp, currentState.endTime, currentState.endPosition, currentState.endRamp);
-    return constrain(position, 0, 1);
+    return constrain(position, 0.0, 1.0);
 }
 
-void TAxis::stop() {
+void TAxis::stop()
+{
     unsigned long currentTime = millis();
 
     currentState.startPosition = getPosition();
     currentState.startTime = currentTime;
     currentState.endTime = currentTime;
-    currentState.endPosition = id.type == AxisType::Vibration ? defaultPosition : currentState.startPosition; //TODO:
+    currentState.endPosition = id.type == AxisType::Vibration ? defaultPosition : currentState.startPosition; // TODO:
 }
 
-bool TAxis::changed() {
-    if (lastPosition != getPosition()) {
+bool TAxis::changed()
+{
+    if (lastPosition != getPosition())
+    {
         lastPosition = getPosition();
         return true;
     }
@@ -102,14 +114,19 @@ bool TAxis::changed() {
     return false;
 }
 
-const char *TAxis::getName() {
+const char *TAxis::getName()
+{
     return name;
 }
 
-AxisId TAxis::getId() {
+AxisId TAxis::getId()
+{
     return id;
 }
 
-unsigned long TAxis::getLastCommandTime() {
+unsigned long TAxis::getLastCommandTime()
+{
     return lastCommandTime;
 }
+
+};

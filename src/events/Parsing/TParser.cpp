@@ -3,9 +3,8 @@
 // implemented by Eve 26/06/2022
 // Please copy, share, learn, innovate, give attribution.
 #include "TParser.h"
-#include "utils/TString.h"
+#include "../../utils/TString.h"
 
-using namespace std;
 
 namespace TCode::TParser {
 
@@ -68,7 +67,7 @@ CommandType getCommandType(const char *buffer, const size_t length) {
     }
 }
 
-bool parseAxisCommand(const char *buffer, const size_t length, AxisCommand &out) {
+bool parseAxisCommand(const char *buffer, const size_t length, AxisCommandEvent &out) {
     if (getCommandType(buffer, length) != CommandType::Axis)
         return false;
 
@@ -217,7 +216,7 @@ bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, c
     return true;
 }
 
-bool parseSetupCommand(const char *buffer, const size_t length, SetupCommand &out) {
+bool parseSetupCommand(const char *buffer, const size_t length, SetupCommandEvent &out) {
     if (getCommandType(buffer, length) != CommandType::Setup)
         return false;
 
@@ -259,7 +258,48 @@ bool parseSetupCommand(const char *buffer, const size_t length, SetupCommand &ou
     return true;
 }
 
-bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommand &out) {
+bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out)
+{
+    CommandType type = TParser::getCommandType(buffer, length);
+    switch (type) {
+        case CommandType::Axis:
+        {
+            AxisCommandEvent result;
+            result.commandType = CommandType::Axis;
+            if (TParser::parseAxisCommand(buffer, length, result)) {
+                out.axisCommand = result;
+                return true;
+            }
+            break;
+        }
+        case CommandType::Device:
+        {
+            DeviceCommandEvent result;
+            result.commandType = CommandType::Device;
+            if (TParser::parseDeviceCommand(buffer, length, result)) {
+                out.deviceCommand = result;
+                return true;
+            }
+            break;
+        }
+        case CommandType::Setup:
+        {
+            SetupCommandEvent result;
+            result.commandType = CommandType::Setup;
+            if (TParser::parseSetupCommand(buffer, length, result)) {
+                out.setupCommand = result;
+                return true;
+            }
+            break;
+        }
+        default:
+            out.commandType = CommandType::None;
+            break;
+    }
+    return false;
+}
+
+bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommandEvent &out) {
     if (getCommandType(buffer, length) != CommandType::Device)
         return false;
         

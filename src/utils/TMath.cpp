@@ -10,7 +10,6 @@ namespace TCode::TMath {
 float mapf(float x, float inMin, float inMax, float outMin, float outMax) {
     const float run = inMax - inMin;
     if(run == 0) {
-        log_e("map(): Invalid input range, min == max");
         return -1; // AVR returns -1, SAM returns 0
     }
 

@@ -3,8 +3,6 @@
 // implemented by Eve 12/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
-
-#include "esp_log.h"
 #include <Arduino.h>
 
 #define SETTING_MANAGMENT_TAG "TCodeSettingManagment"

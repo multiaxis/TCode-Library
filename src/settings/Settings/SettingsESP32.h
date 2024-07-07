@@ -14,9 +14,6 @@
 #define DEFAULT_JSON_FILE_SIZE 2048
 #define DEFAULT_SETTING_CACHE_SIZE 64
 
-using namespace std;
-using namespace TCode;
-
 class SettingsESP32 : public ISettings
 {
 public:

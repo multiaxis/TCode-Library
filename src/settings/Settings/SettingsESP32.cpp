@@ -19,8 +19,7 @@ bool SettingsESP32::init()
     this->filepath = filepath;
     if (!foundFile) {
         foundFile = true;
-        String newConfig = "{}";
-        writeFile(newConfig);
+        reset();
         ESP_LOGI(SETTING_MANAGMENT_TAG,"setting's file not found creating settings file\n");
     } else {
         ESP_LOGI(SETTING_MANAGMENT_TAG,"setting's file found\n");
@@ -224,7 +223,6 @@ unsigned long SettingsESP32::getFileSize() {
     file.close();
     return size;
 }
-
 
 template <typename T>
 inline bool SettingsESP32::getSettingTemplated(const char *setting, T &settingValue) {
