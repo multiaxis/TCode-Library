@@ -9,7 +9,7 @@
 #include <deque>
 
 #include "ISettings.h"
-#include "../../internal/settings/TaggedDataContainer.h"
+#include "../Variant/TaggedDataContainer.h"
 
 #define DEFAULT_JSON_FILE_SIZE 2048
 #define DEFAULT_SETTING_CACHE_SIZE 64

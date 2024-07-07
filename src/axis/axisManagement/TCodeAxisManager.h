@@ -6,7 +6,7 @@
 
 #include <Arduino.h>
 #include <vector>
-#include "../../internal/axis/TAxis.h"
+#include "../axisClass/TAxis.h"
 
 namespace TCode
 {

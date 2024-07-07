@@ -5,7 +5,9 @@
 #pragma once
 #include <Arduino.h>
 #include <deque>
-#include "../datatypes/CommandDataTypes.h"
+#include "../../datatypes/CommandDataTypes.h"
+#include "../../datatypes/CommonDataTypes.h"
+#include "../../datatypes/EnumTypes.h"
 
 namespace TCode
 {

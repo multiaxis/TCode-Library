@@ -4,6 +4,7 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
+#include <Arduino.h>
 #include "TMath.h"
 #include "../settings/TaggedDataContainer.h"
 

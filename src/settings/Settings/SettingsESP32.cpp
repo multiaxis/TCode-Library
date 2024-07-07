@@ -3,7 +3,7 @@
 // implemented by Eve 12/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #include "SettingsESP32.h"
-#include "../../internal/utils/TString.h"
+#include "../../utils/TString.h"
 
 bool SettingsESP32::init()
 {

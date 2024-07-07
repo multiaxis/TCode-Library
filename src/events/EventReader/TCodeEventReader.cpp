@@ -3,7 +3,7 @@
 // implemented by Eve 07/07/2024
 // Please copy, share, learn, innovate, give attribution.
 #include "TCodeEventReader.h"
-#include "../../internal/TParser.h"
+#include "../Parsing/TParser.h"
 
 namespace TCode
 {

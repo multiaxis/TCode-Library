@@ -5,7 +5,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include "TInputBase.h"
+#include "../interfaceBaseClass/TInterfaceBase.h"
 
 #define TBUTTON_TIMEOUT 60
 
