@@ -66,12 +66,15 @@ void TAxis::set(const AxisData &data) {
 
     if (deltaTime != 0) {
         float deltaValue = endValue - startValue;
-        float easingTangent = 2 / PI * atan(2 * deltaValue / deltaTime); // approximates easing functions
-        if (currentState.startRamp.autoTangent)
-            currentState.startRamp.tangent = easingTangent;
+        if (!currentState.startRamp.hasTangent && currentState.startRamp.autoTangent) {
+            currentState.startRamp.tangent = 2 / PI * atan(2 * deltaValue / deltaTime); // approximates easing function
+            currentState.startRamp.hasTangent = true;
+        }
 
-        if (currentState.endRamp.autoTangent)
-            currentState.endRamp.tangent = easingTangent;
+        if (!currentState.endRamp.hasTangent && currentState.endRamp.autoTangent) {
+            currentState.endRamp.tangent = 2 / PI * atan(2 * deltaValue / deltaTime); // approximates easing function
+            currentState.endRamp.hasTangent = true;
+        }
     }
 
     lastCommandTime = currentTime;

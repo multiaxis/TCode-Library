@@ -186,7 +186,7 @@ bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, AxisR
 bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const AxisRampType rampType, AxisRampData &data) {
     data = {
         .tangent = 0,
-        .hasTangent = true, 
+        .hasTangent = rampType == AxisRampType::InOut, 
         .weight = 1 / 3.0f,
         .hasWeight = false, 
         .autoTangent = rampType != AxisRampType::InOut
@@ -201,6 +201,7 @@ bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, c
         return false;
     
     data.tangent = map(tangent, 0, 1, -0.999f, 0.999f);
+    data.hasTangent = true;
     if (TString::readCharOrDefault(index, buffer, length) != '.')
         return true;
     
