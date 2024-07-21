@@ -83,6 +83,11 @@ void TAxis::set(const AxisData &data) {
 float TAxis::getPosition()
 {
     unsigned long currentTime = constrain(millis(), currentState.startTime, currentState.endTime);
+    if (currentTime == currentState.endTime || currentState.startTime == currentState.endTime)
+        return currentState.endPosition;
+    if (currentTime == currentState.startTime)
+        return currentState.startPosition;
+
     float position = TMath::interpolate(currentTime, currentState.startTime, currentState.startPosition, currentState.startRamp, currentState.endTime, currentState.endPosition, currentState.endRamp);
     return constrain(position, 0, 1);
 }
