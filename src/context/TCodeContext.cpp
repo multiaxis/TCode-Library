@@ -12,7 +12,7 @@ namespace TCode {
         interfaceManager = inputInterfaceManager;
     }
 
-    void TCodeContext::setSettingManager(ISettings *settings)
+    void TCodeContext::setSettingManager(Settings::ISettings *settings)
     {
         settingManager = settings;
     }
@@ -38,7 +38,7 @@ namespace TCode {
         return true;
     }
 
-    bool TCodeContext::getSettingManager(ISettings *&settings)
+    bool TCodeContext::getSettingManager(Settings::ISettings *&settings)
     {
         if(settingManager == nullptr)
             return false;

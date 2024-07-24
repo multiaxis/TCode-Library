@@ -56,7 +56,7 @@ namespace TCode
         void registerInterface(TInterfaceBase *interface);
         void updateInterfaces();
 
-        void setSettingManager(ISettings *settings);
+        void setSettingManager(Settings::ISettings *settings);
         void setOutputStream(Print *stream);
 
     private:

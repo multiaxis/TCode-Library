@@ -72,7 +72,7 @@ namespace TCode
         interfaceManager.update(context);
     }
 
-    void TCodeManager::setSettingManager(ISettings *settings)
+    void TCodeManager::setSettingManager(Settings::ISettings *settings)
     {
         context.setSettingManager(settings);
     }

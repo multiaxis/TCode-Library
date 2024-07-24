@@ -5,6 +5,9 @@
 #include "SettingsESP32.h"
 #include "../../utils/TString.h"
 
+namespace TCode::Settings
+{
+
 bool SettingsESP32::init()
 {
     if (!SPIFFS.begin(true)) {
@@ -324,4 +327,6 @@ inline bool SettingsESP32::setSettingTemplated(const char *setting, const T &set
     //Serial.println(out);
     writeFile(out);
     return true;
+}
+
 }

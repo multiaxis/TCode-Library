@@ -37,7 +37,7 @@ bool runAxisCommand(TCodeContext &context, const AxisCommandEvent &event)
     return true;
 }
 
-void printSavedAxisValues(TCodeAxisManager* axisManager,ISettings * settingManager, Print* outputStream) {
+void printSavedAxisValues(TCodeAxisManager* axisManager,Settings::ISettings * settingManager, Print* outputStream) {
     for (size_t i = 0; i < axisManager->count(); i++) {
         TCodeAxis *axis = axisManager->getAxisIndex(i);
 
@@ -77,7 +77,7 @@ void printSavedAxisValues(TCodeAxisManager* axisManager,ISettings * settingManag
     }
 }
 
-bool setSaveValues(TCodeAxisManager* axisManager,ISettings * settingManager, Print* outputStream,const AxisId &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog) {
+bool setSaveValues(TCodeAxisManager* axisManager,Settings::ISettings * settingManager, Print* outputStream,const AxisId &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog) {
     if (settingManager == nullptr) {
         outputStream->print(F("TCODE : Setting Manager Is Null"));
         return false;
@@ -114,7 +114,7 @@ bool runDeviceCommand(TCodeContext &context, const DeviceCommandEvent &event)
     if(!context.getAxisManager(axisManager))
         return false;
 
-    ISettings * settingManager;
+    Settings::ISettings * settingManager;
     if(!context.getSettingManager(settingManager))
         return false;
 
@@ -148,12 +148,12 @@ bool runDeviceCommand(TCodeContext &context, const DeviceCommandEvent &event)
     return true;
 }
 
-bool runSetupCommand(TCodeContext &context, SetupCommandEvent &command) {
+bool runSetupCommand(TCodeContext &context, const SetupCommandEvent &command) {
     TCodeAxisManager * axisManager;
     if(!context.getAxisManager(axisManager))
         return false;
 
-    ISettings * settingManager;
+    Settings::ISettings * settingManager;
     if(!context.getSettingManager(settingManager))
         return false;
 

@@ -5,8 +5,9 @@
 #include "DataContainer.h"
 #include "../../utils/TString.h"
 
-using namespace TCode;
-
+namespace TCode
+{ 
+    
 DataContainer::DataContainer() {}
 
 template<typename T>
@@ -41,4 +42,6 @@ template<typename T>
 DataContainer &DataContainer::operator=(T &value) {
     setValue(value);
     return *this;
+}
+
 }

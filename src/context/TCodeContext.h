@@ -27,12 +27,12 @@ namespace TCode
 
         void setAxisManager(TCodeAxisManager* axisManager);
         void setInterfaceManager(TCodeInterfaceManager* interfaceManager);
-        void setSettingManager(ISettings *settings);
+        void setSettingManager(Settings::ISettings *settings);
         void setOutputStream(Print *stream);
 
         bool getAxisManager(TCodeAxisManager* &axisManager);
         bool getInterfaceManager(TCodeInterfaceManager* &interfaceManager);
-        bool getSettingManager(ISettings* &settings);
+        bool getSettingManager(Settings::ISettings* &settings);
         bool getOutputStream(Print* &stream);
         
 
@@ -40,7 +40,7 @@ namespace TCode
         const char *filepath;
         const char *firmwareVersion;
         const char *tcodeVersion;
-        ISettings *settingManager;
+        Settings::ISettings *settingManager;
         TCodeAxisManager *axisManager;
         TCodeInterfaceManager* interfaceManager;
         Print *outputStream;
