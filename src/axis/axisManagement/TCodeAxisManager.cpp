@@ -88,6 +88,10 @@ namespace TCode
         return false;
     }
 
+    TCodeAxisManager::TCodeAxisManager()
+    {
+    }
+
     TCodeAxisManager::~TCodeAxisManager()
     {
     }
