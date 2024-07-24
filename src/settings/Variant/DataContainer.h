@@ -4,6 +4,7 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
+#include <type_traits>
 #include <string>
 #include "Variant.h"
 

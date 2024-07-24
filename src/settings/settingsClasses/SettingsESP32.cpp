@@ -41,10 +41,10 @@ bool SettingsESP32::isMounted() {
 bool SettingsESP32::keyInCache(const char* setting)
 {
     size_t length = strlen(setting);
-    unsigned long settingHash = TCode::TString::getHash(setting, length);
+    unsigned long settingHash = TString::getHash(setting, length);
 
     for(size_t i = 0; i < cache.size(); i++) {
-        TCode::TaggedDataContainer result = cache[i];
+        TaggedDataContainer result = cache[i];
         if(result.getHash() == settingHash)
             if(strcmp(result.getTag(),setting) == 0)
                 return true;
@@ -53,13 +53,13 @@ bool SettingsESP32::keyInCache(const char* setting)
     return false;
 }
 
-bool SettingsESP32::getValueFromCache(const char* setting, TCode::DataContainer& value)
+bool SettingsESP32::getValueFromCache(const char* setting, DataContainer& value)
 {
     size_t length = strlen(setting);
-    unsigned long settingHash = TCode::TString::getHash(setting,length);
+    unsigned long settingHash = TString::getHash(setting,length);
 
     for(size_t i = 0; i < cache.size(); i++) {
-        TCode::TaggedDataContainer result = cache[i];
+        TaggedDataContainer result = cache[i];
         if(result.getHash() == settingHash) {
             if(strcmp(result.getTag(), setting) == 0) {
                 value.setValue(result);
@@ -71,22 +71,22 @@ bool SettingsESP32::getValueFromCache(const char* setting, TCode::DataContainer&
     return false;
 }
 
-bool SettingsESP32::setValueToCache(const char* setting, TCode::DataContainer value) {
+bool SettingsESP32::setValueToCache(const char* setting, DataContainer value) {
     if(!keyInCache(setting)) {
         if(cache.size() == DEFAULT_SETTING_CACHE_SIZE)
             cache.pop_front();
             
-        cache.push_back(TCode::TaggedDataContainer(setting,value));
+        cache.push_back(TaggedDataContainer(setting,value));
         return true;
     } else {
         size_t length = strlen(setting);
-        unsigned long settingHash = TCode::TString::getHash(setting,length);
+        unsigned long settingHash = TString::getHash(setting,length);
 
         for(size_t i = 0; i < cache.size(); i++) {
-            TCode::TaggedDataContainer result = cache[i];
+            TaggedDataContainer result = cache[i];
             if(result.getHash() == settingHash) {
                 if(strcmp(result.getTag(),setting) == 0){
-                    cache[i] = TCode::TaggedDataContainer(setting,value);
+                    cache[i] = TaggedDataContainer(setting,value);
                     return true;
                 }
             }
@@ -238,7 +238,7 @@ inline bool SettingsESP32::getSettingTemplated(const char *setting, T &settingVa
 #ifdef DEBUG
         Serial.println("SM: value found in cache:");
 #endif
-        TCode::DataContainer result;
+        DataContainer result;
         if(getValueFromCache(setting, result))
             return result.getValue<T>(settingValue);
     }
@@ -289,7 +289,7 @@ inline bool SettingsESP32::getSettingTemplated(const char *setting, T &settingVa
     }
 
     settingValue = doc[setting].as<T>();
-    TCode::DataContainer settingValueContainer(settingValue);
+    DataContainer settingValueContainer(settingValue);
     setValueToCache(setting,settingValueContainer);
     return true;
 }
@@ -308,7 +308,7 @@ inline bool SettingsESP32::setSettingTemplated(const char *setting, const T &set
         return false;
     }
 
-    TCode::DataContainer settingValueContainer(settingValue);
+    DataContainer settingValueContainer(settingValue);
     setValueToCache(setting,settingValueContainer);
 
     StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
