@@ -62,7 +62,11 @@ bool SettingsESP32::getValueFromCache(const char* setting, DataContainer& value)
         TaggedDataContainer result = cache[i];
         if(result.getHash() == settingHash) {
             if(strcmp(result.getTag(), setting) == 0) {
-                value.setValue(result);
+                DataContainer containedValue;
+                if(result.getValue(containedValue))
+                {
+                    value = containedValue;
+                }
                 return true;
             }
         }

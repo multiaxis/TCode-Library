@@ -7,7 +7,7 @@
 
 namespace TCode
 { 
-    
+
 DataContainer::DataContainer() {}
 
 template<typename T>
