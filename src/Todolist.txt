@@ -1,7 +1,0 @@
-
-* the parser should be in the common area as it can be used standalone
-* Axis are to be registered after being created on the stack so must be in common
-* Values in data container need to have an equivelant TCode binding
-* Implement the Interface Manager
-* TButton should not be in internal as it needs to be created and registered
-* create a class for output management

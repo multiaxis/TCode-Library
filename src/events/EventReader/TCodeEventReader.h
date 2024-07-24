@@ -9,15 +9,15 @@
 #include "../../datatypes/CommonDataTypes.h"
 #include "../../datatypes/EnumTypes.h"
 
-namespace TCode
+namespace TCode::TEvents
 {
         
     class TCodeEventReader
     {
     private:
         static const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 512; 
-        deque<char> inputBuffer;
-        deque<TCodeEvent> eventBuffer;
+        std::deque<char> inputBuffer;
+        std::deque<TCodeEvent> eventBuffer;
 
         bool parseCommand(const char *buffer, const size_t length);
         size_t consumeNextCommandFromInputBuffer(char *buffer, const size_t length);
@@ -35,4 +35,4 @@ namespace TCode
         ~TCodeEventReader();
     };
 
-};
+}

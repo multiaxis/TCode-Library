@@ -21,7 +21,7 @@ float mapf(float x, float inMin, float inMax, float outMin, float outMax) {
 float interpolate(float x, float x0, float y0, AxisRampData r0, float x1, float y1, AxisRampData r1) {
     if (!r0.hasTangent && !r1.hasTangent) {
         //linear
-        return map(x, x0, x1, y0, y1);
+        return mapf(x, x0, x1, y0, y1);
     } else if (!r0.hasWeight && !r1.hasWeight) {
         //cubic hermite
         float d = x1 - x0;

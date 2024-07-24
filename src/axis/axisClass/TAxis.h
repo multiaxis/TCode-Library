@@ -12,11 +12,11 @@ namespace TCode
     const int TCODE_MIN_AXIS_SMOOTH_INTERVAL = 3;
     const int TCODE_MAX_AXIS_SMOOTH_INTERVAL = 100;
 
-    class TAxis
+    class TCodeAxis
     {
     public:
-        TAxis() = delete;
-        TAxis(const char *name, AxisId id, float defaultPosition);
+        TCodeAxis() = delete;
+        TCodeAxis(const char *name, AxisId id, float defaultPosition);
 
         void set(const AxisData &data);
         float getPosition();

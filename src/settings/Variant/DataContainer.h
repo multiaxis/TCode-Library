@@ -5,8 +5,6 @@
 #pragma once
 
 #include <string>
-#include <type_traits>
-
 #include "Variant.h"
 
 namespace TCode {

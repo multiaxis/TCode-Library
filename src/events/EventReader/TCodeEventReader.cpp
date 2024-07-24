@@ -5,7 +5,7 @@
 #include "TCodeEventReader.h"
 #include "../Parsing/TParser.h"
 
-namespace TCode
+namespace TCode::TEvents
 {
 
     TCodeEventReader::TCodeEventReader()
@@ -37,7 +37,7 @@ namespace TCode
     void TCodeEventReader::read(const char input)
     {
         static char commandBuffer[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
-        if (inputBuffer.size() >= MAX_INPUT_BUFFER_LENGTH_COUNT)
+        if (inputBuffer.size() >= MAX_COMMAND_BUFFER_LENGTH_COUNT)
         {
             size_t length = consumeNextCommandFromInputBuffer(commandBuffer, MAX_COMMAND_BUFFER_LENGTH_COUNT);
             parseCommand(commandBuffer, length);
@@ -60,8 +60,10 @@ namespace TCode
         while (!inputBuffer.empty())
         {
             size_t length = consumeNextCommandFromInputBuffer(commandBuffer, MAX_COMMAND_BUFFER_LENGTH_COUNT);
-            parseCommand(commandBuffer, length);
+            if(!parseCommand(commandBuffer, length))
+                return false;
         }
+        return true;
     }
 
     bool TCodeEventReader::getNext(TCodeEvent &event)
@@ -104,7 +106,7 @@ namespace TCode
     bool TCodeEventReader::parseCommand(const char *buffer, const size_t length)
     {
         TCodeEvent event;
-        if (TParser::parseCommand(buffer, length))
+        if (TParser::parseCommand(buffer, length, event))
         {
             eventBuffer.push_back(event);
             return true;
@@ -112,4 +114,4 @@ namespace TCode
         return false;
     }
 
-};
+}

@@ -5,8 +5,6 @@
 #include "TString.h"
 #include <stack>
 
-using namespace std;
-
 namespace TCode::TString {
 
 bool readInt(size_t &&index, const char *buffer, const size_t length, unsigned long &value, size_t &log) {
@@ -104,7 +102,7 @@ bool writeInt(long value, size_t &&index, char *buffer, const size_t length) {
 }
 
 bool writeInt(long value, size_t &index, char *buffer, const size_t length) {
-    stack<char> output;
+    std::stack<char> output;
     if (value == 0)
         output.push('0');
 

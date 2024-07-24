@@ -76,8 +76,8 @@ bool parseAxisCommand(const char *buffer, const size_t length, AxisCommandEvent 
     if (!id.isValid())
         return false;
 
-    AxisExtentionType extentionType = AxisExtentionType::None;
     AxisRampType rampType = AxisRampType::None;
+    AxisExtentionType extentionType = AxisExtentionType::None;
     AxisRampData rampIn = {};
     AxisRampData rampOut = {};
     float commandValue = 0;
@@ -110,7 +110,6 @@ bool parseAxisCommand(const char *buffer, const size_t length, AxisCommandEvent 
         .commandValue = commandValue,
         .commandExtention = commandExtention,
         .extentionType = extentionType,
-        .rampType = rampType,
         .rampIn = rampIn,
         .rampOut = rampOut
     };
@@ -185,8 +184,8 @@ bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, AxisR
 bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const AxisRampType rampType, AxisRampData &data) {
     data = {
         .tangent = 0,
-        .hasTangent = true, 
         .weight = 1 / 3.0f,
+        .hasTangent = true,
         .hasWeight = false, 
         .autoTangent = rampType != AxisRampType::InOut
     };
@@ -222,7 +221,7 @@ bool parseSetupCommand(const char *buffer, const size_t length, SetupCommandEven
 
     size_t index = 1;
     AxisId id = getAxisId(index, buffer, length);
-    if (!isAxisIdValid(id))
+    if (!id.isValid())
         return false;
 
     if (toupper(TString::readCharOrDefault(index++, buffer, length)) != '-')
@@ -306,19 +305,19 @@ bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommandEv
     size_t index = 1;
     switch (toupper(TString::readCharOrDefault(index, buffer, length))) {
         case 'S':
-            out = { DeviceCommandType::StopDevice };
+            out = { CommandType::Device , DeviceCommandType::StopDevice };
             return true;
         case '0':
-            out = { DeviceCommandType::GetSoftwareVersion };
+            out = { CommandType::Device , DeviceCommandType::GetSoftwareVersion };
             return true;
         case '1':
-            out = { DeviceCommandType::GetTCodeVersion }; 
+            out = { CommandType::Device , DeviceCommandType::GetTCodeVersion }; 
             return true;
         case '2':
-            out = { DeviceCommandType::GetAssignedAxisValues };
+            out = { CommandType::Device , DeviceCommandType::GetAssignedAxisValues };
             return true;
         default:
-            out = { DeviceCommandType::None };
+            out = { CommandType::Device , DeviceCommandType::None };
             return false;
     }
 }

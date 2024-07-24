@@ -3,9 +3,10 @@
 // implemented by Eve 13/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #include "TButton.h"
-#include "../utils/TString.h"
+#include "../../utils/TString.h"
+#include "../../context/TCodeContext.h"
 
-using namespace TCode;
+namespace TCode {
 
 TButton::TButton(unsigned int pin, const char* name, void (*callback)()) {
     this->pin = pin;
@@ -19,14 +20,15 @@ TButton::TButton(unsigned int pin, const char* name, void (*callback)()) {
     printBuffer = new char[printBufferLength];
     
     size_t index = 0;
-    TString::writeChar('#', index, printBuffer, printBufferLength);
+
+    TCode::TString::writeChar('#', index, printBuffer, printBufferLength);
     TString::writeString(name, index, printBuffer, printBufferLength);
     TString::writeChar(':', index, printBuffer, printBufferLength);
     TString::writeInt((int)isPressed, index, printBuffer, printBufferLength);
     TString::writeChar('\n', index, printBuffer, printBufferLength);
 }
 
-void TButton::update(const TCodeManager &context) {
+void TButton::update(TCodeContext &context) {
     //TODO debounce?
     unsigned long currentTime = millis();
     if (currentTime < lastPressTime + TBUTTON_TIMEOUT)
@@ -41,13 +43,19 @@ void TButton::update(const TCodeManager &context) {
             callback();
         
         TString::writeInt((int)isPressed, printBufferLength - 2, printBuffer, printBufferLength);
-        context.writeLine(printBuffer);
+        Print* output_stream;
+        if(context.getOutputStream(output_stream))
+            output_stream->println(printBuffer);
     }
 
     if (changed && lastState) {
         TString::writeInt((int)isPressed, printBufferLength - 2, printBuffer, printBufferLength);
-        context.writeLine(printBuffer);
+        Print* output_stream;
+        if(context.getOutputStream(output_stream))
+            output_stream->println(printBuffer);
     }
 
     lastState = isPressed;
 }
+
+};

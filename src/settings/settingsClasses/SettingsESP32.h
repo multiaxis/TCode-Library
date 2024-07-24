@@ -49,11 +49,11 @@ private:
     bool fileSystemMounted = false;
     bool foundFile = false;
 
-    deque<TaggedDataContainer> cache;
+    std::deque<TCode::TaggedDataContainer> cache;
 
     bool keyInCache(const char* setting);
-    bool getValueFromCache(const char* setting, DataContainer& value);
-    bool setValueToCache(const char* setting, DataContainer value);
+    bool getValueFromCache(const char* setting, TCode::DataContainer& value);
+    bool setValueToCache(const char* setting, TCode::DataContainer value);
     bool getFile(String &out);
     bool writeFile(const String &fileData);
     unsigned long getFileSize();

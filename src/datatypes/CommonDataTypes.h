@@ -46,11 +46,12 @@ namespace TCode
      */
     struct AxisData
     {
-        unsigned long commandExtention;
         float commandValue;
+        unsigned long commandExtention;
+        AxisExtentionType extentionType;
         AxisRampData rampIn;
         AxisRampData rampOut;
-        AxisExtentionType extentionType;
+        
     };
 
     /**

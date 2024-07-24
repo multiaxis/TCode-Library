@@ -4,7 +4,4 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "common/TCodeManager.h"
-#include "common/settings/SettingsESP32.h"
-
-TCodeManager TCode;
+#include "TCodeManager.h"

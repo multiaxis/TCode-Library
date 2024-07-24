@@ -4,15 +4,14 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "../../common/TCodeManager.h"
-
-class TCodeManager;
+//#include "../../context/TCodeContext.h"
 
 namespace TCode {
 
-class TInputBase {
-public:
-    virtual void update(const TCodeManager &context) = 0;
-};
+    class TCodeContext;
 
+    class TInterfaceBase {
+    public:
+        virtual void update(TCodeContext &context) = 0;
+    };
 }

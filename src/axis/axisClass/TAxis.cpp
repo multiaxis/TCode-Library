@@ -3,12 +3,12 @@
 // implemented by Eve 18/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #include "TAxis.h"
-#include "../utils/TMath.h"
+#include "../../utils/TMath.h"
 
 namespace TCode 
 {
 
-TAxis::TAxis(const char *name, AxisId id, float defaultPosition)
+TCodeAxis::TCodeAxis(const char *name, AxisId id, float defaultPosition)
 {
     this->name = name;
     this->id = id;
@@ -22,7 +22,7 @@ TAxis::TAxis(const char *name, AxisId id, float defaultPosition)
     minInterval = TCODE_MIN_AXIS_SMOOTH_INTERVAL;
 }
 
-void TAxis::set(const AxisData &data)
+void TCodeAxis::set(const AxisData &data)
 {
     unsigned long currentTime = millis();
     unsigned long deltaTime = 0;
@@ -68,9 +68,8 @@ void TAxis::set(const AxisData &data)
     currentState.endTime = currentTime + deltaTime;
     currentState.startPosition = startValue;
     currentState.endPosition = endValue;
-    currentState.startRamp = currentState.data.rampOut;
+    currentState.startRamp = currentState.endRamp;
     currentState.endRamp = data.rampIn;
-    currentState.data = data;
 
     if (deltaTime != 0)
     {
@@ -86,14 +85,14 @@ void TAxis::set(const AxisData &data)
     lastCommandTime = currentTime;
 }
 
-float TAxis::getPosition()
+float TCodeAxis::getPosition()
 {
     unsigned long currentTime = constrain(millis(), currentState.startTime, currentState.endTime);
     float position = TMath::interpolate(currentTime, currentState.startTime, currentState.startPosition, currentState.startRamp, currentState.endTime, currentState.endPosition, currentState.endRamp);
     return constrain(position, 0.0, 1.0);
 }
 
-void TAxis::stop()
+void TCodeAxis::stop()
 {
     unsigned long currentTime = millis();
 
@@ -103,7 +102,7 @@ void TAxis::stop()
     currentState.endPosition = id.type == AxisType::Vibration ? defaultPosition : currentState.startPosition; // TODO:
 }
 
-bool TAxis::changed()
+bool TCodeAxis::changed()
 {
     if (lastPosition != getPosition())
     {
@@ -114,17 +113,17 @@ bool TAxis::changed()
     return false;
 }
 
-const char *TAxis::getName()
+const char *TCodeAxis::getName()
 {
     return name;
 }
 
-AxisId TAxis::getId()
+AxisId TCodeAxis::getId()
 {
     return id;
 }
 
-unsigned long TAxis::getLastCommandTime()
+unsigned long TCodeAxis::getLastCommandTime()
 {
     return lastCommandTime;
 }

@@ -6,8 +6,9 @@
 #pragma once
 
 #include <Arduino.h>
-#include "../../common/datatypes/CommonDataTypes.h"
-#include "../../common/datatypes/EnumTypes.h"
+
+#include "../datatypes/CommonDataTypes.h"
+#include "../datatypes/EnumTypes.h"
 
 namespace TCode::TMath {
 

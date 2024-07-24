@@ -7,17 +7,29 @@
 #include <Arduino.h>
 #include <vector>
 
-#include "../common/datatypes/CommandDataTypes.h"
-#include "../common/datatypes/CommonDataTypes.h"
-#include "../common/datatypes/EnumTypes.h"
-#include "../internal/axis/TAxis.h"
-#include "../internal/input/TInterfaceBase.h"
-#include "../common/axisManagement/TCodeAxisManager.h"
-#include "../common/settings/ISettings.h"
+#include "datatypes/CommandDataTypes.h"
+#include "datatypes/CommonDataTypes.h"
+#include "datatypes/EnumTypes.h"
 
-#define DEFAULT_TCODE_VERSION "TCode v0.4"
-#define DEFAULT_FIRMWARE_NAME "TCode"
-#define DEFAULT_FILE_NAME "/spiffs/TCode.dat"
+#include "settings/Variant/Variant.h"
+#include "settings/Variant/DataContainer.h"
+#include "settings/Variant/TaggedDataContainer.h"
+
+#include "settings/settingsClasses/ISettings.h"
+#include "settings/settingsClasses/SettingsESP32.h"
+
+#include "interface/interfaceBaseClass/TInterfaceBase.h"
+#include "interface/interfaceManagement/interfaceManager.h"
+#include "interface/buttonInterface/TButton.h"
+
+#include "events/EventReader/TCodeEventReader.h"
+#include "events/EventRunner/TEventRunner.h"
+#include "events/Parsing/TParser.h"
+
+#include "context/TCodeContext.h"
+
+#include "axis/axisClass/TAxis.h"
+#include "axis/axisManagement/TCodeAxisManager.h"
 
 namespace TCode
 {
@@ -25,20 +37,17 @@ namespace TCode
     class TCodeManager
     {
     public:
-        TCodeManager(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION);
+        TCodeManager(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION, const char *Filepath = DEFAULT_FILE_NAME);
 
-        void write(const char value) const;
-        void write(const char *value) const;
-        void write(const __FlashStringHelper *value) const;
-        void write(const String &value) const;
-        void writeLine(const char value) const;
-        void writeLine(const char *value) const;
-        void writeLine(const __FlashStringHelper *value) const;
-        void writeLine(const String &value) const;
+        void read(const byte input);
+        void read(const char input);
+        void read(const String &input);
+        void read(const char *input);
 
         void clearInputBuffer();
 
-        bool registerAxis(const AxisId &id, TAxis* axis);
+        bool registerAxis(const char* name, const AxisId &id, float defaultValue);
+        bool registerAxis(TCodeAxis* axis);
         void setAxisData(const AxisId &id, const AxisData &data);
         float getAxisPosition(const AxisId &axisId);               
         unsigned long getAxisLastCommandTime(const AxisId &axisId);
@@ -47,29 +56,16 @@ namespace TCode
         void registerInterface(TInterfaceBase *interface);
         void updateInterfaces();
 
-        void setAxisManager(TCodeAxisManager* axisManager);
-        void setInterfaceManager(); // TODO: implement
         void setSettingManager(ISettings *settings);
         void setOutputStream(Print *stream);
 
     private:
-        const char *filepath;
-        const char *firmwareVersion;
-        const char *tcodeVersion;
-        ISettings *settingManager;
-        TCodeAxisManager *axisManager;
+        TCodeContext context;
+        TCodeAxisManager axisManager;
+        TCodeInterfaceManager interfaceManager;
+        TEvents::TCodeEventReader eventReader;
 
-        vector<AxisCommandEvent> axisCommandBuffer;
-
-        Print *outputStream;
-
-        void runAxisCommand(AxisCommandEvent &command);
-        void runDeviceCommand(DeviceCommandEvent &command);
-        void runSetupCommand(SetupCommandEvent &command);
-
-        void setSaveValues(const AxisId &id, float minimum, float maximum, uint8_t minLog = 4, uint8_t maxLog = 4);
-
-        void printSavedAxisValues();
+        void runProcessedCommands();
     };
 
-};
+}

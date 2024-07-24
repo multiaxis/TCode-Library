@@ -50,4 +50,11 @@ namespace TCode
         StopDevice,
         None,
     };
-};
+
+    enum class AxisRampType {
+        In,
+        Out,
+        InOut,
+        None
+    };
+}

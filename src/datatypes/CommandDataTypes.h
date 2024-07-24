@@ -11,16 +11,7 @@
 
 namespace TCode
 {
-    /**
-     * @brief TCode Command Union 
-     */
-    typedef union _TCodeEvent
-    {
-        CommandType commandType;
-        DeviceCommandEvent deviceCommand;
-        AxisCommandEvent axisCommand;
-        SetupCommandEvent setupCommand;
-    } TCodeEvent;
+
 
     /**
      * @brief structure for save entry data
@@ -53,5 +44,15 @@ namespace TCode
         SaveEntry saveEntryData;
     };
 
+    /**
+     * @brief TCode Command Union 
+     */
+    typedef union _TCodeEvent
+    {
+        CommandType commandType;
+        DeviceCommandEvent deviceCommand;
+        AxisCommandEvent axisCommand;
+        SetupCommandEvent setupCommand;
+    } TCodeEvent;
 
-};
+}
