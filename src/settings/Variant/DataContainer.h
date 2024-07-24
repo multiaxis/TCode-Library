@@ -36,4 +36,25 @@ private:
     variant_t data;
 };
 
+template<typename T>
+DataContainer &DataContainer::operator=(T &value) {
+    setValue(value);
+    return *this;
+}
+
+template <typename T>
+void DataContainer::setValue(const T &value) {
+    data = value;
+}
+
+template <typename T>
+bool DataContainer::getValue(T &value) {
+    return data.get(value);
+}
+
+template<typename T>
+DataContainer::DataContainer(T value) {
+    data = value;
+}
+
 }

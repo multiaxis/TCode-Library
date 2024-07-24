@@ -6,7 +6,6 @@
 
 #include <Arduino.h>
 #include "TMath.h"
-#include "../settings/Variant/TaggedDataContainer.h"
 
 namespace TCode::TString {
 

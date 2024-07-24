@@ -6,11 +6,11 @@
 
 #include <string>
 #include <Arduino.h>
-
+#include "../../utils/TString.h"
 #include "DataContainer.h"
 
 namespace TCode {
-
+    
 class TaggedDataContainer : public DataContainer {
 public:
     TaggedDataContainer();
@@ -30,5 +30,13 @@ private:
     const char *tag;
     unsigned int tagHash;
 };
+
+    template<typename T>
+    TaggedDataContainer::TaggedDataContainer(const char *tag, T value) : DataContainer(value) {
+        this->tag = tag;    
+        tagHash = TCode::TString::getHash(tag, strlen(tag));
+    }
+
+    
 
 }

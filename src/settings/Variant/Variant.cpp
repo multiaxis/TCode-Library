@@ -1,6 +1,5 @@
 #include "Variant.h"
 
-namespace TCode {
 
 variant_t &variant_t::operator=(char &v) {
     value.int8 = v;
@@ -128,4 +127,3 @@ bool variant_t::get(double &v) {
     return true;
 }
 
-}

@@ -5,23 +5,12 @@
 #include "DataContainer.h"
 #include "../../utils/TString.h"
 
-namespace TCode
-{ 
+namespace TCode {
 
 DataContainer::DataContainer() {}
 
-template<typename T>
-DataContainer::DataContainer(T value) {
-    data = value;
-}
-
 VariantType DataContainer::getDataType() {
     return data.type;
-}
-
-template <typename T>
-bool DataContainer::getValue(T &value) {
-    return data.get(value);
 }
 
 bool DataContainer::getValue(DataContainer &other) {
@@ -29,19 +18,8 @@ bool DataContainer::getValue(DataContainer &other) {
     return true;
 }
 
-template <typename T>
-void DataContainer::setValue(const T &value) {
-    data = value;
-}
-
 void DataContainer::setValue(const DataContainer &other) {
     data = other.data;
-}
-
-template<typename T>
-DataContainer &DataContainer::operator=(T &value) {
-    setValue(value);
-    return *this;
 }
 
 }

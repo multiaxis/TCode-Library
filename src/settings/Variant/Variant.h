@@ -2,8 +2,6 @@
 
 #include <Arduino.h>
 
-namespace TCode {
-
 enum class VariantType {
     Empty,
     Int8,
@@ -63,4 +61,3 @@ struct variant_t {
     bool get(double &value);
 };
 
-}
