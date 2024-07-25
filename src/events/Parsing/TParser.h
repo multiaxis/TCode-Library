@@ -8,8 +8,11 @@
 #include "../../datatypes/CommandDataTypes.h"
 #include "../../datatypes/CommonDataTypes.h"
 #include "../../datatypes/EnumTypes.h"
+#include "../../logging/LogHandler.h"
 
 namespace TCode::TParser {
+
+#define TCODE_PARSER_TAG "TPARSER"
 
 bool isExtention(const char value);
 

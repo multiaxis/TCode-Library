@@ -114,10 +114,6 @@ bool runDeviceCommand(TCodeContext &context, const DeviceCommandEvent &event)
     if(!context.getAxisManager(axisManager))
         return false;
 
-    Settings::ISettings * settingManager;
-    if(!context.getSettingManager(settingManager))
-        return false;
-
     Print * outputStream;
     if(!context.getOutputStream(outputStream))
         return false;
@@ -141,6 +137,9 @@ bool runDeviceCommand(TCodeContext &context, const DeviceCommandEvent &event)
         }
         case DeviceCommandType::GetAssignedAxisValues:
         {
+            Settings::ISettings * settingManager;
+            if(!context.getSettingManager(settingManager))
+                return false;
             printSavedAxisValues(axisManager,settingManager,outputStream);
             break;
         }

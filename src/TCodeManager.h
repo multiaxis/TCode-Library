@@ -31,6 +31,8 @@
 #include "axis/axisClass/TAxis.h"
 #include "axis/axisManagement/TCodeAxisManager.h"
 
+#include "logging/LogHandler.h"
+
 namespace TCode
 {
 

@@ -153,6 +153,22 @@ char axisTypeToChar(const AxisType &type) {
     }
 }
 
+const char *axisTypeToVerboseString(const AxisType &type)
+{
+    switch (type) {
+        case AxisType::Auxiliary:
+            return "Auxiliary";
+        case AxisType::Linear:
+            return "Linear";
+        case AxisType::Rotation:
+            return "Rotation";
+        case AxisType::Vibration:
+            return "Vibration";
+        default:
+            return "UNDEFINED";
+    }
+}
+
 String axisIdToString(const AxisId &id) {
     return axisTypeToChar(id.type) + String((int)id.channel);
 }

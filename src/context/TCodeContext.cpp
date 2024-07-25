@@ -1,25 +1,29 @@
 #include "TCodeContext.h"
-
+#include "../logging/LogHandler.h"
 
 namespace TCode {
     void TCodeContext::setAxisManager(TCodeAxisManager *inputAxisManager)
     {
         axisManager = inputAxisManager;
+        logging.verbose("TCodeContext","Context Axis Manager Set");
     }
 
     void TCodeContext::setInterfaceManager(TCodeInterfaceManager *inputInterfaceManager)
     {
         interfaceManager = inputInterfaceManager;
+        logging.verbose("TCodeContext","Context Interface Manager Set");
     }
 
     void TCodeContext::setSettingManager(Settings::ISettings *settings)
     {
         settingManager = settings;
+        logging.verbose("TCodeContext","Context Settings Manager Set");
     }
 
     void TCodeContext::setOutputStream(Print *stream)
     {
         outputStream = stream;
+        logging.info("TCodeContext","Context Output Stream Set");
     }
 
     bool TCodeContext::getAxisManager(TCodeAxisManager *&manager)

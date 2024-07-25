@@ -35,6 +35,8 @@ unsigned long getHash(const char *str, size_t length);
 
 char axisTypeToChar(const AxisType &type);
 
+const char* axisTypeToVerboseString(const AxisType &type);
+
 String axisIdToString(const AxisId &id);
 
 }

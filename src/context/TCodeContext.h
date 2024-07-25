@@ -40,10 +40,10 @@ namespace TCode
         const char *filepath;
         const char *firmwareVersion;
         const char *tcodeVersion;
-        Settings::ISettings *settingManager;
-        TCodeAxisManager *axisManager;
-        TCodeInterfaceManager* interfaceManager;
-        Print *outputStream;
+        Settings::ISettings *settingManager = nullptr;
+        TCodeAxisManager *axisManager = nullptr;
+        TCodeInterfaceManager* interfaceManager = nullptr;
+        Print *outputStream = nullptr;
     };
 }
 

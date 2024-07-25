@@ -31,8 +31,8 @@ bool isRamp(const char value) {
 
 AxisId getAxisId(size_t &index, const char *buffer, const size_t length) {
     char type = toupper(TString::readCharOrDefault(index++, buffer, length));
-    uint8_t channel = static_cast<uint8_t>(toupper(TString::readCharOrDefault(index++, buffer, length)) - '0');
-
+    uint8_t channel = static_cast<uint8_t>(TString::readCharOrDefault(index++, buffer, length) - '0');
+    logging.info(TCODE_PARSER_TAG,"Axis Channel Number:%d",channel);
     switch (type) {
         case 'L':
             return {AxisType::Linear, channel};
@@ -73,8 +73,10 @@ bool parseAxisCommand(const char *buffer, const size_t length, AxisCommandEvent 
 
     size_t index = 0;
     AxisId id = getAxisId(index, buffer, length);
-    if (!id.isValid())
+    if (!id.isValid()) {
+        logging.error(TCODE_PARSER_TAG,"Axis ID Invalid in Command, got axis type:\"%s\" channel number : \"%d\"",TString::axisTypeToVerboseString(id.type),id.channel);
         return false;
+    }
 
     AxisRampType rampType = AxisRampType::None;
     AxisExtentionType extentionType = AxisExtentionType::None;
@@ -84,16 +86,22 @@ bool parseAxisCommand(const char *buffer, const size_t length, AxisCommandEvent 
     unsigned long commandExtention = 0;
 
     size_t logValue;
-    if (!TString::readTCodeFloat(index, buffer, length, commandValue, logValue))
+    if (!TString::readTCodeFloat(index, buffer, length, commandValue, logValue)) {
+        logging.error(TCODE_PARSER_TAG,"Could not read value in axis command");
         return false;
+    }
 
     while (true)     {
         if (isExtention(TString::readCharOrDefault(index, buffer, length))) {
-            if (extentionType != AxisExtentionType::None)
+            if (extentionType != AxisExtentionType::None) {
+                logging.error(TCODE_PARSER_TAG,"Cannot have more than one extention per command");
                 return false;
+            }
 
-            if (!parseAxisExtention(index, buffer, length, extentionType, commandExtention))
+            if (!parseAxisExtention(index, buffer, length, extentionType, commandExtention)) {
+                logging.error(TCODE_PARSER_TAG,"Could not parse Axis extention");
                 return false;
+            }
         } else if (isRamp(TString::readCharOrDefault(index, buffer, length))) {            
             if (!parseAxisRamp(index, buffer, length, rampType, rampIn, rampOut))
                 return false;
@@ -260,11 +268,15 @@ bool parseSetupCommand(const char *buffer, const size_t length, SetupCommandEven
 bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out)
 {
     CommandType type = TParser::getCommandType(buffer, length);
+    
+    logging.info(TCODE_PARSER_TAG,"Parsing Command Buffer:\"%s\"",buffer);
+
     switch (type) {
         case CommandType::Axis:
         {
+            logging.info(TCODE_PARSER_TAG,"Command Type : Axis");
             AxisCommandEvent result;
-            result.commandType = CommandType::Axis;
+            out.commandType = CommandType::Axis;
             if (TParser::parseAxisCommand(buffer, length, result)) {
                 out.axisCommand = result;
                 return true;
@@ -273,8 +285,9 @@ bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out)
         }
         case CommandType::Device:
         {
+            logging.info(TCODE_PARSER_TAG,"Command Type : Device");
             DeviceCommandEvent result;
-            result.commandType = CommandType::Device;
+            out.commandType = CommandType::Device;
             if (TParser::parseDeviceCommand(buffer, length, result)) {
                 out.deviceCommand = result;
                 return true;
@@ -283,8 +296,9 @@ bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out)
         }
         case CommandType::Setup:
         {
+            logging.info(TCODE_PARSER_TAG,"Command Type : Setup");
             SetupCommandEvent result;
-            result.commandType = CommandType::Setup;
+            out.commandType = CommandType::Setup;
             if (TParser::parseSetupCommand(buffer, length, result)) {
                 out.setupCommand = result;
                 return true;
@@ -292,6 +306,7 @@ bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out)
             break;
         }
         default:
+            logging.info(TCODE_PARSER_TAG,"Command Type : Unknown");
             out.commandType = CommandType::None;
             break;
     }

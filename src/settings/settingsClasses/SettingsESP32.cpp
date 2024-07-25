@@ -4,6 +4,7 @@
 // Please copy, share, learn, innovate, give attribution.
 #include "SettingsESP32.h"
 #include "../../utils/TString.h"
+#include "../../logging/LogHandler.h"
 
 namespace TCode::Settings
 {
@@ -11,10 +12,10 @@ namespace TCode::Settings
 bool SettingsESP32::init()
 {
     if (!SPIFFS.begin(true)) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"an Error has occurred while mounting SPIFFS\n");
+        logging.error(SETTING_MANAGMENT_TAG,"an Error has occurred while mounting SPIFFS\n");
         return false;
     } else {
-        ESP_LOGI(SETTING_MANAGMENT_TAG,"SPIFFS mounted correctly\n");
+        logging.info(SETTING_MANAGMENT_TAG,"SPIFFS mounted correctly\n");
     }
 
     fileSystemMounted = true;
@@ -23,14 +24,15 @@ bool SettingsESP32::init()
     if (!foundFile) {
         foundFile = true;
         reset();
-        ESP_LOGI(SETTING_MANAGMENT_TAG,"setting's file not found creating settings file\n");
+        logging.verbose(SETTING_MANAGMENT_TAG,"setting's file not found creating settings file\n");
     } else {
-        ESP_LOGI(SETTING_MANAGMENT_TAG,"setting's file found\n");
+        logging.verbose(SETTING_MANAGMENT_TAG,"setting's file found\n");
     }
 
     SettingsUsage usage;
     getSystemUsage(usage);
-    ESP_LOGI(SETTING_MANAGMENT_TAG,"File System Initialised:\n================\n   System Info\n================\nSpace Available:%d\nSize of file:%d\nSize of SPIFFS:%d\n================\n",usage.spaceAvailable,usage.sizeOfFile,usage.spaceUsed);
+    logging.info(SETTING_MANAGMENT_TAG,"File System Initialised");
+    logging.verbose(SETTING_MANAGMENT_TAG,"\n================\n   System Info\n================\nSpace Available:%d\nSize of file:%d\nSize of SPIFFS:%d\n================\n",usage.spaceAvailable,usage.sizeOfFile,usage.spaceUsed);
     return true;
 }
 
@@ -101,28 +103,28 @@ bool SettingsESP32::setValueToCache(const char* setting, DataContainer value) {
 }
 
 bool SettingsESP32::hasSetting(const char *setting) {
-    ESP_LOGI(SETTING_MANAGMENT_TAG,"checking cache for setting \"%s\"",setting);
+    logging.verbose(SETTING_MANAGMENT_TAG,"checking cache for setting \"%s\"",setting);
 
     if(keyInCache(setting)) {
-        ESP_LOGI(SETTING_MANAGMENT_TAG,"key \"%s\" in cache",setting);
+        logging.verbose(SETTING_MANAGMENT_TAG,"key \"%s\" in cache",setting);
         return true;
     }
 
     String fileData;
     if (!getFile(fileData)) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"could not load Settings file\n");
+        logging.error(SETTING_MANAGMENT_TAG,"could not load Settings file\n");
         return false;
     }
 
     StaticJsonDocument<DEFAULT_JSON_FILE_SIZE> doc;
     DeserializationError error = deserializeJson(doc, fileData);
     if (error) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"an Error has occurred with the json deserialisation Error Code:%s\n",error.f_str());
+        logging.error(SETTING_MANAGMENT_TAG,"an Error has occurred with the json deserialisation Error Code:%s\n",error.f_str());
         return false;
     }
 
     if (!doc.containsKey(setting)) {
-        ESP_LOGI(SETTING_MANAGMENT_TAG,"setting \"%s\" not found\n",setting);
+        logging.verbose(SETTING_MANAGMENT_TAG,"setting \"%s\" not found\n",setting);
         return false;
     }
 
@@ -135,17 +137,17 @@ void SettingsESP32::reset() {
 }
 
 bool SettingsESP32::getFile(String &out) {
-    ESP_LOGI(SETTING_MANAGMENT_TAG,"reading setting file \"%s\"\n",filepath);
+    logging.verbose(SETTING_MANAGMENT_TAG,"reading setting file \"%s\"\n",filepath);
 
     if (!isMounted()) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"failed to read.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
+        logging.error(SETTING_MANAGMENT_TAG,"failed to read.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
         return false;
     }
 
     out = "";
     File file = SPIFFS.open(filepath);
     if (!file) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"file could not be opened.\n");
+        logging.error(SETTING_MANAGMENT_TAG,"file could not be opened.\n");
         return false;
     }
 
@@ -156,69 +158,69 @@ bool SettingsESP32::getFile(String &out) {
 
         out += (char)currentByte;
         if (out.length() >= DEFAULT_JSON_FILE_SIZE) {
-            ESP_LOGE(SETTING_MANAGMENT_TAG,"file is larger than %d cannot be parsed.\n",DEFAULT_JSON_FILE_SIZE);
+            logging.error(SETTING_MANAGMENT_TAG,"file is larger than %d cannot be parsed.\n",DEFAULT_JSON_FILE_SIZE);
             file.close();
             return false;
         }
     }
 
-    ESP_LOGI(SETTING_MANAGMENT_TAG,"file read successfully.\n");
+    logging.verbose(SETTING_MANAGMENT_TAG,"file read successfully.\n");
     file.close();
     return true;
 }
 
 bool SettingsESP32::writeFile(const String &fileData) {
-    ESP_LOGI(SETTING_MANAGMENT_TAG,"writing setting file \"%s\"\n",filepath);
+    logging.verbose(SETTING_MANAGMENT_TAG,"writing setting file \"%s\"\n",filepath);
 
     if (!isMounted()) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"failed to write.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
+        logging.error(SETTING_MANAGMENT_TAG,"failed to write.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
         return false;
     }
 
     File file = SPIFFS.open(filepath, "w", true);
     if (!file) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"file could not be opened.\n");
+        logging.error(SETTING_MANAGMENT_TAG,"file could not be opened.\n");
         return false;
     }
 
     if(fileData.length() > DEFAULT_JSON_FILE_SIZE) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"file is larger than %d cannot be serialised.\n",DEFAULT_JSON_FILE_SIZE);
+        logging.error(SETTING_MANAGMENT_TAG,"file is larger than %d cannot be serialised.\n",DEFAULT_JSON_FILE_SIZE);
         return false;
     }
 
     for (unsigned int i = 0; i < fileData.length(); i++)
         file.write(fileData[i]);
 
-    ESP_LOGI(SETTING_MANAGMENT_TAG,"file written successfully.\n");
+    logging.verbose(SETTING_MANAGMENT_TAG,"file written successfully.\n");
     file.close();
     return true;
 }
 
 bool SettingsESP32::getSystemUsage(SettingsUsage &out) {
-    ESP_LOGI(SETTING_MANAGMENT_TAG,"getting system usage.\n");
+    logging.verbose(SETTING_MANAGMENT_TAG,"getting system usage.\n");
     if (!isMounted()) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"failed to get system usage.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
+        logging.error(SETTING_MANAGMENT_TAG,"failed to get system usage.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
         return false;
     }
 
     out.sizeOfFile = getFileSize();
     out.spaceAvailable = SPIFFS.totalBytes();
     out.spaceUsed = SPIFFS.usedBytes();
-    ESP_LOGI(SETTING_MANAGMENT_TAG,"got system usage.\n");
+    logging.verbose(SETTING_MANAGMENT_TAG,"got system usage.\n");
     return true;
 }
 
 unsigned long SettingsESP32::getFileSize() {
-    ESP_LOGI(SETTING_MANAGMENT_TAG,"getting file size.\n");
+    logging.verbose(SETTING_MANAGMENT_TAG,"getting file size.\n");
     if (!isMounted()) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"failed to get file size.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
+        logging.error(SETTING_MANAGMENT_TAG,"failed to get file size.\nfilesystem is not mounted.\nMounted Status:%d\nFile Status:%d\n",fileSystemMounted,foundFile);
         return 0;
     }
 
     int size = 0;
     File file = SPIFFS.open(filepath);
     if (!file) {
-        ESP_LOGE(SETTING_MANAGMENT_TAG,"file could not be opened.\n");
+        logging.error(SETTING_MANAGMENT_TAG,"file could not be opened.\n");
         return 0;
     }
 

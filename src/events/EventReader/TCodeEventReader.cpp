@@ -4,10 +4,12 @@
 // Please copy, share, learn, innovate, give attribution.
 #include "TCodeEventReader.h"
 #include "../Parsing/TParser.h"
+#include "../../logging/LogHandler.h"
+#include "../../utils/TString.h"
+#include <Arduino.h>
 
 namespace TCode::TEvents
 {
-
     TCodeEventReader::TCodeEventReader()
     {
     }
@@ -40,7 +42,10 @@ namespace TCode::TEvents
         if (inputBuffer.size() >= MAX_COMMAND_BUFFER_LENGTH_COUNT)
         {
             size_t length = consumeNextCommandFromInputBuffer(commandBuffer, MAX_COMMAND_BUFFER_LENGTH_COUNT);
-            parseCommand(commandBuffer, length);
+            if(!parseCommand(commandBuffer, length))
+            {
+                logging.error("TEVENT","Parsing Command Buffer:\"%s\" Could not be parsed",commandBuffer);
+            }
         }
 
         inputBuffer.push_back(input);
@@ -49,7 +54,10 @@ namespace TCode::TEvents
             while (!inputBuffer.empty())
             {
                 size_t length = consumeNextCommandFromInputBuffer(commandBuffer, MAX_COMMAND_BUFFER_LENGTH_COUNT);
-                parseCommand(commandBuffer, length);
+                if(!parseCommand(commandBuffer, length))
+                {
+                    logging.error("TEVENT","Parsing Command Buffer:\"%s\" Could not be parsed",commandBuffer);
+                }
             }
         }
     }
@@ -61,7 +69,9 @@ namespace TCode::TEvents
         {
             size_t length = consumeNextCommandFromInputBuffer(commandBuffer, MAX_COMMAND_BUFFER_LENGTH_COUNT);
             if(!parseCommand(commandBuffer, length))
-                return false;
+            {
+                logging.error("TEVENT","Parsing Command Buffer:\"%s\" Could not be parsed",commandBuffer);
+            }
         }
         return true;
     }
@@ -92,7 +102,7 @@ namespace TCode::TEvents
             if (c == ' ' || c == '\n')
             {
                 inputBuffer.pop_front();
-                return true;
+                break;
             }
 
             buffer[index++] = c;
@@ -100,7 +110,7 @@ namespace TCode::TEvents
         }
 
         buffer[index++] = '\0';
-        return index;
+        return index-1;
     }
 
     bool TCodeEventReader::parseCommand(const char *buffer, const size_t length)
