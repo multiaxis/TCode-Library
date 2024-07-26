@@ -66,13 +66,15 @@ void TAxis::set(const AxisData &data) {
 
     if (deltaTime != 0) {
         float deltaValue = endValue - startValue;
+        float deltaTimeSeconds = deltaTime / 1000f;
+
         if (!currentState.startRamp.hasTangent && currentState.startRamp.autoTangent) {
-            currentState.startRamp.tangent = 2 / PI * atan(2 * deltaValue / deltaTime); // approximates easing function
+            currentState.startRamp.tangent = 2 / PI * atan(2 * deltaValue / deltaTimeSeconds); // approximates easing function
             currentState.startRamp.hasTangent = true;
         }
 
         if (!currentState.endRamp.hasTangent && currentState.endRamp.autoTangent) {
-            currentState.endRamp.tangent = 2 / PI * atan(2 * deltaValue / deltaTime); // approximates easing function
+            currentState.endRamp.tangent = 2 / PI * atan(2 * deltaValue / deltaTimeSeconds); // approximates easing function
             currentState.endRamp.hasTangent = true;
         }
     }
@@ -88,8 +90,14 @@ float TAxis::getPosition()
     if (currentTime == currentState.startTime)
         return currentState.startPosition;
 
-    float position = TMath::interpolate(currentTime, currentState.startTime, currentState.startPosition, currentState.startRamp, currentState.endTime, currentState.endPosition, currentState.endRamp);
-    return constrain(position, 0, 1);
+    float x = currentTime / 1000f;
+    float x0 = currentState.startTime / 1000f;
+    float y0 = currentState.startPosition;
+    float x1 = currentState.endTime / 1000f;
+    float y1 = currentState.endPosition;
+    float y = TMath::interpolate(x, x0, y0, currentState.startRamp, x1, y1, currentState.endRamp);
+
+    return constrain(y, 0, 1);
 }
 
 void TAxis::stop() {
