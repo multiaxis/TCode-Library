@@ -8,7 +8,7 @@
 #include "../../events/DataWriter/TCodeDataWriter.h"
 #include <Arduino.h>
 
-#define TBUTTON_TIMEOUT 60
+#define TBUTTON_TIMEOUT 30
 
 namespace TCode {
 
