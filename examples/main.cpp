@@ -103,7 +103,6 @@ void print_sys()
   Serial.println(usage.spaceUsed);
 }
 
-
 void setup() {
   LogHandler::setLogLevel(LogLevel::VERBOSE);
   Serial.begin(115200);
@@ -116,6 +115,8 @@ void setup() {
   {
     tcode.registerAxis(axis_pointers[i]);
   }
+
+  tcode.registerInterface(&button);
 
   print_reset_reason();
   print_sys();
@@ -134,7 +135,7 @@ void loop() {
     if(received == false)
       received = true;
   }
-
+  tcode.updateInterfaces();
   
   if(received)
   {
