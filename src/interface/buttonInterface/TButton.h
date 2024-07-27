@@ -5,6 +5,7 @@
 #pragma once
 
 #include "../interfaceBaseClass/TInterfaceBase.h"
+#include "../../events/DataWriter/TCodeDataWriter.h"
 #include <Arduino.h>
 
 #define TBUTTON_TIMEOUT 60
@@ -19,12 +20,11 @@ namespace TCode {
         void update(TCodeContext &context) override;
 
     private:
-        char *printBuffer;
-        size_t printBufferLength;
         unsigned int pin = 0;
         bool isPressed = false;
         bool lastState = false;
         unsigned long lastPressTime = 0;
+        const char* name;
         void (*callback)() = nullptr;
     };
 

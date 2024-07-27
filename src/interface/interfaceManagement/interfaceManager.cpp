@@ -11,7 +11,7 @@ namespace TCode {
         registeredInterfaces.push_back(interface);
     }
 
-    /*
+    
     void TCodeInterfaceManager::update(TCodeContext &context)
     {
         for(size_t i = 0; i < registeredInterfaces.size(); i++)
@@ -19,6 +19,6 @@ namespace TCode {
             registeredInterfaces[i]->update(context);
         }
     }
-    */
+    
 
 }
