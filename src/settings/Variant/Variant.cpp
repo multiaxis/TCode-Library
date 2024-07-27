@@ -1,6 +1,5 @@
 #include "Variant.h"
 
-
 variant_t &variant_t::operator=(char &v) {
     value.int8 = v;
     type = VariantType::Int8;
@@ -126,4 +125,3 @@ bool variant_t::get(double &v) {
     v = value.float64;
     return true;
 }
-

@@ -3,15 +3,15 @@
 // implemented by Eve 07/07/2024
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
+#include "../../context/TCodeContext.h"
 #include "../../datatypes/CommandDataTypes.h"
 #include "../../datatypes/CommonDataTypes.h"
 #include "../../datatypes/EnumTypes.h"
-#include "../../context/TCodeContext.h"
+#include "../../logging/LogHandler.h"
 
-namespace TCode::TEvents
-{
-    void runEvent(TCodeContext& context,const TCodeEvent &event);
-    bool runAxisCommand(TCodeContext& context, const AxisCommandEvent &event);
-    bool runDeviceCommand(TCodeContext& context, const DeviceCommandEvent &event);
-    bool runSetupCommand(TCodeContext& context, const SetupCommandEvent &event);
+namespace TCode::TEvents {
+    void runEvent(TCodeContext &context, const TCodeEvent &event);
+    bool runAxisCommand(TCodeContext &context, const AxisCommandEvent &event);
+    bool runDeviceCommand(TCodeContext &context, const DeviceCommandEvent &event);
+    bool runSetupCommand(TCodeContext &context, const SetupCommandEvent &event);
 }

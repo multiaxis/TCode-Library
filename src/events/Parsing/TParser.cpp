@@ -5,35 +5,34 @@
 #include "TParser.h"
 #include "../../utils/TString.h"
 
-
 namespace TCode::TParser {
 
-bool isExtention(const char value) {
-    switch (toupper(value)) {
+    bool isExtention(const char value) {
+        switch (toupper(value)) {
         case 'I':
         case 'S':
             return true;
         default:
             return false;
+        }
     }
-}
 
-bool isRamp(const char value) {
-    switch (value) {
+    bool isRamp(const char value) {
+        switch (value) {
         case '<':
         case '>':
         case '=':
             return true;
         default:
             return false;
+        }
     }
-}
 
-AxisId getAxisId(size_t &index, const char *buffer, const size_t length) {
-    char type = toupper(TString::readCharOrDefault(index++, buffer, length));
-    uint8_t channel = static_cast<uint8_t>(TString::readCharOrDefault(index++, buffer, length) - '0');
-    logging.info(TCODE_PARSER_TAG,"Axis Channel Number:%d",channel);
-    switch (type) {
+    AxisId getAxisId(size_t &index, const char *buffer, const size_t length) {
+        char type = toupper(TString::readCharOrDefault(index++, buffer, length));
+        uint8_t channel = static_cast<uint8_t>(TString::readCharOrDefault(index++, buffer, length) - '0');
+        LogHandler::info(TCODE_PARSER_TAG, "Axis Channel Number:%d", channel);
+        switch (type) {
         case 'L':
             return {AxisType::Linear, channel};
             break;
@@ -48,11 +47,11 @@ AxisId getAxisId(size_t &index, const char *buffer, const size_t length) {
             break;
         default:
             return {AxisType::None, UINT8_MAX};
+        }
     }
-}
 
-CommandType getCommandType(const char *buffer, const size_t length) {
-    switch (toupper(TString::readCharOrDefault(0, buffer, length))) {
+    CommandType getCommandType(const char *buffer, const size_t length) {
+        switch (toupper(TString::readCharOrDefault(0, buffer, length))) {
         case 'L':
         case 'R':
         case 'V':
@@ -64,94 +63,93 @@ CommandType getCommandType(const char *buffer, const size_t length) {
             return CommandType::Setup;
         default:
             return CommandType::None;
-    }
-}
-
-bool parseAxisCommand(const char *buffer, const size_t length, AxisCommandEvent &out) {
-    if (getCommandType(buffer, length) != CommandType::Axis)
-        return false;
-
-    size_t index = 0;
-    AxisId id = getAxisId(index, buffer, length);
-    if (!id.isValid()) {
-        logging.error(TCODE_PARSER_TAG,"Axis ID Invalid in Command, got axis type:\"%s\" channel number : \"%d\"",TString::axisTypeToVerboseString(id.type),id.channel);
-        return false;
-    }
-
-    AxisRampType rampType = AxisRampType::None;
-    AxisExtentionType extentionType = AxisExtentionType::None;
-    AxisRampData rampIn = {};
-    AxisRampData rampOut = {};
-    float commandValue = 0;
-    unsigned long commandExtention = 0;
-
-    size_t logValue;
-    if (!TString::readTCodeFloat(index, buffer, length, commandValue, logValue)) {
-        logging.error(TCODE_PARSER_TAG,"Could not read value in axis command");
-        return false;
-    }
-
-    while (true)     {
-        if (isExtention(TString::readCharOrDefault(index, buffer, length))) {
-            if (extentionType != AxisExtentionType::None) {
-                logging.error(TCODE_PARSER_TAG,"Cannot have more than one extention per command");
-                return false;
-            }
-
-            if (!parseAxisExtention(index, buffer, length, extentionType, commandExtention)) {
-                logging.error(TCODE_PARSER_TAG,"Could not parse Axis extention");
-                return false;
-            }
-        } else if (isRamp(TString::readCharOrDefault(index, buffer, length))) {            
-            if (!parseAxisRamp(index, buffer, length, rampType, rampIn, rampOut))
-                return false;
-        } else {
-            break;
         }
     }
 
-    // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
-    if (toupper(TString::readCharOrDefault(index, buffer, length)) != '\0')
-        return false;
+    bool parseAxisCommand(const char *buffer, const size_t length, AxisCommandEvent &out) {
+        if (getCommandType(buffer, length) != CommandType::Axis)
+            return false;
 
-    AxisData data { 
-        .commandValue = commandValue,
-        .commandExtention = commandExtention,
-        .extentionType = extentionType,
-        .rampIn = rampIn,
-        .rampOut = rampOut
-    };
+        size_t index = 0;
+        AxisId id = getAxisId(index, buffer, length);
+        if (!id.isValid()) {
+            LogHandler::error(TCODE_PARSER_TAG, "Axis ID Invalid in Command, got axis type:\"%s\" channel number : \"%d\"", TString::axisTypeToVerboseString(id.type), id.channel);
+            return false;
+        }
 
-    out.data = data;
-    out.id = id;
-    return true;
-}
+        AxisRampType rampType = AxisRampType::None;
+        AxisExtentionType extentionType = AxisExtentionType::None;
+        AxisRampData rampIn = {};
+        AxisRampData rampOut = {};
+        float commandValue = 0;
+        unsigned long commandExtention = 0;
 
-AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length) {
-    switch (toupper(TString::readCharOrDefault(index++, buffer, length))) {
+        size_t logValue;
+        if (!TString::readTCodeFloat(index, buffer, length, commandValue, logValue)) {
+            LogHandler::error(TCODE_PARSER_TAG, "Could not read value in axis command");
+            return false;
+        }
+
+        while (true) {
+            if (isExtention(TString::readCharOrDefault(index, buffer, length))) {
+                if (extentionType != AxisExtentionType::None) {
+                    LogHandler::error(TCODE_PARSER_TAG, "Cannot have more than one extention per command");
+                    return false;
+                }
+
+                if (!parseAxisExtention(index, buffer, length, extentionType, commandExtention)) {
+                    LogHandler::error(TCODE_PARSER_TAG, "Could not parse Axis extention");
+                    return false;
+                }
+            } else if (isRamp(TString::readCharOrDefault(index, buffer, length))) {
+                if (!parseAxisRamp(index, buffer, length, rampType, rampIn, rampOut))
+                    return false;
+            } else {
+                break;
+            }
+        }
+
+        // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
+        if (toupper(TString::readCharOrDefault(index, buffer, length)) != '\0')
+            return false;
+
+        AxisData data{
+            .commandValue = commandValue,
+            .commandExtention = commandExtention,
+            .extentionType = extentionType,
+            .rampIn = rampIn,
+            .rampOut = rampOut};
+
+        out.data = data;
+        out.id = id;
+        return true;
+    }
+
+    AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length) {
+        switch (toupper(TString::readCharOrDefault(index++, buffer, length))) {
         case 'I':
             return AxisExtentionType::Time;
         case 'S':
             return AxisExtentionType::Speed;
         default:
             return AxisExtentionType::None;
+        }
     }
-}
 
-bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, AxisExtentionType &extentionType, unsigned long &commandExtention) {
-    extentionType = getExtentionType(index, buffer, length);
+    bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, AxisExtentionType &extentionType, unsigned long &commandExtention) {
+        extentionType = getExtentionType(index, buffer, length);
 
-    size_t logValue;
-    if (!TString::readInt(index, buffer, length, commandExtention, logValue))
-        return false;
+        size_t logValue;
+        if (!TString::readInt(index, buffer, length, commandExtention, logValue))
+            return false;
 
-    return true;
-}
+        return true;
+    }
 
-AxisRampType getRampType(size_t &index, const char *buffer, const size_t length) {
-    char first = TString::readCharOrDefault(index++, buffer, length);
+    AxisRampType getRampType(size_t &index, const char *buffer, const size_t length) {
+        char first = TString::readCharOrDefault(index++, buffer, length);
 
-    switch (first) {
+        switch (first) {
         case '<':
             return AxisRampType::In;
         case '>':
@@ -160,121 +158,118 @@ AxisRampType getRampType(size_t &index, const char *buffer, const size_t length)
             return AxisRampType::InOut;
         default:
             return AxisRampType::None;
+        }
     }
-}
 
-bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, AxisRampType &rampType, AxisRampData &rampIn, AxisRampData &rampOut) {
-    //(<|>|=)(<tangent>(.<weight>))
-    if (rampType == AxisRampType::InOut)
-        return false;
+    bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, AxisRampType &rampType, AxisRampData &rampIn, AxisRampData &rampOut) {
+        //(<|>|=)(<tangent>(.<weight>))
+        if (rampType == AxisRampType::InOut)
+            return false;
 
-    AxisRampType currentRampType = getRampType(index, buffer, length);
-    if (currentRampType == AxisRampType::None)
-        return false;
-    if (currentRampType == rampType)
-        return false;
-     
-    AxisRampData data;
-    if (!parseAxisRampData(index, buffer, length, currentRampType, data))
-        return false;
+        AxisRampType currentRampType = getRampType(index, buffer, length);
+        if (currentRampType == AxisRampType::None)
+            return false;
+        if (currentRampType == rampType)
+            return false;
 
-    if (currentRampType == AxisRampType::In || currentRampType == AxisRampType::InOut)
-        rampIn = data;
-    if (currentRampType == AxisRampType::Out || currentRampType == AxisRampType::InOut)
-        rampOut = data;
+        AxisRampData data;
+        if (!parseAxisRampData(index, buffer, length, currentRampType, data))
+            return false;
 
-    if (rampType != AxisRampType::None)
-        rampType = AxisRampType::InOut;
+        if (currentRampType == AxisRampType::In || currentRampType == AxisRampType::InOut)
+            rampIn = data;
+        if (currentRampType == AxisRampType::Out || currentRampType == AxisRampType::InOut)
+            rampOut = data;
 
-    return true;
-}
+        if (rampType != AxisRampType::None)
+            rampType = AxisRampType::InOut;
 
-bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const AxisRampType rampType, AxisRampData &data) {
-    data = {
-        .tangent = 0,
-        .weight = 1 / 3.0f,
-        .hasTangent = true,
-        .hasWeight = false, 
-        .autoTangent = rampType != AxisRampType::InOut
-    };
-
-    if (!isdigit(TString::readCharOrDefault(index, buffer, length)))
         return true;
+    }
 
-    size_t logValue;
-    float tangent;
-    if (!TString::readTCodeFloat(index, buffer, length, tangent, logValue))
-        return false;
-    
-    data.tangent = map(tangent, 0, 1, -0.999f, 0.999f);
-    if (TString::readCharOrDefault(index, buffer, length) != '.')
+    bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const AxisRampType rampType, AxisRampData &data) {
+        data = {
+            .tangent = 0,
+            .weight = 1 / 3.0f,
+            .hasTangent = true,
+            .hasWeight = false,
+            .autoTangent = rampType != AxisRampType::InOut};
+
+        if (!isdigit(TString::readCharOrDefault(index, buffer, length)))
+            return true;
+
+        size_t logValue;
+        float tangent;
+        if (!TString::readTCodeFloat(index, buffer, length, tangent, logValue))
+            return false;
+
+        data.tangent = map(tangent, 0, 1, -0.999f, 0.999f);
+        if (TString::readCharOrDefault(index, buffer, length) != '.')
+            return true;
+
+        index++;
+        if (!isdigit(TString::readCharOrDefault(index, buffer, length)))
+            return false;
+
+        float weight;
+        if (!TString::readTCodeFloat(index, buffer, length, weight, logValue))
+            return false;
+
+        data.weight = constrain(weight, 0, 0.999f);
+        data.hasWeight = true;
         return true;
-    
-    index++;
-    if (!isdigit(TString::readCharOrDefault(index, buffer, length)))
-        return false;
-    
-    float weight;
-    if (!TString::readTCodeFloat(index, buffer, length, weight, logValue))
-        return false; 
+    }
 
-    data.weight = constrain(weight, 0, 0.999f);
-    data.hasWeight = true;
-    return true;
-}
+    bool parseSetupCommand(const char *buffer, const size_t length, SetupCommandEvent &out) {
+        if (getCommandType(buffer, length) != CommandType::Setup)
+            return false;
 
-bool parseSetupCommand(const char *buffer, const size_t length, SetupCommandEvent &out) {
-    if (getCommandType(buffer, length) != CommandType::Setup)
-        return false;
+        size_t index = 1;
+        AxisId id = getAxisId(index, buffer, length);
+        if (!id.isValid())
+            return false;
 
-    size_t index = 1;
-    AxisId id = getAxisId(index, buffer, length);
-    if (!id.isValid())
-        return false;
+        if (toupper(TString::readCharOrDefault(index++, buffer, length)) != '-')
+            return false;
 
-    if (toupper(TString::readCharOrDefault(index++, buffer, length)) != '-')
-        return false;
+        unsigned long minValueLong;
+        size_t minValueLog;
+        if (!TString::readInt(index, buffer, length, minValueLong, minValueLog))
+            return false;
 
-    unsigned long minValueLong; 
-    size_t minValueLog;
-    if (!TString::readInt(index, buffer, length, minValueLong, minValueLog)) 
-        return false;
+        if (toupper(TString::readCharOrDefault(index++, buffer, length)) != '-')
+            return false;
 
-    if (toupper(TString::readCharOrDefault(index++, buffer, length)) != '-')
-        return false;
+        unsigned long maxValueLong;
+        size_t maxValueLog;
+        if (!TString::readInt(index, buffer, length, maxValueLong, maxValueLog))
+            return false;
 
-    unsigned long maxValueLong; 
-    size_t maxValueLog;
-    if (!TString::readInt(index, buffer, length, maxValueLong, maxValueLog))
-        return false;
+        if ((toupper(TString::readCharOrDefault(index, buffer, length)) != '\0'))
+            return false;
 
-    if ((toupper(TString::readCharOrDefault(index, buffer, length)) != '\0'))
-        return false;
+        float minValue = TMath::getFloatFromTCode(minValueLong, minValueLog);
+        float maxValue = TMath::getFloatFromTCode(maxValueLong, maxValueLog);
 
-    float minValue = TMath::getFloatFromTCode(minValueLong, minValueLog);
-    float maxValue = TMath::getFloatFromTCode(maxValueLong, maxValueLog);
+        if (minValue > maxValue)
+            return false;
 
-    if (minValue > maxValue)
-        return false;
+        out.id = id;
+        out.saveEntryData.min = minValue;
+        out.saveEntryData.max = maxValue;
+        out.saveEntryData.minLog = minValueLog;
+        out.saveEntryData.maxLog = maxValueLog;
+        return true;
+    }
 
-    out.id = id;
-    out.saveEntryData.min = minValue;
-    out.saveEntryData.max = maxValue;
-    out.saveEntryData.minLog = minValueLog;
-    out.saveEntryData.maxLog = maxValueLog;
-    return true;
-}
+    bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out) {
+        CommandType type = TParser::getCommandType(buffer, length);
 
-bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out)
-{
-    CommandType type = TParser::getCommandType(buffer, length);
-    
-    logging.info(TCODE_PARSER_TAG,"Parsing Command Buffer:\"%s\"",buffer);
+        LogHandler::info(TCODE_PARSER_TAG, "Parsing Command Buffer:\"%s\"", buffer);
 
-    switch (type) {
-        case CommandType::Axis:
-        {
-            logging.info(TCODE_PARSER_TAG,"Command Type : Axis");
+        switch (type) {
+        case CommandType::Axis: {
+            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Axis");
             AxisCommandEvent result;
             out.commandType = CommandType::Axis;
             if (TParser::parseAxisCommand(buffer, length, result)) {
@@ -283,9 +278,8 @@ bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out)
             }
             break;
         }
-        case CommandType::Device:
-        {
-            logging.info(TCODE_PARSER_TAG,"Command Type : Device");
+        case CommandType::Device: {
+            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Device");
             DeviceCommandEvent result;
             out.commandType = CommandType::Device;
             if (TParser::parseDeviceCommand(buffer, length, result)) {
@@ -294,9 +288,8 @@ bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out)
             }
             break;
         }
-        case CommandType::Setup:
-        {
-            logging.info(TCODE_PARSER_TAG,"Command Type : Setup");
+        case CommandType::Setup: {
+            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Setup");
             SetupCommandEvent result;
             out.commandType = CommandType::Setup;
             if (TParser::parseSetupCommand(buffer, length, result)) {
@@ -306,35 +299,35 @@ bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out)
             break;
         }
         default:
-            logging.info(TCODE_PARSER_TAG,"Command Type : Unknown");
+            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Unknown");
             out.commandType = CommandType::None;
             break;
-    }
-    return false;
-}
-
-bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommandEvent &out) {
-    if (getCommandType(buffer, length) != CommandType::Device)
+        }
         return false;
-        
-    size_t index = 1;
-    switch (toupper(TString::readCharOrDefault(index, buffer, length))) {
+    }
+
+    bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommandEvent &out) {
+        if (getCommandType(buffer, length) != CommandType::Device)
+            return false;
+
+        size_t index = 1;
+        switch (toupper(TString::readCharOrDefault(index, buffer, length))) {
         case 'S':
-            out = { CommandType::Device , DeviceCommandType::StopDevice };
+            out = {CommandType::Device, DeviceCommandType::StopDevice};
             return true;
         case '0':
-            out = { CommandType::Device , DeviceCommandType::GetSoftwareVersion };
+            out = {CommandType::Device, DeviceCommandType::GetSoftwareVersion};
             return true;
         case '1':
-            out = { CommandType::Device , DeviceCommandType::GetTCodeVersion }; 
+            out = {CommandType::Device, DeviceCommandType::GetTCodeVersion};
             return true;
         case '2':
-            out = { CommandType::Device , DeviceCommandType::GetAssignedAxisValues };
+            out = {CommandType::Device, DeviceCommandType::GetAssignedAxisValues};
             return true;
         default:
-            out = { CommandType::Device , DeviceCommandType::None };
+            out = {CommandType::Device, DeviceCommandType::None};
             return false;
+        }
     }
-}
 
 }

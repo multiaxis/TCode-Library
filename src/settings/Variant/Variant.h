@@ -60,4 +60,3 @@ struct variant_t {
     bool get(float &value);
     bool get(double &value);
 };
-

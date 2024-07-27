@@ -15,8 +15,7 @@ namespace TCode::Settings {
      * @param spaceAvailable Space available in the SPIFFS file system
      * @param spaceUsed Space used in the SPIFFS file system
      */
-    struct SettingsUsage
-    {
+    struct SettingsUsage {
         size_t sizeOfFile;
         size_t spaceAvailable;
         size_t spaceUsed;
@@ -26,8 +25,7 @@ namespace TCode::Settings {
      * @brief Wrapper for handling settings
      * @paragraph provides an interface for saving settings
      */
-    class ISettings
-    {
+    class ISettings {
     public:
         /**
          * @brief Initializes the Settings class

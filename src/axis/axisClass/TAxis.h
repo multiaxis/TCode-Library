@@ -6,14 +6,12 @@
 
 #include "../../datatypes/CommonDataTypes.h"
 
-namespace TCode
-{
+namespace TCode {
 
     const int TCODE_MIN_AXIS_SMOOTH_INTERVAL = 3;
     const int TCODE_MAX_AXIS_SMOOTH_INTERVAL = 100;
 
-    class TCodeAxis
-    {
+    class TCodeAxis {
     public:
         TCodeAxis() = delete;
         TCodeAxis(const char *name, AxisId id, float defaultPosition);

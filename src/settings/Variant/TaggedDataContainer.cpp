@@ -4,20 +4,16 @@
 // Please copy, share, learn, innovate, give attribution.
 #include "TaggedDataContainer.h"
 
-
 namespace TCode {
 
-TaggedDataContainer::TaggedDataContainer() {}
+    TaggedDataContainer::TaggedDataContainer() {}
 
+    const char *TaggedDataContainer::getTag() {
+        return tag;
+    }
 
-
-const char* TaggedDataContainer::getTag() {
-    return tag;
-}
-
-unsigned int TaggedDataContainer::getHash() {
-    return tagHash;
-}
+    unsigned int TaggedDataContainer::getHash() {
+        return tagHash;
+    }
 
 }
-

@@ -1,58 +1,49 @@
 #include "TCodeContext.h"
-#include "../logging/LogHandler.h"
 
 namespace TCode {
-    void TCodeContext::setAxisManager(TCodeAxisManager *inputAxisManager)
-    {
+    void TCodeContext::setAxisManager(TCodeAxisManager *inputAxisManager) {
         axisManager = inputAxisManager;
-        logging.verbose("TCodeContext","Context Axis Manager Set");
+        LogHandler::verbose("TCodeContext", "Context Axis Manager Set");
     }
 
-    void TCodeContext::setInterfaceManager(TCodeInterfaceManager *inputInterfaceManager)
-    {
+    void TCodeContext::setInterfaceManager(TCodeInterfaceManager *inputInterfaceManager) {
         interfaceManager = inputInterfaceManager;
-        logging.verbose("TCodeContext","Context Interface Manager Set");
+        LogHandler::verbose("TCodeContext", "Context Interface Manager Set");
     }
 
-    void TCodeContext::setSettingManager(Settings::ISettings *settings)
-    {
+    void TCodeContext::setSettingManager(Settings::ISettings *settings) {
         settingManager = settings;
-        logging.verbose("TCodeContext","Context Settings Manager Set");
+        LogHandler::verbose("TCodeContext", "Context Settings Manager Set");
     }
 
-    void TCodeContext::setOutputStream(Print *stream)
-    {
+    void TCodeContext::setOutputStream(Print *stream) {
         outputStream = stream;
-        logging.info("TCodeContext","Context Output Stream Set");
+        LogHandler::info("TCodeContext", "Context Output Stream Set");
     }
 
-    bool TCodeContext::getAxisManager(TCodeAxisManager *&manager)
-    {
-        if(axisManager == nullptr)
+    bool TCodeContext::getAxisManager(TCodeAxisManager *&manager) {
+        if (axisManager == nullptr)
             return false;
         manager = axisManager;
         return true;
     }
 
-    bool TCodeContext::getInterfaceManager(TCodeInterfaceManager *&manager)
-    {
-        if(interfaceManager == nullptr)
+    bool TCodeContext::getInterfaceManager(TCodeInterfaceManager *&manager) {
+        if (interfaceManager == nullptr)
             return false;
         manager = interfaceManager;
         return true;
     }
 
-    bool TCodeContext::getSettingManager(Settings::ISettings *&settings)
-    {
-        if(settingManager == nullptr)
+    bool TCodeContext::getSettingManager(Settings::ISettings *&settings) {
+        if (settingManager == nullptr)
             return false;
         settings = settingManager;
         return true;
     }
 
-    bool TCodeContext::getOutputStream(Print *&stream)
-    {
-        if(outputStream == nullptr)
+    bool TCodeContext::getOutputStream(Print *&stream) {
+        if (outputStream == nullptr)
             return false;
         stream = outputStream;
         return true;

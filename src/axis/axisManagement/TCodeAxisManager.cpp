@@ -4,47 +4,38 @@
 // Please copy, share, learn, innovate, give attribution.
 #include "TCodeAxisManager.h"
 
-namespace TCode
-{
-    void TCodeAxisManager::stop()
-    {
+namespace TCode {
+    void TCodeAxisManager::stop() {
         for (size_t i = 0; i < registeredAxes.size(); i++)
             registeredAxes[i]->stop();
     }
 
-    void TCodeAxisManager::setAxisData(const AxisId &id, const AxisData &data)
-    {
+    void TCodeAxisManager::setAxisData(const AxisId &id, const AxisData &data) {
         TCodeAxis *axis = nullptr;
-        if (getAxisFromId(id,axis))
-        {
+        if (getAxisFromId(id, axis)) {
             axis->set(data);
         }
     }
 
-    float TCodeAxisManager::getAxisPosition(const AxisId &id)
-    {
+    float TCodeAxisManager::getAxisPosition(const AxisId &id) {
         TCodeAxis *axis = nullptr;
-        if (getAxisFromId(id,axis))
-        {
+        if (getAxisFromId(id, axis)) {
             return axis->getPosition();
-        }   
-        
+        }
+
         return NAN;
     }
 
-    unsigned long TCodeAxisManager::getAxisLastCommandTime(const AxisId &id)
-    {
+    unsigned long TCodeAxisManager::getAxisLastCommandTime(const AxisId &id) {
         TCodeAxis *axis = nullptr;
-        if (getAxisFromId(id,axis))
-        {
+        if (getAxisFromId(id, axis)) {
             return axis->getLastCommandTime();
         }
 
         return LONG_MAX;
     }
 
-    bool TCodeAxisManager::registerAxis(TCodeAxis *axis)
-    {
+    bool TCodeAxisManager::registerAxis(TCodeAxis *axis) {
         if (axis == nullptr)
             return false;
 
@@ -55,31 +46,25 @@ namespace TCode
         return true;
     }
 
-    bool TCodeAxisManager::hasAxisFromId(const AxisId &id)
-    {
+    bool TCodeAxisManager::hasAxisFromId(const AxisId &id) {
         TCodeAxis *found = nullptr;
         return getAxisFromId(id, found);
     }
 
-    TCodeAxis *TCodeAxisManager::getAxisIndex(const size_t &index)
-    {
-        if(index > registeredAxes.size())
+    TCodeAxis *TCodeAxisManager::getAxisIndex(const size_t &index) {
+        if (index > registeredAxes.size())
             return nullptr;
         return registeredAxes[index];
     }
 
-    size_t TCodeAxisManager::count()
-    {
+    size_t TCodeAxisManager::count() {
         return registeredAxes.size();
     }
 
-    bool TCodeAxisManager::getAxisFromId(const AxisId &id, TCodeAxis *&axis)
-    {
-        for (size_t i = 0; i < registeredAxes.size(); i++)
-        {
+    bool TCodeAxisManager::getAxisFromId(const AxisId &id, TCodeAxis *&axis) {
+        for (size_t i = 0; i < registeredAxes.size(); i++) {
             TCodeAxis *testAxis = registeredAxes[i];
-            if (testAxis->getId() == id)
-            {
+            if (testAxis->getId() == id) {
                 axis = testAxis;
                 return true;
             }
@@ -88,12 +73,10 @@ namespace TCode
         return false;
     }
 
-    TCodeAxisManager::TCodeAxisManager()
-    {
+    TCodeAxisManager::TCodeAxisManager() {
     }
 
-    TCodeAxisManager::~TCodeAxisManager()
-    {
+    TCodeAxisManager::~TCodeAxisManager() {
     }
 
 };

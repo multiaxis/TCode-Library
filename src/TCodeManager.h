@@ -11,16 +11,16 @@
 #include "datatypes/CommonDataTypes.h"
 #include "datatypes/EnumTypes.h"
 
-#include "settings/Variant/Variant.h"
 #include "settings/Variant/DataContainer.h"
 #include "settings/Variant/TaggedDataContainer.h"
+#include "settings/Variant/Variant.h"
 
 #include "settings/settingsClasses/ISettings.h"
 #include "settings/settingsClasses/SettingsESP32.h"
 
+#include "interface/buttonInterface/TButton.h"
 #include "interface/interfaceBaseClass/TInterfaceBase.h"
 #include "interface/interfaceManagement/interfaceManager.h"
-#include "interface/buttonInterface/TButton.h"
 
 #include "events/EventReader/TCodeEventReader.h"
 #include "events/EventRunner/TEventRunner.h"
@@ -33,11 +33,9 @@
 
 #include "logging/LogHandler.h"
 
-namespace TCode
-{
+namespace TCode {
 
-    class TCodeManager
-    {
+    class TCodeManager {
     public:
         TCodeManager(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION, const char *Filepath = DEFAULT_FILE_NAME);
 
@@ -48,10 +46,10 @@ namespace TCode
 
         void clearInputBuffer();
 
-        bool registerAxis(const char* name, const AxisId &id, float defaultValue);
-        bool registerAxis(TCodeAxis* axis);
+        bool registerAxis(const char *name, const AxisId &id, float defaultValue);
+        bool registerAxis(TCodeAxis *axis);
         void setAxisData(const AxisId &id, const AxisData &data);
-        float getAxisPosition(const AxisId &axisId);               
+        float getAxisPosition(const AxisId &axisId);
         unsigned long getAxisLastCommandTime(const AxisId &axisId);
         void stop();
 

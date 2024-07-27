@@ -7,34 +7,32 @@
 #include <Arduino.h>
 
 #include "../axis/axisManagement/TCodeAxisManager.h"
-#include "../settings/settingsClasses/ISettings.h"
 #include "../interface/interfaceManagement/interfaceManager.h"
+#include "../logging/LogHandler.h"
+#include "../settings/settingsClasses/ISettings.h"
 
 #define DEFAULT_TCODE_VERSION "TCode v0.4"
 #define DEFAULT_FIRMWARE_NAME "TCode"
 #define DEFAULT_FILE_NAME "/spiffs/TCode.dat"
 
-namespace TCode
-{
-    class TCodeContext
-    {
+namespace TCode {
+    class TCodeContext {
     public:
-        TCodeContext(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION, const char *Filepath = DEFAULT_FILE_NAME) 
-                    : firmwareVersion(firmware), tcodeVersion(tcodeVersion), filepath(Filepath) {}
-        const char *getFilepath() {return filepath;}
-        const char *getFirmware() {return firmwareVersion;}
-        const char *getTCodeVersion() {return tcodeVersion;}
+        TCodeContext(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION, const char *Filepath = DEFAULT_FILE_NAME)
+            : firmwareVersion(firmware), tcodeVersion(tcodeVersion), filepath(Filepath) {}
+        const char *getFilepath() { return filepath; }
+        const char *getFirmware() { return firmwareVersion; }
+        const char *getTCodeVersion() { return tcodeVersion; }
 
-        void setAxisManager(TCodeAxisManager* axisManager);
-        void setInterfaceManager(TCodeInterfaceManager* interfaceManager);
+        void setAxisManager(TCodeAxisManager *axisManager);
+        void setInterfaceManager(TCodeInterfaceManager *interfaceManager);
         void setSettingManager(Settings::ISettings *settings);
         void setOutputStream(Print *stream);
 
-        bool getAxisManager(TCodeAxisManager* &axisManager);
-        bool getInterfaceManager(TCodeInterfaceManager* &interfaceManager);
-        bool getSettingManager(Settings::ISettings* &settings);
-        bool getOutputStream(Print* &stream);
-        
+        bool getAxisManager(TCodeAxisManager *&axisManager);
+        bool getInterfaceManager(TCodeInterfaceManager *&interfaceManager);
+        bool getSettingManager(Settings::ISettings *&settings);
+        bool getOutputStream(Print *&stream);
 
     private:
         const char *filepath;
@@ -42,9 +40,7 @@ namespace TCode
         const char *tcodeVersion;
         Settings::ISettings *settingManager = nullptr;
         TCodeAxisManager *axisManager = nullptr;
-        TCodeInterfaceManager* interfaceManager = nullptr;
+        TCodeInterfaceManager *interfaceManager = nullptr;
         Print *outputStream = nullptr;
     };
 }
-
-

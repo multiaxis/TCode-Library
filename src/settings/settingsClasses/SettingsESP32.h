@@ -4,24 +4,24 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include <SPIFFS.h>
 #include <ArduinoJson.h>
+#include <SPIFFS.h>
 #include <deque>
 
-#include "ISettings.h"
+#include "../../logging/LogHandler.h"
 #include "../Variant/TaggedDataContainer.h"
+#include "ISettings.h"
 
 #define DEFAULT_JSON_FILE_SIZE 2048
 #define DEFAULT_SETTING_CACHE_SIZE 64
 
 namespace TCode::Settings {
 
-    class SettingsESP32 : public ISettings
-    {
+    class SettingsESP32 : public ISettings {
     public:
         SettingsESP32() = delete;
         SettingsESP32(const char *filepath) : filepath(filepath) {}
-        
+
         bool init();
         bool isMounted();
         bool hasSetting(const char *setting);
@@ -53,13 +53,13 @@ namespace TCode::Settings {
 
         std::deque<TaggedDataContainer> cache;
 
-        bool keyInCache(const char* setting);
-        bool getValueFromCache(const char* setting, DataContainer& value);
-        bool setValueToCache(const char* setting, DataContainer value);
+        bool keyInCache(const char *setting);
+        bool getValueFromCache(const char *setting, DataContainer &value);
+        bool setValueToCache(const char *setting, DataContainer value);
         bool getFile(String &out);
         bool writeFile(const String &fileData);
         unsigned long getFileSize();
-        
+
     protected:
         template <typename T>
         bool getSettingTemplated(const char *setting, T &settingValue);

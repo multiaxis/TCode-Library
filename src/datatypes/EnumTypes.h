@@ -4,8 +4,7 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-namespace TCode
-{
+namespace TCode {
     /**
      * @brief representation of a TCode channel type as an Enum
      * @param Linear
@@ -14,8 +13,7 @@ namespace TCode
      * @param Auxiliary,
      * @param None
      */
-    enum class AxisType
-    {
+    enum class AxisType {
         Linear,
         Rotation,
         Vibration,
@@ -29,8 +27,7 @@ namespace TCode
      * @param Time Controls the Rate of change based on a target time for the Axis Value
      * @param None
      */
-    enum class AxisExtentionType
-    {
+    enum class AxisExtentionType {
         Speed,
         Time,
         None,

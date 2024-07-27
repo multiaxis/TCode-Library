@@ -4,39 +4,37 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include <string>
-#include <Arduino.h>
 #include "../../utils/TString.h"
 #include "DataContainer.h"
+#include <Arduino.h>
+#include <string>
 
 namespace TCode {
-    
-class TaggedDataContainer : public DataContainer {
-public:
-    TaggedDataContainer();
-    
-    template<typename T>
-    TaggedDataContainer(const char *tag, T value);
 
-    const char* getTag();
+    class TaggedDataContainer : public DataContainer {
+    public:
+        TaggedDataContainer();
 
-    unsigned int getHash();
+        template <typename T>
+        TaggedDataContainer(const char *tag, T value);
 
-    bool operator==(const TaggedDataContainer& o) const {
-        return tagHash == o.tagHash;
-    }
+        const char *getTag();
 
-private:
-    const char *tag;
-    unsigned int tagHash;
-};
+        unsigned int getHash();
 
-    template<typename T>
+        bool operator==(const TaggedDataContainer &o) const {
+            return tagHash == o.tagHash;
+        }
+
+    private:
+        const char *tag;
+        unsigned int tagHash;
+    };
+
+    template <typename T>
     TaggedDataContainer::TaggedDataContainer(const char *tag, T value) : DataContainer(value) {
-        this->tag = tag;    
+        this->tag = tag;
         tagHash = TCode::TString::getHash(tag, strlen(tag));
     }
-
-    
 
 }

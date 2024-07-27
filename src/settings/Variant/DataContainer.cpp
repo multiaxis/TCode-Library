@@ -7,19 +7,19 @@
 
 namespace TCode {
 
-DataContainer::DataContainer() {}
+    DataContainer::DataContainer() {}
 
-VariantType DataContainer::getDataType() {
-    return data.type;
-}
+    VariantType DataContainer::getDataType() {
+        return data.type;
+    }
 
-bool DataContainer::getValue(DataContainer &other) {
-    other.data = data;
-    return true;
-}
+    bool DataContainer::getValue(DataContainer &other) {
+        other.data = data;
+        return true;
+    }
 
-void DataContainer::setValue(const DataContainer &other) {
-    data = other.data;
-}
+    void DataContainer::setValue(const DataContainer &other) {
+        data = other.data;
+    }
 
 }
