@@ -4,8 +4,8 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "../../settings/Variant/TaggedDataContainer.h"
-#include "../../utils/TString.h"
+#include "../settings/Variant/TaggedDataContainer.h"
+#include "../utils/TString.h"
 #include <string>
 
 namespace TCode::TEncoding {

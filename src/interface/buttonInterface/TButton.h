@@ -4,7 +4,7 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "../../events/DataWriter/TCodeDataWriter.h"
+#include "../../datawriter/TCodeDataWriter.h"
 #include "../interfaceBaseClass/TInterfaceBase.h"
 #include <Arduino.h>
 

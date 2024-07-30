@@ -4,10 +4,10 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "../../datatypes/CommandDataTypes.h"
-#include "../../datatypes/CommonDataTypes.h"
-#include "../../datatypes/EnumTypes.h"
-#include "../../logging/LogHandler.h"
+#include "../datatypes/CommandDataTypes.h"
+#include "../datatypes/CommonDataTypes.h"
+#include "../datatypes/EnumTypes.h"
+#include "../logging/LogHandler.h"
 #include <deque>
 
 namespace TCode::TParser {

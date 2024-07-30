@@ -3,7 +3,7 @@
 // implemented by Eve 26/06/2022
 // Please copy, share, learn, innovate, give attribution.
 #include "TParser.h"
-#include "../../utils/TString.h"
+#include "../utils/TString.h"
 
 namespace TCode::TParser {
 

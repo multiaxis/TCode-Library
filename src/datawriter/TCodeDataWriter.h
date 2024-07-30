@@ -3,12 +3,12 @@
 // implemented by Eve 27/06/2022
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
-#include "../../context/TCodeContext.h"
-#include "../../datatypes/CommandDataTypes.h"
-#include "../../datatypes/CommonDataTypes.h"
-#include "../../datatypes/EnumTypes.h"
-#include "../../logging/LogHandler.h"
-#include "../Encoding/TCodeEncoder.h"
+#include "../context/TCodeContext.h"
+#include "../datatypes/CommandDataTypes.h"
+#include "../datatypes/CommonDataTypes.h"
+#include "../datatypes/EnumTypes.h"
+#include "../logging/LogHandler.h"
+#include "../encoding/TCodeEncoder.h"
 
 #ifndef MAX_ENCODER_BUFFER_LENGTH
 #define MAX_ENCODER_BUFFER_LENGTH 512
