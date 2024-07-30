@@ -152,7 +152,7 @@ void loop() {
       Serial.print(">");
       Serial.print(i);
       Serial.print(":");
-      Serial.println(value);
+      Serial.println(value, 5);
     }
   }
 

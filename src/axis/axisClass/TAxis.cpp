@@ -75,8 +75,17 @@ namespace TCode {
     }
 
     float TCodeAxis::getPosition() {
-        unsigned long currentTime = constrain(millis(), currentState.startTime, currentState.endTime);
-        float position = TMath::interpolate(currentTime, currentState.startTime, currentState.startPosition, currentState.startRamp, currentState.endTime, currentState.endPosition, currentState.endRamp);
+        unsigned long currentTimeMicros = micros();
+        unsigned long currentTime = millis();
+        if(currentTime > currentState.endTime)
+            return currentState.endPosition;
+        if(currentTime < currentState.startTime)
+            return currentState.startPosition;
+        
+        unsigned long delta = (currentState.endTime - currentState.startTime) * 1000;
+        unsigned long ctDelta = currentTimeMicros - (currentState.startTime * 1000);
+        
+        float position = TMath::interpolate(ctDelta, 0, currentState.startPosition, currentState.startRamp, delta, currentState.endPosition, currentState.endRamp);
         return constrain(position, 0.0, 1.0);
     }
 
@@ -85,8 +94,8 @@ namespace TCode {
 
         currentState.startPosition = getPosition();
         currentState.startTime = currentTime;
-        currentState.endTime = currentTime;
-        currentState.endPosition = id.type == AxisType::Vibration ? defaultPosition : currentState.startPosition; // TODO:
+        currentState.endTime = currentTime + 30;
+        currentState.endPosition = id.type == AxisType::Vibration ? defaultPosition : currentState.startPosition;
     }
 
     bool TCodeAxis::changed() {

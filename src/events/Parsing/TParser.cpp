@@ -203,7 +203,7 @@ namespace TCode::TParser {
         if (!TString::readTCodeFloat(index, buffer, length, tangent, logValue))
             return false;
 
-        data.tangent = map(tangent, 0, 1, -0.999f, 0.999f);
+        data.tangent = map(tangent, 0.0f, 1.0f, -0.999f, 0.999f);
         if (TString::readCharOrDefault(index, buffer, length) != '.')
             return true;
 
