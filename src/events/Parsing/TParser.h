@@ -12,7 +12,7 @@
 
 namespace TCode::TParser {
 
-    #define TCODE_PARSER_TAG "TCodeParser"
+#define TCODE_PARSER_TAG "TCodeParser"
 
     bool isExtention(const char value);
 

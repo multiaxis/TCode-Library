@@ -77,14 +77,14 @@ namespace TCode {
     float TCodeAxis::getPosition() {
         unsigned long currentTimeMicros = micros();
         unsigned long currentTime = millis();
-        if(currentTime > currentState.endTime)
+        if (currentTime > currentState.endTime)
             return currentState.endPosition;
-        if(currentTime < currentState.startTime)
+        if (currentTime < currentState.startTime)
             return currentState.startPosition;
-        
+
         unsigned long delta = (currentState.endTime - currentState.startTime) * 1000;
         unsigned long ctDelta = currentTimeMicros - (currentState.startTime * 1000);
-        
+
         float position = TMath::interpolate(ctDelta, 0, currentState.startPosition, currentState.startRamp, delta, currentState.endPosition, currentState.endRamp);
         return constrain(position, 0.0, 1.0);
     }

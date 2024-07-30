@@ -4,8 +4,8 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "../interfaceBaseClass/TInterfaceBase.h"
 #include "../../events/DataWriter/TCodeDataWriter.h"
+#include "../interfaceBaseClass/TInterfaceBase.h"
 #include <Arduino.h>
 
 #define TBUTTON_TIMEOUT 30
@@ -24,7 +24,7 @@ namespace TCode {
         bool isPressed = false;
         bool lastState = false;
         unsigned long lastPressTime = 0;
-        const char* name;
+        const char *name;
         void (*callback)() = nullptr;
     };
 

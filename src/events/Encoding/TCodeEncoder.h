@@ -105,7 +105,7 @@ namespace TCode::TEncoding {
     // $<name id>:<- if negative><value> - int,long
     // @<name id>:<value> - uint,ulong
     // float,string are not supported currently for encoding
-    
+
     /*
     bool encodeVariantValue(TaggedDataContainer &data, char *buffer, const size_t length){
         const char* tag = data.getTag();
@@ -157,5 +157,4 @@ namespace TCode::TEncoding {
     }
     */
 
-    
 }

@@ -16,7 +16,7 @@
 
 namespace TCode::TEncoding {
     template <typename T>
-    bool writeTCodeValue(const char* name, const T &value, TCodeContext &context) {
+    bool writeTCodeValue(const char *name, const T &value, TCodeContext &context) {
         Print *outputStream;
         if (!context.getOutputStream(outputStream)) {
             LogHandler::warning("TWriter", "Cannot Encode output, Output Stream is not set");

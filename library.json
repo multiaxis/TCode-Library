@@ -1,6 +1,6 @@
 {
 	"name": "TCodeLibrary",
-	"version": "2.0.0",
+	"version": "3.0.0",
 	"description": "A library to aid in decoding/using of Toy Code (\"T-Code\") data.",
 	"keywords": "TCode, parsing, toycode,T-Code",
 	"repository":
