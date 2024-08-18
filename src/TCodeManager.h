@@ -16,7 +16,6 @@
 #include "settings/Variant/Variant.h"
 
 #include "settings/settingsClasses/ISettings.h"
-#include "settings/settingsClasses/SettingsESP32.h"
 
 #include "interface/buttonInterface/TButton.h"
 #include "interface/interfaceBaseClass/TInterfaceBase.h"
@@ -30,6 +29,8 @@
 
 #include "axis/axisClass/TAxis.h"
 #include "axis/axisManagement/TCodeAxisManager.h"
+
+#include "outputstream/outputStreamInterface.h"
 
 #include "logging/LogHandler.h"
 
@@ -49,6 +50,7 @@ namespace TCode {
         bool registerAxis(const char *name, const AxisId &id, float defaultValue);
         bool registerAxis(TCodeAxis *axis);
         void setAxisData(const AxisId &id, const AxisData &data);
+        void setAxisData(const AxisId &id, const float value, const AxisExtentionType extentionType = AxisExtentionType::None, const unsigned long commandExtention = 0, AxisRampData rampIn = {0.0,0.0,false,false,false}, AxisRampData rampOut = {0.0,0.0,false,false,false});
         float getAxisPosition(const AxisId &axisId);
         unsigned long getAxisLastCommandTime(const AxisId &axisId);
         void stop();
@@ -57,7 +59,7 @@ namespace TCode {
         void updateInterfaces();
 
         void setSettingManager(Settings::ISettings *settings);
-        void setOutputStream(Print *stream);
+        void setOutputStream(OutputStreamInterface *stream);
 
     private:
         TCodeContext context;

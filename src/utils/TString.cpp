@@ -7,6 +7,24 @@
 
 namespace TCode::TString {
 
+    bool isHex(const char value) {
+        return ((value >= '0')&&(value <= '9')) || ((value >= 'a') && (value <= 'f')) || ((value >= 'A') && (value <= 'F'));
+    }
+
+    uint8_t hexCharToUint8(const char value)
+    {
+        if((value >= 'a') && (value <= 'f'))
+            return (value - 'a') + 10;
+
+        if((value >= 'A') && (value <= 'F'))
+            return (value - 'A') + 10;
+        
+        if((value >= '0')&&(value <= '9'))
+            return value - 0;
+
+        return 0;
+    }
+
     bool readInt(size_t &&index, const char *buffer, const size_t length, unsigned long &value, size_t &log) {
         return readInt(index, buffer, length, value, log);
     }
@@ -26,6 +44,35 @@ namespace TCode::TString {
 
         value = accum;
         return true;
+    }
+
+    bool readHexByte(size_t &index, const char *buffer, const size_t length, uint8_t &value) {
+        char firstNibble = readCharOrDefault(index++,buffer,length);
+        char secondNibble = readCharOrDefault(index++,buffer,length);
+        if(!(isHex(firstNibble) && isHex(secondNibble)))
+            return false;
+
+        value = (hexCharToUint8(firstNibble) << 8) + hexCharToUint8(secondNibble);
+        return true;
+    }
+
+    bool readVIntHex(size_t &index, const char *buffer, const size_t length, unsigned long long &value) {
+        bool end_terminate = false;
+        uint8_t count = 0;
+        while((!end_terminate) && (count <= 9)) {
+
+            uint8_t nextByte;
+            if(!readHexByte(index,buffer,length,nextByte))
+                break;
+            
+            if(nextByte & 0x80 > 0)
+                end_terminate = true;
+            
+            value |= (nextByte & 0x7F);
+            value <<= 7;
+            count++;
+        }
+        return false;
     }
 
     bool readTCodeFloat(size_t &&index, const char *buffer, const size_t length, float &value, size_t &log) {

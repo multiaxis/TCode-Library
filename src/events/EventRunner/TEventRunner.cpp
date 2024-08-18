@@ -18,6 +18,9 @@ namespace TCode::TEvents {
             runSetupCommand(context, event.setupCommand);
             break;
         }
+        case CommandType::Firmware: {
+            LogHandler::warning("TEventRunner", "Default Event Runner Does not Implement Firmware Commands: Received Firmware ID: %d Command: %s",event.firmwareCommand.firmwareID,event.firmwareCommand.value->c_str());
+        }
         default:
             break;
         }
@@ -34,7 +37,7 @@ namespace TCode::TEvents {
         return true;
     }
 
-    void printSavedAxisValues(TCodeAxisManager *axisManager, Settings::ISettings *settingManager, Print *outputStream) {
+    void printSavedAxisValues(TCodeAxisManager *axisManager, Settings::ISettings *settingManager, OutputStreamInterface *outputStream) {
         for (size_t i = 0; i < axisManager->count(); i++) {
             TCodeAxis *axis = axisManager->getAxisIndex(i);
 
@@ -74,7 +77,7 @@ namespace TCode::TEvents {
         }
     }
 
-    bool setSaveValues(TCodeAxisManager *axisManager, Settings::ISettings *settingManager, Print *outputStream, const AxisId &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog) {
+    bool setSaveValues(TCodeAxisManager *axisManager, Settings::ISettings *settingManager, OutputStreamInterface *outputStream, const AxisId &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog) {
         if (settingManager == nullptr) {
             LogHandler::error("TEventRunner", "Setting manager is not set");
             return false;
@@ -113,7 +116,7 @@ namespace TCode::TEvents {
             return false;
         }
 
-        Print *outputStream;
+        OutputStreamInterface *outputStream;
         if (!context.getOutputStream(outputStream)) {
             LogHandler::warning("TEventRunner", "Cannot Run Device Command, Output Stream is not set");
             return false;
@@ -158,7 +161,7 @@ namespace TCode::TEvents {
             return false;
         }
 
-        Print *outputStream;
+        OutputStreamInterface *outputStream;
         if (!context.getOutputStream(outputStream)) {
             LogHandler::warning("TEventRunner", "Cannot Run Setup Command, Output Stream is not set");
             return false;

@@ -42,6 +42,18 @@ namespace TCode {
         axisManager.setAxisData(id, data);
     }
 
+    void TCodeManager::setAxisData(const AxisId &id, const float value, const AxisExtentionType extentionType, const unsigned long commandExtention, AxisRampData rampIn, AxisRampData rampOut) {
+        AxisData data = {
+            value,
+            commandExtention,
+            extentionType,
+            rampIn,
+            rampOut
+        };
+        
+        axisManager.setAxisData(id,data);
+    }
+
     float TCodeManager::getAxisPosition(const AxisId &axisId) {
         return axisManager.getAxisPosition(axisId);
     }
@@ -62,7 +74,7 @@ namespace TCode {
         context.setSettingManager(settings);
     }
 
-    void TCodeManager::setOutputStream(Print *stream) {
+    void TCodeManager::setOutputStream(OutputStreamInterface *stream) {
         context.setOutputStream(stream);
     }
 

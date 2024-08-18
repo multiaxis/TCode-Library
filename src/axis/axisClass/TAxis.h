@@ -17,12 +17,12 @@ namespace TCode {
         TCodeAxis(const char *name, AxisId id, float defaultPosition);
 
         void set(const AxisData &data);
-        float getPosition();
+        const float getPosition();
         void stop();
-        bool changed();
+        const bool changed();
         const char *getName();
-        AxisId getId();
-        unsigned long getLastCommandTime();
+        const AxisId getId();
+        const unsigned long getLastCommandTime();
 
     private:
         const char *name;

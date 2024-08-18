@@ -9,6 +9,7 @@
 #include "../datatypes/EnumTypes.h"
 #include "../logging/LogHandler.h"
 #include "../encoding/TCodeEncoder.h"
+#include "../outputstream/outputStreamInterface.h"
 
 #ifndef MAX_ENCODER_BUFFER_LENGTH
 #define MAX_ENCODER_BUFFER_LENGTH 512
@@ -17,7 +18,7 @@
 namespace TCode::TEncoding {
     template <typename T>
     bool writeTCodeValue(const char *name, const T &value, TCodeContext &context) {
-        Print *outputStream;
+        OutputStreamInterface *outputStream;
         if (!context.getOutputStream(outputStream)) {
             LogHandler::warning("TWriter", "Cannot Encode output, Output Stream is not set");
             return false;

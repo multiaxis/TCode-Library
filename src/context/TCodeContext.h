@@ -10,6 +10,7 @@
 #include "../interface/interfaceManagement/interfaceManager.h"
 #include "../logging/LogHandler.h"
 #include "../settings/settingsClasses/ISettings.h"
+#include "../outputstream/outputStreamInterface.h"
 
 #define DEFAULT_TCODE_VERSION "TCode v0.4"
 #define DEFAULT_FIRMWARE_NAME "TCode"
@@ -27,12 +28,12 @@ namespace TCode {
         void setAxisManager(TCodeAxisManager *axisManager);
         void setInterfaceManager(TCodeInterfaceManager *interfaceManager);
         void setSettingManager(Settings::ISettings *settings);
-        void setOutputStream(Print *stream);
+        void setOutputStream(OutputStreamInterface *stream);
 
         bool getAxisManager(TCodeAxisManager *&axisManager);
         bool getInterfaceManager(TCodeInterfaceManager *&interfaceManager);
         bool getSettingManager(Settings::ISettings *&settings);
-        bool getOutputStream(Print *&stream);
+        bool getOutputStream(OutputStreamInterface *&stream);
 
     private:
         const char *filepath;
@@ -41,6 +42,6 @@ namespace TCode {
         Settings::ISettings *settingManager = nullptr;
         TCodeAxisManager *axisManager = nullptr;
         TCodeInterfaceManager *interfaceManager = nullptr;
-        Print *outputStream = nullptr;
+        OutputStreamInterface *outputStream = nullptr;
     };
 }

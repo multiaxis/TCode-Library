@@ -16,7 +16,7 @@ namespace TCode {
         LogHandler::verbose("TCodeContext", "Context Settings Manager Set");
     }
 
-    void TCodeContext::setOutputStream(Print *stream) {
+    void TCodeContext::setOutputStream(OutputStreamInterface *stream) {
         outputStream = stream;
         LogHandler::info("TCodeContext", "Context Output Stream Set");
     }
@@ -42,7 +42,7 @@ namespace TCode {
         return true;
     }
 
-    bool TCodeContext::getOutputStream(Print *&stream) {
+    bool TCodeContext::getOutputStream(OutputStreamInterface *&stream) {
         if (outputStream == nullptr)
             return false;
         stream = outputStream;

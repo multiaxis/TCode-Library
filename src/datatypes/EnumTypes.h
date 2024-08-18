@@ -37,6 +37,7 @@ namespace TCode {
         Axis,
         Device,
         Setup,
+        Firmware,
         None,
     };
 

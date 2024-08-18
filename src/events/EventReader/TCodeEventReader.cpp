@@ -77,11 +77,17 @@ namespace TCode::TEvents {
 
     size_t TCodeEventReader::consumeNextCommandFromInputBuffer(char *buffer, const size_t length) {
         size_t index = 0;
+        bool string_value = false;
         while (!inputBuffer.empty() && index < length - 1) {
             char c = inputBuffer.front();
-            if (c == ' ' || c == '\n') {
+            if ((c == ' ' && !string_value) || c == '\n') {
                 inputBuffer.pop_front();
                 break;
+            }
+
+            if(c == '\"')
+            {
+                string_value = !string_value;
             }
 
             buffer[index++] = c;

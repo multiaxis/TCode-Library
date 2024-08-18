@@ -9,12 +9,16 @@
 
 #include "../datatypes/CommonDataTypes.h"
 #include "../datatypes/EnumTypes.h"
+#include "../logging/LogHandler.h"
 
 namespace TCode::TMath {
 
+    static const double doubleLimit = (1.0-__DBL_EPSILON__);
+    static double error = 1e-6;
+
     float mapf(float x, float in_min, float in_max, float out_min, float out_max);
 
-    float interpolate(float x, float x0, float y0, AxisRampData r0, float x1, float y1, AxisRampData r1);
+    float interpolate(float time, float x0, float y0, AxisRampData r0, float x1, float y1, AxisRampData r1);
 
     unsigned long getTCodeFromFloat(float value, int precision, uint8_t &logOut);
 

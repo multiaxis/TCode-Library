@@ -8,6 +8,7 @@
 #include "../../datatypes/CommonDataTypes.h"
 #include "../../datatypes/EnumTypes.h"
 #include "../../logging/LogHandler.h"
+#include "../../outputstream/outputStreamInterface.h"
 
 namespace TCode::TEvents {
     void runEvent(TCodeContext &context, const TCodeEvent &event);

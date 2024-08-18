@@ -37,6 +37,12 @@ namespace TCode {
         SaveEntry saveEntryData;
     };
 
+    struct FirmwareCommandEvent {
+        CommandType commandType;
+        uint64_t firmwareID;
+        String *value;
+    };
+
     /**
      * @brief TCode Command Union
      */
@@ -45,6 +51,7 @@ namespace TCode {
         DeviceCommandEvent deviceCommand;
         AxisCommandEvent axisCommand;
         SetupCommandEvent setupCommand;
+        FirmwareCommandEvent firmwareCommand;
     } TCodeEvent;
 
 }

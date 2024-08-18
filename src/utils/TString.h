@@ -12,6 +12,9 @@ namespace TCode::TString {
     bool readInt(size_t &&index, const char *buffer, const size_t length, unsigned long &value, size_t &log);
     bool readInt(size_t &index, const char *buffer, const size_t length, unsigned long &value, size_t &log);
 
+    bool readVIntHex(size_t &index, const char *buffer, const size_t length, unsigned long long &value);
+    bool readVIntHex(size_t &index, const char *buffer, const size_t length, unsigned long long &value);
+
     bool readTCodeFloat(size_t &&index, const char *buffer, const size_t length, float &value, size_t &log);
     bool readTCodeFloat(size_t &index, const char *buffer, const size_t length, float &value, size_t &log);
 

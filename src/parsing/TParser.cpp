@@ -28,6 +28,32 @@ namespace TCode::TParser {
         }
     }
 
+
+    AxisId getAxisIdFromStart(const char *buffer) {
+        if (strlen(buffer) != 2)
+            return {AxisType::None, UINT8_MAX};
+
+        char type = toupper(TString::readCharOrDefault(0, buffer, 2));
+        uint8_t channel = static_cast<uint8_t>(TString::readCharOrDefault(1, buffer, 2) - '0');
+        LogHandler::info(TCODE_PARSER_TAG, "Axis Channel Number:%d", channel);
+        switch (type) {
+        case 'L':
+            return {AxisType::Linear, channel};
+            break;
+        case 'R':
+            return {AxisType::Rotation, channel};
+            break;
+        case 'V':
+            return {AxisType::Vibration, channel};
+            break;
+        case 'A':
+            return {AxisType::Auxiliary, channel};
+            break;
+        default:
+            return {AxisType::None, UINT8_MAX};
+        }
+    }
+
     AxisId getAxisId(size_t &index, const char *buffer, const size_t length) {
         char type = toupper(TString::readCharOrDefault(index++, buffer, length));
         uint8_t channel = static_cast<uint8_t>(TString::readCharOrDefault(index++, buffer, length) - '0');
@@ -61,6 +87,8 @@ namespace TCode::TParser {
             return CommandType::Device;
         case '$':
             return CommandType::Setup;
+        case '*':
+            return CommandType::Firmware;
         default:
             return CommandType::None;
         }
@@ -79,8 +107,8 @@ namespace TCode::TParser {
 
         AxisRampType rampType = AxisRampType::None;
         AxisExtentionType extentionType = AxisExtentionType::None;
-        AxisRampData rampIn = {};
-        AxisRampData rampOut = {};
+        AxisRampData rampIn = {.hasTangent = false, .hasWeight = false};
+        AxisRampData rampOut = {.hasTangent = false, .hasWeight = false};
         float commandValue = 0;
         unsigned long commandExtention = 0;
 
@@ -103,6 +131,7 @@ namespace TCode::TParser {
                 }
             } else if (isRamp(TString::readCharOrDefault(index, buffer, length))) {
                 if (!parseAxisRamp(index, buffer, length, rampType, rampIn, rampOut))
+                    LogHandler::error(TCODE_PARSER_TAG, "Could not parse Axis ramp");
                     return false;
             } else {
                 break;
@@ -110,8 +139,10 @@ namespace TCode::TParser {
         }
 
         // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
-        if (toupper(TString::readCharOrDefault(index, buffer, length)) != '\0')
+        if (toupper(TString::readCharOrDefault(index, buffer, length)) != '\0') {
+            LogHandler::error(TCODE_PARSER_TAG, "Could not parse chars left in buffer after parsing");
             return false;
+        }
 
         AxisData data{
             .commandValue = commandValue,
@@ -191,31 +222,32 @@ namespace TCode::TParser {
         data = {
             .tangent = 0,
             .weight = 1 / 3.0f,
-            .hasTangent = true,
+            .hasTangent = false,
             .hasWeight = false,
             .autoTangent = rampType != AxisRampType::InOut};
 
-        if (!isdigit(TString::readCharOrDefault(index, buffer, length)))
-            return true;
+        if (!isdigit(TString::readCharOrDefault(index++, buffer, length))) {
+            return false;
+        }
 
         size_t logValue;
         float tangent;
         if (!TString::readTCodeFloat(index, buffer, length, tangent, logValue))
             return false;
 
-        data.tangent = map(tangent, 0.0f, 1.0f, -0.999f, 0.999f);
+        data.tangent = TMath::mapf(tangent, 0.0f, 1.0f, -TMath::doubleLimit, TMath::doubleLimit);
+        data.hasTangent = true;
         if (TString::readCharOrDefault(index, buffer, length) != '.')
             return true;
-
         index++;
-        if (!isdigit(TString::readCharOrDefault(index, buffer, length)))
+        if (!isdigit(TString::readCharOrDefault(index++, buffer, length)))
             return false;
 
         float weight;
         if (!TString::readTCodeFloat(index, buffer, length, weight, logValue))
             return false;
 
-        data.weight = constrain(weight, 0, 0.999f);
+        data.weight = constrain(weight, 0, TMath::doubleLimit);
         data.hasWeight = true;
         return true;
     }
@@ -262,6 +294,20 @@ namespace TCode::TParser {
         return true;
     }
 
+    bool parseFirmwareCommand(const char *buffer, const size_t length, FirmwareCommandEvent &out) {
+        size_t index = 1;
+        out.value = new String();
+        if(!TString::readVIntHex(index,buffer,length,out.firmwareID))
+            return false;
+
+        for(size_t i = index; i < length; i++)
+        {
+            (*out.value)+=buffer[i];
+        }
+        
+        return true;
+    }
+
     bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out) {
         CommandType type = TParser::getCommandType(buffer, length);
 
@@ -274,6 +320,7 @@ namespace TCode::TParser {
             out.commandType = CommandType::Axis;
             if (TParser::parseAxisCommand(buffer, length, result)) {
                 out.axisCommand = result;
+                LogHandler::info(TCODE_PARSER_TAG, "Value: %f\nExtention Type:%d\nExtention: %d\n", result.data.commandValue, (int)result.data.extentionType, result.data.commandExtention);
                 return true;
             }
             break;
@@ -294,6 +341,16 @@ namespace TCode::TParser {
             out.commandType = CommandType::Setup;
             if (TParser::parseSetupCommand(buffer, length, result)) {
                 out.setupCommand = result;
+                return true;
+            }
+            break;
+        }
+        case CommandType::Firmware: {
+            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Firmware");
+            FirmwareCommandEvent result;
+            out.commandType = CommandType::Firmware;
+            if (TParser::parseFirmwareCommand(buffer, length, result)) {
+                out.firmwareCommand = result;
                 return true;
             }
             break;

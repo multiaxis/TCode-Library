@@ -14,15 +14,19 @@ namespace TCode::TParser {
 
 #define TCODE_PARSER_TAG "TCodeParser"
 
-    bool isExtention(const char value);
+    inline bool isExtention(const char value);
 
-    bool isRamp(const char value);
+    inline bool isRamp(const char value);
+
+    inline bool isHex(const char value);
 
     AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length);
 
     AxisRampType getRampType(size_t &index, const char *buffer, const size_t length);
 
     AxisId getAxisId(size_t &index, const char *buffer, const size_t length);
+
+    AxisId getAxisIdFromStart(const char *buffer);
 
     CommandType getCommandType(const char *buffer, const size_t length);
 
@@ -37,6 +41,8 @@ namespace TCode::TParser {
     bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommandEvent &out);
 
     bool parseSetupCommand(const char *buffer, const size_t length, SetupCommandEvent &out);
+
+    bool parseFirmwareCommand(const char *buffer, const size_t length, FirmwareCommandEvent &out);
 
     bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out);
 

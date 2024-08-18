@@ -43,6 +43,8 @@ namespace TCode {
                 deltaTime = extentionValue;
             } else {
                 int lastInterval = currentTime - currentState.startTime;
+
+
                 if (lastInterval > minInterval && minInterval < TCODE_MIN_AXIS_SMOOTH_INTERVAL)
                     minInterval += 1;
                 else if (lastInterval < minInterval && minInterval > TCODE_MAX_AXIS_SMOOTH_INTERVAL)
@@ -74,7 +76,7 @@ namespace TCode {
         lastCommandTime = currentTime;
     }
 
-    float TCodeAxis::getPosition() {
+    const float TCodeAxis::getPosition() {
         unsigned long currentTimeMicros = micros();
         unsigned long currentTime = millis();
         if (currentTime > currentState.endTime)
@@ -92,13 +94,19 @@ namespace TCode {
     void TCodeAxis::stop() {
         unsigned long currentTime = millis();
 
+        currentState.startRamp.hasWeight = false;
+        currentState.startRamp.hasTangent = false;
+
+        currentState.endRamp.hasWeight = false;
+        currentState.endRamp.hasTangent = false;
+
         currentState.startPosition = getPosition();
         currentState.startTime = currentTime;
         currentState.endTime = currentTime + 30;
         currentState.endPosition = id.type == AxisType::Vibration ? defaultPosition : currentState.startPosition;
     }
 
-    bool TCodeAxis::changed() {
+    const bool TCodeAxis::changed() {
         if (lastPosition != getPosition()) {
             lastPosition = getPosition();
             return true;
@@ -111,11 +119,11 @@ namespace TCode {
         return name;
     }
 
-    AxisId TCodeAxis::getId() {
+    const AxisId TCodeAxis::getId() {
         return id;
     }
 
-    unsigned long TCodeAxis::getLastCommandTime() {
+    const unsigned long TCodeAxis::getLastCommandTime() {
         return lastCommandTime;
     }
 

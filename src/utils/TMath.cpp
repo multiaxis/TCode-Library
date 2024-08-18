@@ -5,7 +5,13 @@
 //
 #include "TMath.h"
 
+
 namespace TCode::TMath {
+
+    float lerpf(float startValue, float endvalue, float t)
+    {
+        return (startValue + (endvalue - startValue) * t);
+    }
 
     float mapf(float x, float inMin, float inMax, float outMin, float outMax) {
         const float run = inMax - inMin;
@@ -18,38 +24,40 @@ namespace TCode::TMath {
         return (delta * rise) / run + outMin;
     }
 
-    float interpolate(float x, float x0, float y0, AxisRampData r0, float x1, float y1, AxisRampData r1) {
+    float interpolate(float currentX, float startX, float startValue, AxisRampData r0, float endX, float endValue, AxisRampData r1) {
+        float out = 0.0;
         if (!r0.hasTangent && !r1.hasTangent) {
             // linear
-            return mapf(x, x0, x1, y0, y1);
+            LogHandler::warning("TMATH","Linear");
+            out = constrain(mapf(currentX, startX, endX, startValue, endValue),0.0,doubleLimit);
         } else if (!r0.hasWeight && !r1.hasWeight) {
             // cubic hermite
-            float d = x1 - x0;
-            float dx = x - x0;
+            float d = endX - startX;
+            float dx = currentX - startX;
             float t = dx / d;
             float r = 1 - t;
 
-            float m0 = tan(PI / 2 * constrain(r0.tangent, -0.999f, 0.999f));
-            float m1 = tan(PI / 2 * constrain(r1.tangent, -0.999f, 0.999f));
-
-            return r * r * (y0 * (1 + 2 * t) + m0 * dx) + t * t * (y1 * (3 - 2 * t) - d * m1 * r);
+            float m0 = tan((PI / 2) * constrain(r0.tangent, -doubleLimit, doubleLimit));
+            float m1 = tan((PI / 2) * constrain(r1.tangent, -doubleLimit, doubleLimit));
+            LogHandler::warning("TMATH","Cubic");
+            out = r * r * (startValue * (1 + 2 * t) + m0 * dx) + t * t * (endValue * (3 - 2 * t) - d * m1 * r);
         } else {
             // bezier
-            float dx = x1 - x0;
-            float dy = y1 - y0;
+            float dx = endX - startX;
+            float dy = endValue - startValue;
 
-            float m0 = tan(PI / 2 * constrain(r0.tangent, -0.999f, 0.999f));
-            float m1 = tan(PI / 2 * constrain(r1.tangent, -0.999f, 0.999f));
+            float m0 = tan(PI / 2 * constrain(r0.tangent, -doubleLimit, doubleLimit));
+            float m1 = tan(PI / 2 * constrain(r1.tangent, -doubleLimit, doubleLimit));
 
-            float w0 = constrain(r0.weight, 0.f, 0.999f);
-            float w1 = constrain(r1.weight, 0.f, 0.999f);
+            float w0 = constrain(r0.weight, 0.0f, doubleLimit);
+            float w1 = constrain(r1.weight, 0.0f, doubleLimit);
             float w1s = 1 - w1;
 
             float ts;
             float t = 0.5f;
-            float tx = (x - x0) / dx;
+            float tx = (currentX - startX) / dx;
 
-            if (abs(w0 - 1 / 3.0f) < 1e-6f && abs(w1 - 1 / 3.0f) < 1e-6f) {
+            if ((abs(w0 - 1 / 3.0f) < error) && (abs(w1 - 1 / 3.0f) < error)) {
                 t = tx;
                 ts = 1 - t;
             } else {
@@ -60,7 +68,7 @@ namespace TCode::TMath {
                     float ts2 = ts * ts;
 
                     float fg = 3 * ts2 * t * w0 + 3 * ts * t2 * w1s + t2 * t - tx;
-                    if (abs(fg) < 1e-6f)
+                    if (abs(fg) < error)
                         break;
 
                     // third order householder method
@@ -73,10 +81,11 @@ namespace TCode::TMath {
                     t -= (6 * fg * fpg2 - 3 * fg2 * fppg) / (6 * fpg2 * fpg - 6 * fg * fpg * fppg + fg2 * fpppg);
                 }
             }
-
+            LogHandler::warning("TMATH","Bezier");
             float t2 = t * t;
-            return y0 + 3 * ts * ts * t * w0 * m0 * dx + 3 * ts * t2 * (dy - w1 * m1 * dx) + t2 * t * dy;
+            out = startValue + 3 * ts * ts * t * w0 * m0 * dx + 3 * ts * t2 * (dy - w1 * m1 * dx) + t2 * t * dy;
         }
+        return constrain(out,0.0f,TMath::doubleLimit);
     }
 
     unsigned long getTCodeFromFloat(float value, int precision, uint8_t &logOut) {
@@ -84,7 +93,7 @@ namespace TCode::TMath {
         unsigned long out = 0;
         int log = 0;
 
-        value = constrain(value, 0, 1);
+        value = constrain(value, 0.0f, 1.0f);
         if (value < 1.0f) {
             while (value > 0 && log < precision) {
                 value *= 10;
