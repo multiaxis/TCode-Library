@@ -123,6 +123,8 @@ namespace TCode::TEvents {
         }
 
         switch (event.type) {
+        case DeviceCommandType::None:
+            break;
         case DeviceCommandType::StopDevice: {
             axisManager->stop();
             outputStream->println("STOP");

@@ -26,9 +26,9 @@ SOFTWARE. */
 #include <vector>
 
 enum class LogLevel { NONE,
-                      INFO,
-                      WARNING,
                       ERROR,
+                      WARNING,
+                      INFO,
                       DEBUG,
                       VERBOSE };
 
@@ -39,7 +39,11 @@ public:
     static const int internal_buffer_length = 1024;
 
     static void setLogLevel(LogLevel logLevel) {
-        getInstance().m_currentLogLevel = logLevel;
+        if(logLevel != getInstance().m_currentLogLevel)
+        {
+			Serial.printf("Log level changed to: %d\n", (uint8_t)logLevel);
+            getInstance().m_currentLogLevel = logLevel;
+        }
     }
 
     static void setFilterDuplicates(bool enabled) {
@@ -50,16 +54,18 @@ public:
 
     static bool addInclude(const char *tag) {
         LogHandler &log = getInstance();
-        std::vector<String>::iterator position =
-            std::find(log.m_tags.begin(), log.m_tags.end(), tag);
-        if (position == log.m_tags.end())
+        std::vector<const char*>::iterator position = std::find_if(log.m_tags.begin(), log.m_tags.end(), [tag](const char* tagIn) {
+            return !strcmp(tag, tagIn);
+        });
+        if (position == log.m_tags.end()) {
             log.m_tags.push_back(tag);
-        else
+            Serial.printf("LogHandler: add include: %s\n", tag);
+        } else
             return false;
         return true;
     }
 
-    static void setIncludes(std::vector<String> tags) {
+    static void setIncludes(std::vector<const char*> tags) {
         clearIncludes();
         LogHandler &log = getInstance();
         for (size_t i = 0; i < tags.size(); i++) {
@@ -67,17 +73,19 @@ public:
         }
     }
 
-    static const std::vector<String> getIncludes() {
+    static const std::vector<const char*> getIncludes() {
         return getInstance().m_tags;
     }
 
     static bool removeInclude(const char *tag) {
         LogHandler &log = getInstance();
-        std::vector<String>::iterator position =
-            std::find(log.m_tags.begin(), log.m_tags.end(), tag);
-        if (position != log.m_tags.end())
+        std::vector<const char*>::iterator position = std::find_if(log.m_tags.begin(), log.m_tags.end(), [tag](const char* tagIn) {
+            return !strcmp(tag, tagIn);
+        });
+        if (position != log.m_tags.end()) {
             log.m_tags.erase(position);
-        else
+            Serial.printf("LogHandler: remove include: %s\n", tag);
+        } else
             return false;
         return true;
     }
@@ -86,34 +94,43 @@ public:
 
     static bool addExclude(const char *tag) {
         LogHandler &log = getInstance();
-        std::vector<String>::iterator position =
-            std::find(log.m_filters.begin(), log.m_filters.end(), tag);
-        if (position == log.m_filters.end()) {
+        std::vector<const char*>::iterator position = std::find_if(log.m_filters.begin(), log.m_filters.end(), [tag](const char* tagIn) {
+            return !strcmp(tag, tagIn);
+        });
+        if (position == log.m_filters.end()) {// == myVector.end() means the element was not found
             log.m_filters.push_back(tag);
+            Serial.printf("LogHandler: add exclude: %s\n", tag);
+            // Serial.println(m_filters.size());
         } else {
+            // Serial.println(m_filters.size());
             return false;
         }
+        // Serial.println(m_filters.front());
         return true;
     }
 
-    static void setExcludes(std::vector<String> tags) {
+    static void setExcludes(std::vector<const char*> tags) {
         clearExcludes();
         for (size_t i = 0; i < tags.size(); i++) {
             getInstance().m_filters.push_back(tags[i]);
         }
     }
 
-    static const std::vector<String> getExcludes() {
+    static const std::vector<const char*> getExcludes() {
         return getInstance().m_filters;
     }
 
     static bool removeExclude(const char *tag) {
         LogHandler &log = getInstance();
-        std::vector<String>::iterator position =
-            std::find(log.m_filters.begin(), log.m_filters.end(), tag);
-        if (position != log.m_filters.end()) {
+        std::vector<const char*>::iterator position = std::find_if(log.m_filters.begin(), log.m_filters.end(), [tag](const char* tagIn) {
+            return !strcmp(tag, tagIn);
+        });
+        if (position != log.m_filters.end()) {// == myVector.end() means the element was not found
             log.m_filters.erase(position);
+            Serial.printf("LogHandler: remove exclude: %s\n", tag);
+            // Serial.println(m_filters.size());
         } else {
+            // Serial.println(m_filters.size());
             return false;
         }
         return true;
@@ -212,8 +229,8 @@ private:
     LOG_FUNCTION_PTR_T m_message_callback = 0;
     LogLevel m_currentLogLevel = LogLevel::INFO;
     SemaphoreHandle_t m_xMutex = xSemaphoreCreateMutex();
-    std::vector<String> m_tags;
-    std::vector<String> m_filters;
+    std::vector<const char*> m_tags;
+    std::vector<const char*> m_filters;
     char m_lastVerbose[internal_buffer_length];
     char m_lastDebug[internal_buffer_length];
     char m_lastError[internal_buffer_length];
@@ -222,71 +239,75 @@ private:
     static void parseMessage(const char *valueFormat, const char *level,
                              const char *tag, LogLevel logLevel, va_list vArgs) {
         LogHandler &log = getInstance();
-        try {
-            if (strlen(valueFormat) > internal_buffer_length) {
-                Serial.println("Log value too big for buffer");
-                return;
-            }
-            char temp[internal_buffer_length] = {'\0'};
-            int len = vsnprintf(temp, internal_buffer_length - 1, valueFormat, vArgs);
+		if (strlen(valueFormat) > internal_buffer_length) {
+			Serial.println("Log value too big for buffer");
+			return;
+		}
+		char temp[internal_buffer_length] = {'\0'};
+		int len = vsnprintf(temp, internal_buffer_length - 1, valueFormat, vArgs);
 
-            if (len < 0) {
-                Serial.println("Error printing vargs");
-                return;
-            }
+		if (len < 0) {
+			Serial.println("Error printing vargs");
+			return;
+		}
 
-            for (size_t i = internal_buffer_length - 1; i >= 0; --i) {
-                if ((temp[i] != '\n') && (temp[i] != '\r') && (temp[i] != ' ') &&
-                    (i < len)) {
-                    break;
-                }
-                temp[i] = 0;
-            }
+		for (size_t i = internal_buffer_length - 1; i >= 0; --i) {
+			if ((temp[i] != '\n') && (temp[i] != '\r') && (temp[i] != ' ') &&
+				(i < len)) {
+				break;
+			}
+			temp[i] = 0;
+		}
 
-            if (log.m_filterDuplicates) {
-                switch (logLevel) {
-                case LogLevel::ERROR:
-                    if (strcmp(log.m_lastError, temp) == 0)
-                        return;
+		if (log.m_filterDuplicates) {
+			switch (logLevel) {
+            case LogLevel::NONE:
+            case LogLevel::INFO:
+            case LogLevel::WARNING:
                     break;
-                case LogLevel::VERBOSE:
-                    if (strcmp(log.m_lastVerbose, temp) == 0)
-                        return;
-                    break;
-                case LogLevel::DEBUG:
-                    if (strcmp(log.m_lastDebug, temp) == 0)
-                        return;
-                    break;
-                }
-            }
+			case LogLevel::ERROR:
+				if (strcmp(log.m_lastError, temp) == 0)
+					return;
+				break;
+			case LogLevel::VERBOSE:
+				if (strcmp(log.m_lastVerbose, temp) == 0)
+					return;
+				break;
+			case LogLevel::DEBUG:
+				if (strcmp(log.m_lastDebug, temp) == 0)
+					return;
+				break;
+			}
+		}
 
-            Serial.printf("%s %s: %s\n", level, tag, temp);
-            switch (logLevel) {
-            case LogLevel::ERROR:
-                strncpy(log.m_lastError, temp, internal_buffer_length);
+		Serial.printf("%s %s: %s\n", level, tag, temp);
+		switch (logLevel) {
+        case LogLevel::NONE:
+        case LogLevel::INFO:
+        case LogLevel::WARNING:
                 break;
-            case LogLevel::VERBOSE:
-                strncpy(log.m_lastVerbose, temp, internal_buffer_length);
-                break;
-            case LogLevel::DEBUG:
-                strncpy(log.m_lastDebug, temp, internal_buffer_length);
-                break;
-            }
+		case LogLevel::ERROR:
+			strncpy(log.m_lastError, temp, internal_buffer_length);
+			break;
+		case LogLevel::VERBOSE:
+			strncpy(log.m_lastVerbose, temp, internal_buffer_length);
+			break;
+		case LogLevel::DEBUG:
+			strncpy(log.m_lastDebug, temp, internal_buffer_length);
+			break;
+		}
 
-            if (log.m_message_callback)
-                log.m_message_callback(temp, len, logLevel);
-        } catch (...) {
-            Serial.print("Error processing log message.");
-            Serial.println(valueFormat);
-        }
+		if (log.m_message_callback)
+			log.m_message_callback(temp, len, logLevel);
     }
 
     static bool isTagged(const char *tag) {
         LogHandler &log = getInstance();
         if (log.m_tags.empty())
             return true; // tag all by default
-        std::vector<String>::iterator position =
-            std::find(log.m_tags.begin(), log.m_tags.end(), tag);
+        std::vector<const char*>::iterator position = std::find_if(log.m_tags.begin(), log.m_tags.end(), [tag](const char* tagIn) {
+            return !strcmp(tag, tagIn);
+        });
         return position != log.m_tags.end();
     }
 
@@ -294,8 +315,9 @@ private:
         LogHandler &log = getInstance();
         if (log.m_filters.empty())
             return false;
-        std::vector<String>::iterator position =
-            std::find(log.m_filters.begin(), log.m_filters.end(), tag);
+        std::vector<const char*>::iterator position = std::find_if(log.m_filters.begin(), log.m_filters.end(), [tag](const char* tagIn) {
+            return !strcmp(tag, tagIn);
+        });
         return position != log.m_filters.end();
     }
 

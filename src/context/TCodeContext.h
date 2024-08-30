@@ -20,7 +20,7 @@ namespace TCode {
     class TCodeContext {
     public:
         TCodeContext(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION, const char *Filepath = DEFAULT_FILE_NAME)
-            : firmwareVersion(firmware), tcodeVersion(tcodeVersion), filepath(Filepath) {}
+            : filepath(Filepath), firmwareVersion(firmware), tcodeVersion(tcodeVersion){}
         const char *getFilepath() { return filepath; }
         const char *getFirmware() { return firmwareVersion; }
         const char *getTCodeVersion() { return tcodeVersion; }

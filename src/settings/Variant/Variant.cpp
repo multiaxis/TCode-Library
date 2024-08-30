@@ -62,7 +62,7 @@ bool variant_t::get(char &v) {
     return true;
 }
 
-bool variant_t::get(const char *v) {
+bool variant_t::get(const char *&v) {
     if (type != VariantType::String)
         return false;
 

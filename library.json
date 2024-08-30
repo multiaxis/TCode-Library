@@ -14,5 +14,10 @@
 		"bblanchon/ArduinoJson":"6.21.4"
 	},
 	"frameworks": "*",
-	"platforms": "espressif32"
+	"platforms": "espressif32",
+	"libLDFMode" : "chain+",
+	"build": {
+		"srcDir": "./src",
+		"srcFilter": "+<*> -<examples> -<test> -<settings/settingsClasses/SettingsESP32.cpp>"
+	}
   }

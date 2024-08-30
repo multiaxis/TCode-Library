@@ -14,7 +14,7 @@
 namespace TCode::TMath {
 
     static const double doubleLimit = (1.0-__DBL_EPSILON__);
-    static double error = 1e-6;
+    static const double error = 1e-6;
 
     float mapf(float x, float in_min, float in_max, float out_min, float out_max);
 

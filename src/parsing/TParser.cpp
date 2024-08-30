@@ -130,9 +130,10 @@ namespace TCode::TParser {
                     return false;
                 }
             } else if (isRamp(TString::readCharOrDefault(index, buffer, length))) {
-                if (!parseAxisRamp(index, buffer, length, rampType, rampIn, rampOut))
+                if (!parseAxisRamp(index, buffer, length, rampType, rampIn, rampOut)) {
                     LogHandler::error(TCODE_PARSER_TAG, "Could not parse Axis ramp");
                     return false;
+                }
             } else {
                 break;
             }
