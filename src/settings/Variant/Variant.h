@@ -51,7 +51,7 @@ struct variant_t {
     bool get(T &value) = delete;
 
     bool get(char &value);
-    bool get(const char *value);
+    bool get(const char *&value);
     bool get(bool &value);
     bool get(int &value);
     bool get(long &value);

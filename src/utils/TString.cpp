@@ -65,7 +65,7 @@ namespace TCode::TString {
             if(!readHexByte(index,buffer,length,nextByte))
                 break;
             
-            if(nextByte & 0x80 > 0)
+            if((nextByte & 0x80) > 0)
                 end_terminate = true;
             
             value |= (nextByte & 0x7F);
