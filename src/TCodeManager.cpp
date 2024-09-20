@@ -80,6 +80,7 @@ namespace TCode {
 
     void TCodeManager::runProcessedCommands() {
         TCodeEvent event;
+        eventReader.printEventReader();
         while (eventReader.getNext(event)) {
             TEvents::runEvent(context, event);
         }

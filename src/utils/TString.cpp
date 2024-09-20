@@ -19,8 +19,8 @@ namespace TCode::TString {
         if((value >= 'A') && (value <= 'F'))
             return (value - 'A') + 10;
         
-        if((value >= '0')&&(value <= '9'))
-            return value - 0;
+        if((value >= '0') && (value <= '9'))
+            return value - '0';
 
         return 0;
     }
@@ -52,27 +52,27 @@ namespace TCode::TString {
         if(!(isHex(firstNibble) && isHex(secondNibble)))
             return false;
 
-        value = (hexCharToUint8(firstNibble) << 8) + hexCharToUint8(secondNibble);
+        value = (hexCharToUint8(firstNibble) << 4) + hexCharToUint8(secondNibble);
         return true;
     }
 
     bool readVIntHex(size_t &index, const char *buffer, const size_t length, unsigned long long &value) {
         bool end_terminate = false;
         uint8_t count = 0;
+        value = 0;
         while((!end_terminate) && (count <= 9)) {
-
             uint8_t nextByte;
             if(!readHexByte(index,buffer,length,nextByte))
                 break;
-            
+
             if((nextByte & 0x80) > 0)
                 end_terminate = true;
-            
+
             value |= (nextByte & 0x7F);
             value <<= 7;
             count++;
         }
-        return false;
+        return end_terminate;
     }
 
     bool readTCodeFloat(size_t &&index, const char *buffer, const size_t length, float &value, size_t &log) {

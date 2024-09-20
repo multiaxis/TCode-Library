@@ -7,19 +7,24 @@ namespace TCode::TEvents {
     void runEvent(TCodeContext &context, const TCodeEvent &event) {
         switch (event.commandType) {
         case CommandType::Axis: {
+            LogHandler::info("TEventRunner","Running Axis Command");
             runAxisCommand(context, event.axisCommand);
             break;
         }
         case CommandType::Device: {
+            LogHandler::info("TEventRunner","Running Device Command");
             runDeviceCommand(context, event.deviceCommand);
             break;
         }
         case CommandType::Setup: {
+            LogHandler::info("TEventRunner","Running Setup Command");
             runSetupCommand(context, event.setupCommand);
             break;
         }
         case CommandType::Firmware: {
-            LogHandler::warning("TEventRunner", "Default Event Runner Does not Implement Firmware Commands: Received Firmware ID: %d Command: %s",event.firmwareCommand.firmwareID,event.firmwareCommand.value->c_str());
+            LogHandler::error("TEventRunner", "Default Event Runner Does not Implement Firmware Commands: Received Firmware ID: %d",event.firmwareCommand.firmwareID);
+            Serial.printf("[INFO] EVENT RUNNER:\"%s\"\n",event.firmwareCommand.value);
+            break;
         }
         default:
             break;

@@ -28,7 +28,7 @@ namespace TCode::TMath {
         float out = 0.0;
         if (!r0.hasTangent && !r1.hasTangent) {
             // linear
-            LogHandler::warning("TMATH","Linear");
+            //LogHandler::warning("TMATH","Linear");
             out = constrain(mapf(currentX, startX, endX, startValue, endValue),0.0,doubleLimit);
         } else if (!r0.hasWeight && !r1.hasWeight) {
             // cubic hermite
@@ -39,7 +39,7 @@ namespace TCode::TMath {
 
             float m0 = tan((PI / 2) * constrain(r0.tangent, -doubleLimit, doubleLimit));
             float m1 = tan((PI / 2) * constrain(r1.tangent, -doubleLimit, doubleLimit));
-            LogHandler::warning("TMATH","Cubic");
+            //LogHandler::warning("TMATH","Cubic");
             out = r * r * (startValue * (1 + 2 * t) + m0 * dx) + t * t * (endValue * (3 - 2 * t) - d * m1 * r);
         } else {
             // bezier
@@ -81,7 +81,7 @@ namespace TCode::TMath {
                     t -= (6 * fg * fpg2 - 3 * fg2 * fppg) / (6 * fpg2 * fpg - 6 * fg * fpg * fppg + fg2 * fpppg);
                 }
             }
-            LogHandler::warning("TMATH","Bezier");
+            //LogHandler::warning("TMATH","Bezier");
             float t2 = t * t;
             out = startValue + 3 * ts * ts * t * w0 * m0 * dx + 3 * ts * t2 * (dy - w1 * m1 * dx) + t2 * t * dy;
         }

@@ -40,7 +40,7 @@ namespace TCode {
     struct FirmwareCommandEvent {
         CommandType commandType;
         uint64_t firmwareID;
-        String *value;
+        char value[64];
     };
 
     /**

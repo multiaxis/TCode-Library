@@ -26,9 +26,12 @@ namespace TCode::TEvents {
         void read(const String &input);
         void read(const char *input);
 
-        bool parse();
+        bool parseNext();
+        bool parseAll();
         bool getNext(TCodeEvent &event);
         void flush();
+
+        void printEventReader();
 
         TCodeEventReader();
         ~TCodeEventReader();

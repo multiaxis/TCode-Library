@@ -152,6 +152,7 @@ namespace TCode::TParser {
             .rampIn = rampIn,
             .rampOut = rampOut};
 
+        out.commandType = CommandType::Axis;
         out.data = data;
         out.id = id;
         return true;
@@ -292,20 +293,32 @@ namespace TCode::TParser {
         out.saveEntryData.max = maxValue;
         out.saveEntryData.minLog = minValueLog;
         out.saveEntryData.maxLog = maxValueLog;
+        out.commandType = CommandType::Setup;
         return true;
     }
 
     bool parseFirmwareCommand(const char *buffer, const size_t length, FirmwareCommandEvent &out) {
         size_t index = 1;
-        out.value = new String();
         if(!TString::readVIntHex(index,buffer,length,out.firmwareID))
+        {
+            LogHandler::error(TCODE_PARSER_TAG, "Invalid Firmware ID in Command:\"%s\"", buffer);
             return false;
+        }
+
+        for(size_t i = 0; i < sizeof(out.value)-1; i++)
+            out.value[i] = '\0';
 
         for(size_t i = index; i < length; i++)
         {
-            (*out.value)+=buffer[i];
+            size_t offset = i - index;
+            if(offset < (sizeof(out.value)-1))
+                out.value[offset] = buffer[i];
+            else
+                break;
         }
-        
+
+        out.value[sizeof(out.value)-1] = '\0';
+        out.commandType = CommandType::Firmware;
         return true;
     }
 
@@ -321,7 +334,9 @@ namespace TCode::TParser {
             out.commandType = CommandType::Axis;
             if (TParser::parseAxisCommand(buffer, length, result)) {
                 out.axisCommand = result;
-                LogHandler::info(TCODE_PARSER_TAG, "Value: %f\nExtention Type:%d\nExtention: %d\n", result.data.commandValue, (int)result.data.extentionType, result.data.commandExtention);
+                LogHandler::info(TCODE_PARSER_TAG, "Value: %f", result.data.commandValue);
+                LogHandler::info(TCODE_PARSER_TAG, "Extention Type:%d", (int)result.data.extentionType);
+                LogHandler::info(TCODE_PARSER_TAG, "Extention: %d", result.data.commandExtention);
                 return true;
             }
             break;
@@ -329,8 +344,8 @@ namespace TCode::TParser {
         case CommandType::Device: {
             LogHandler::info(TCODE_PARSER_TAG, "Command Type : Device");
             DeviceCommandEvent result;
-            out.commandType = CommandType::Device;
             if (TParser::parseDeviceCommand(buffer, length, result)) {
+                out.commandType = CommandType::Device;
                 out.deviceCommand = result;
                 return true;
             }
@@ -339,8 +354,8 @@ namespace TCode::TParser {
         case CommandType::Setup: {
             LogHandler::info(TCODE_PARSER_TAG, "Command Type : Setup");
             SetupCommandEvent result;
-            out.commandType = CommandType::Setup;
             if (TParser::parseSetupCommand(buffer, length, result)) {
+                out.commandType = CommandType::Setup;
                 out.setupCommand = result;
                 return true;
             }
@@ -349,8 +364,8 @@ namespace TCode::TParser {
         case CommandType::Firmware: {
             LogHandler::info(TCODE_PARSER_TAG, "Command Type : Firmware");
             FirmwareCommandEvent result;
-            out.commandType = CommandType::Firmware;
             if (TParser::parseFirmwareCommand(buffer, length, result)) {
+                out.commandType = CommandType::Firmware;
                 out.firmwareCommand = result;
                 return true;
             }
