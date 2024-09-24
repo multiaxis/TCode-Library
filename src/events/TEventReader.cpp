@@ -3,8 +3,8 @@
 // implemented by Eve 07/07/2024
 // Please copy, share, learn, innovate, give attribution.
 #include "TEventReader.h"
-#include "../utils/TString.h"
 #include "../parsing/TParser.h"
+#include "../utils/TString.h"
 #include <Arduino.h>
 
 namespace TCode::Events {
@@ -34,7 +34,7 @@ namespace TCode::Events {
         if (inputBuffer.size() >= MAX_COMMAND_BUFFER_LENGTH_COUNT) {
             parseNext();
         }
-        //LogHandler::error("TEVENT", "got char \"%c\"", input);
+        // LogHandler::error("TEVENT", "got char \"%c\"", input);
         inputBuffer.push_back(input);
         if (input == '\n') {
             parseAll();
@@ -53,12 +53,11 @@ namespace TCode::Events {
         static char commandBuffer[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
         size_t length = consumeNextCommandFromInputBuffer(commandBuffer, MAX_COMMAND_BUFFER_LENGTH_COUNT);
         if (!parseCommand(commandBuffer, length)) {
-            //LogHandler::error("TEVENT", "Parsing Command Buffer:\"%s\" Could not be parsed", commandBuffer);
+            // LogHandler::error("TEVENT", "Parsing Command Buffer:\"%s\" Could not be parsed", commandBuffer);
             return false;
         }
         return true;
     }
-
 
     bool TCodeEventReader::getNext(Datatypes::TCodeEvent &event) {
         if (!eventBuffer.empty()) {
@@ -84,20 +83,18 @@ namespace TCode::Events {
                 break;
             }
 
-            if(c == '\"')
-            {
+            if (c == '\"') {
                 string_value = !string_value;
             }
 
-            if(!TString::writeChar(c,index,buffer,length))
-            {
+            if (!TString::writeChar(c, index, buffer, length)) {
                 return 0;
             }
 
             inputBuffer.pop_front();
         }
 
-        TString::writeChar('\0',index,buffer,length);
+        TString::writeChar('\0', index, buffer, length);
         return index;
     }
 

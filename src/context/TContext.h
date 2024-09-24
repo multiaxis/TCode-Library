@@ -8,8 +8,8 @@
 
 #include "../axis/TAxisManager.h"
 #include "../module/TModuleManager.h"
-#include "../settings/ISettings.h"
 #include "../outputstream/TOutputStreamInterface.h"
+#include "../settings/ISettings.h"
 
 #define DEFAULT_TCODE_VERSION "TCode v0.4"
 #define DEFAULT_FIRMWARE_NAME "TCode"
@@ -19,7 +19,7 @@ namespace TCode {
     class TCodeContext {
     public:
         TCodeContext(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION, const char *Filepath = DEFAULT_FILE_NAME)
-            : filepath(Filepath), firmwareVersion(firmware), tcodeVersion(tcodeVersion){}
+            : filepath(Filepath), firmwareVersion(firmware), tcodeVersion(tcodeVersion) {}
         const char *getFilepath() { return filepath; }
         const char *getFirmware() { return firmwareVersion; }
         const char *getTCodeVersion() { return tcodeVersion; }

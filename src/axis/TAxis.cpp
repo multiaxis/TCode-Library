@@ -44,7 +44,6 @@ namespace TCode::Axis {
             } else {
                 int lastInterval = currentTime - currentState.startTime;
 
-
                 if (lastInterval > minInterval && minInterval < TCODE_MIN_AXIS_SMOOTH_INTERVAL)
                     minInterval += 1;
                 else if (lastInterval < minInterval && minInterval > TCODE_MAX_AXIS_SMOOTH_INTERVAL)

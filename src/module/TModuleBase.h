@@ -7,7 +7,7 @@
 // #include "../../context/TCodeContext.h"
 
 namespace TCode {
-class TCodeContext;
+    class TCodeContext;
 }
 
 namespace TCode::Module {

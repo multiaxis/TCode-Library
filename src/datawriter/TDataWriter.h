@@ -19,7 +19,7 @@ namespace TCode::Writing {
     bool writeTCodeValue(const char *name, const T &value, TCodeContext &context) {
         Output::TCodeIOutputStream *outputStream;
         if (!context.getOutputStream(outputStream)) {
-            //LogHandler::warning("TWriter", "Cannot Encode output, Output Stream is not set");
+            // LogHandler::warning("TWriter", "Cannot Encode output, Output Stream is not set");
             return false;
         }
 
@@ -29,7 +29,7 @@ namespace TCode::Writing {
             buffer[i] = '\0';
 
         if (!Encoding::encodeValue(name, value, buffer, MAX_ENCODER_BUFFER_LENGTH)) {
-            //LogHandler::error("TEncoder", "Encoding Failed");
+            // LogHandler::error("TEncoder", "Encoding Failed");
             return false;
         }
 

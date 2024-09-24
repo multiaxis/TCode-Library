@@ -3,22 +3,22 @@
 namespace TCode {
     void TCodeContext::setAxisManager(Axis::TCodeAxisManager *inputAxisManager) {
         axisManager = inputAxisManager;
-        //LogHandler::verbose("TCodeContext", "Context Axis Manager Set");
+        // LogHandler::verbose("TCodeContext", "Context Axis Manager Set");
     }
 
     void TCodeContext::setModuleManager(Module::TCodeModuleManager *inputInterfaceManager) {
         moduleManager = inputInterfaceManager;
-        //LogHandler::verbose("TCodeContext", "Context Interface Manager Set");
+        // LogHandler::verbose("TCodeContext", "Context Interface Manager Set");
     }
 
     void TCodeContext::setSettingManager(Settings::TCodeSettingsInterface *settings) {
         settingManager = settings;
-        //LogHandler::verbose("TCodeContext", "Context Settings Manager Set");
+        // LogHandler::verbose("TCodeContext", "Context Settings Manager Set");
     }
 
     void TCodeContext::setOutputStream(Output::TCodeIOutputStream *stream) {
         outputStream = stream;
-        //LogHandler::info("TCodeContext", "Context Output Stream Set");
+        // LogHandler::info("TCodeContext", "Context Output Stream Set");
     }
 
     bool TCodeContext::getAxisManager(Axis::TCodeAxisManager *&manager) {

@@ -8,7 +8,7 @@ namespace TCode::Module {
     }
 
     void TCodeModuleManager::registerInterface(TCodeModuleBase *interface) {
-        if(interface != nullptr)
+        if (interface != nullptr)
             registeredInterfaces.push_back(interface);
     }
 
