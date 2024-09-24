@@ -2,27 +2,27 @@
 #include <Arduino.h>
 #include <utils/TString.h>
 
-namespace TCode::TEvents {
+namespace TCode::Events {
 
-    void runEvent(TCodeContext &context, const TCodeEvent &event) {
+    void runEvent(TCodeContext &context, const Datatypes::TCodeEvent &event) {
         switch (event.commandType) {
-        case CommandType::Axis: {
-            LogHandler::info("TEventRunner","Running Axis Command");
+        case Datatypes::CommandType::Axis: {
+            //LogHandler::info("TEventRunner","Running Axis Command");
             runAxisCommand(context, event.axisCommand);
             break;
         }
-        case CommandType::Device: {
-            LogHandler::info("TEventRunner","Running Device Command");
+        case Datatypes::CommandType::Device: {
+            //LogHandler::info("TEventRunner","Running Device Command");
             runDeviceCommand(context, event.deviceCommand);
             break;
         }
-        case CommandType::Setup: {
-            LogHandler::info("TEventRunner","Running Setup Command");
+        case Datatypes::CommandType::Setup: {
+            //LogHandler::info("TEventRunner","Running Setup Command");
             runSetupCommand(context, event.setupCommand);
             break;
         }
-        case CommandType::Firmware: {
-            LogHandler::error("TEventRunner", "Default Event Runner Does not Implement Firmware Commands: Received Firmware ID: %d",event.firmwareCommand.firmwareID);
+        case Datatypes::CommandType::Firmware: {
+            //LogHandler::error("TEventRunner", "Default Event Runner Does not Implement Firmware Commands: Received Firmware ID: %d",event.firmwareCommand.firmwareID);
             Serial.printf("[INFO] EVENT RUNNER:\"%s\"\n",event.firmwareCommand.value);
             break;
         }
@@ -31,10 +31,10 @@ namespace TCode::TEvents {
         }
     }
 
-    bool runAxisCommand(TCodeContext &context, const AxisCommandEvent &event) {
-        TCodeAxisManager *axisManager;
+    bool runAxisCommand(TCodeContext &context, const Datatypes::AxisCommandEvent &event) {
+        Axis::TCodeAxisManager *axisManager;
         if (!context.getAxisManager(axisManager)) {
-            LogHandler::warning("TEventRunner", "Cannot Run Axis Command Axis manager is not set");
+            //LogHandler::warning("TEventRunner", "Cannot Run Axis Command Axis manager is not set");
             return false;
         }
 
@@ -42,9 +42,9 @@ namespace TCode::TEvents {
         return true;
     }
 
-    void printSavedAxisValues(TCodeAxisManager *axisManager, Settings::ISettings *settingManager, OutputStreamInterface *outputStream) {
+    void printSavedAxisValues(Axis::TCodeAxisManager *axisManager, Settings::TCodeSettingsInterface *settingManager, Output::TCodeIOutputStream *outputStream) {
         for (size_t i = 0; i < axisManager->count(); i++) {
-            TCodeAxis *axis = axisManager->getAxisIndex(i);
+            Axis::TCodeAxis *axis = axisManager->getAxisIndex(i);
 
             float min = 0.0f;
             int minLog = 4;
@@ -82,9 +82,9 @@ namespace TCode::TEvents {
         }
     }
 
-    bool setSaveValues(TCodeAxisManager *axisManager, Settings::ISettings *settingManager, OutputStreamInterface *outputStream, const AxisId &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog) {
+    bool setSaveValues(Axis::TCodeAxisManager *axisManager, Settings::TCodeSettingsInterface *settingManager, Output::TCodeIOutputStream *outputStream, const Datatypes::AxisId &id, float minimum, float maximum, uint8_t minLog, uint8_t maxLog) {
         if (settingManager == nullptr) {
-            LogHandler::error("TEventRunner", "Setting manager is not set");
+            //LogHandler::error("TEventRunner", "Setting manager is not set");
             return false;
         }
 
@@ -114,38 +114,38 @@ namespace TCode::TEvents {
         return true;
     }
 
-    bool runDeviceCommand(TCodeContext &context, const DeviceCommandEvent &event) {
-        TCodeAxisManager *axisManager;
+    bool runDeviceCommand(TCodeContext &context, const Datatypes::DeviceCommandEvent &event) {
+        Axis::TCodeAxisManager *axisManager;
         if (!context.getAxisManager(axisManager)) {
-            LogHandler::warning("TEventRunner", "Cannot Run Device Command, Axis manager is not set");
+            //LogHandler::warning("TEventRunner", "Cannot Run Device Command, Axis manager is not set");
             return false;
         }
 
-        OutputStreamInterface *outputStream;
+        Output::TCodeIOutputStream *outputStream;
         if (!context.getOutputStream(outputStream)) {
-            LogHandler::warning("TEventRunner", "Cannot Run Device Command, Output Stream is not set");
+            //LogHandler::warning("TEventRunner", "Cannot Run Device Command, Output Stream is not set");
             return false;
         }
 
         switch (event.type) {
-        case DeviceCommandType::None:
+        case Datatypes::DeviceCommandType::None:
             break;
-        case DeviceCommandType::StopDevice: {
+        case Datatypes::DeviceCommandType::StopDevice: {
             axisManager->stop();
             outputStream->println("STOP");
         } break;
-        case DeviceCommandType::GetTCodeVersion: {
+        case Datatypes::DeviceCommandType::GetTCodeVersion: {
             outputStream->println(context.getTCodeVersion());
             break;
         }
-        case DeviceCommandType::GetSoftwareVersion: {
+        case Datatypes::DeviceCommandType::GetSoftwareVersion: {
             outputStream->println(context.getFirmware());
             break;
         }
-        case DeviceCommandType::GetAssignedAxisValues: {
-            Settings::ISettings *settingManager;
+        case Datatypes::DeviceCommandType::GetAssignedAxisValues: {
+            Settings::TCodeSettingsInterface *settingManager;
             if (!context.getSettingManager(settingManager)) {
-                LogHandler::error("TEventRunner", "Cannot Get Values Setting manager is not set");
+                //LogHandler::error("TEventRunner", "Cannot Get Values Setting manager is not set");
                 return false;
             }
             printSavedAxisValues(axisManager, settingManager, outputStream);
@@ -155,22 +155,22 @@ namespace TCode::TEvents {
         return true;
     }
 
-    bool runSetupCommand(TCodeContext &context, const SetupCommandEvent &command) {
-        TCodeAxisManager *axisManager;
+    bool runSetupCommand(TCodeContext &context, const Datatypes::SetupCommandEvent &command) {
+        Axis::TCodeAxisManager *axisManager;
         if (!context.getAxisManager(axisManager)) {
-            LogHandler::warning("TEventRunner", "Cannot Run Setup Command, Axis manager is not set");
+            //LogHandler::warning("TEventRunner", "Cannot Run Setup Command, Axis manager is not set");
             return false;
         }
 
-        Settings::ISettings *settingManager;
+        Settings::TCodeSettingsInterface *settingManager;
         if (!context.getSettingManager(settingManager)) {
-            LogHandler::warning("TEventRunner", "Cannot Run Setup Command, Setting manager is not set");
+            //LogHandler::warning("TEventRunner", "Cannot Run Setup Command, Setting manager is not set");
             return false;
         }
 
-        OutputStreamInterface *outputStream;
+        Output::TCodeIOutputStream *outputStream;
         if (!context.getOutputStream(outputStream)) {
-            LogHandler::warning("TEventRunner", "Cannot Run Setup Command, Output Stream is not set");
+            //LogHandler::warning("TEventRunner", "Cannot Run Setup Command, Output Stream is not set");
             return false;
         }
 

@@ -7,10 +7,11 @@
 // #include "../../context/TCodeContext.h"
 
 namespace TCode {
+class TCodeContext;
+}
 
-    class TCodeContext;
-
-    class TInterfaceBase {
+namespace TCode::Module {
+    class TCodeModuleBase {
     public:
         virtual void update(TCodeContext &context) = 0;
     };

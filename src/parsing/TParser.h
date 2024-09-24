@@ -7,43 +7,41 @@
 #include "../datatypes/CommandDataTypes.h"
 #include "../datatypes/CommonDataTypes.h"
 #include "../datatypes/EnumTypes.h"
-#include "../logging/LogHandler.h"
 #include <deque>
 
 namespace TCode::TParser {
 
-#define TCODE_PARSER_TAG "TCodeParser"
-
+//#define TCODE_PARSER_TAG "TCodeParser"
     inline bool isExtention(const char value);
 
     inline bool isRamp(const char value);
 
     inline bool isHex(const char value);
 
-    AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length);
+    Datatypes::AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length);
 
-    AxisRampType getRampType(size_t &index, const char *buffer, const size_t length);
+    Datatypes::AxisRampType getRampType(size_t &index, const char *buffer, const size_t length);
 
-    AxisId getAxisId(size_t &index, const char *buffer, const size_t length);
+    Datatypes::AxisId getAxisId(size_t &index, const char *buffer, const size_t length);
 
-    AxisId getAxisIdFromStart(const char *buffer);
+    Datatypes::AxisId getAxisIdFromStart(const char *buffer);
 
-    CommandType getCommandType(const char *buffer, const size_t length);
+    Datatypes::CommandType getCommandType(const char *buffer, const size_t length);
 
-    bool parseAxisCommand(const char *buffer, const size_t length, AxisCommandEvent &out);
+    bool parseAxisCommand(const char *buffer, const size_t length, Datatypes::AxisCommandEvent &out);
 
-    bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, AxisExtentionType &extentionType, unsigned long &commandExtention);
+    bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, Datatypes::AxisExtentionType &extentionType, unsigned long &commandExtention);
 
-    bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, AxisRampType &rampType, AxisRampData &rampIn, AxisRampData &rampOut);
+    bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, Datatypes::AxisRampType &rampType, Datatypes::AxisRampData &rampIn, Datatypes::AxisRampData &rampOut);
 
-    bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const AxisRampType rampType, AxisRampData &data);
+    bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const Datatypes::AxisRampType rampType, Datatypes::AxisRampData &data);
 
-    bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommandEvent &out);
+    bool parseDeviceCommand(const char *buffer, const size_t length, Datatypes::DeviceCommandEvent &out);
 
-    bool parseSetupCommand(const char *buffer, const size_t length, SetupCommandEvent &out);
+    bool parseSetupCommand(const char *buffer, const size_t length, Datatypes::SetupCommandEvent &out);
 
-    bool parseFirmwareCommand(const char *buffer, const size_t length, FirmwareCommandEvent &out);
+    bool parseFirmwareCommand(const char *buffer, const size_t length, Datatypes::FirmwareCommandEvent &out);
 
-    bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out);
+    bool parseCommand(const char *buffer, const size_t length, Datatypes::TCodeEvent &out);
 
 }

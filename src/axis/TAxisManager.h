@@ -4,11 +4,11 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "../axisClass/TAxis.h"
+#include "TAxis.h"
 #include <Arduino.h>
 #include <vector>
 
-namespace TCode {
+namespace TCode::Axis {
     class TCodeAxisManager {
     private:
         std::vector<TCodeAxis *> registeredAxes;
@@ -16,13 +16,13 @@ namespace TCode {
     public:
         void stop();
 
-        void setAxisData(const AxisId &id, const AxisData &data);
-        float getAxisPosition(const AxisId &id);
-        unsigned long getAxisLastCommandTime(const AxisId &id);
+        void setAxisData(const Datatypes::AxisId &id, const Datatypes::AxisData &data);
+        float getAxisPosition(const Datatypes::AxisId &id);
+        unsigned long getAxisLastCommandTime(const Datatypes::AxisId &id);
 
         bool registerAxis(TCodeAxis *axis);
-        bool getAxisFromId(const AxisId &id, TCodeAxis *&axis);
-        bool hasAxisFromId(const AxisId &id);
+        bool getAxisFromId(const Datatypes::AxisId &id, TCodeAxis *&axis);
+        bool hasAxisFromId(const Datatypes::AxisId &id);
 
         TCodeAxis *getAxisIndex(const size_t &index);
         size_t count();

@@ -2,28 +2,13 @@
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 07/07/2024
 // Please copy, share, learn, innovate, give attribution.
-#include "TCodeEventReader.h"
-#include "../../logging/LogHandler.h"
-#include "../../utils/TString.h"
-#include "../../parsing/TParser.h"
+#include "TEventReader.h"
+#include "../utils/TString.h"
+#include "../parsing/TParser.h"
 #include <Arduino.h>
 
-namespace TCode::TEvents {
+namespace TCode::Events {
     TCodeEventReader::TCodeEventReader() {
-    }
-
-    void TCodeEventReader::printEventReader() {
-        for(size_t i = 0; i < eventBuffer.size(); i++)
-        {
-            switch(eventBuffer[i].commandType)
-            {                
-                case CommandType::Axis: LogHandler::info("TEvent","%d Axis",i); break;
-                case CommandType::Device: LogHandler::info("TEvent","%d Device",i); break;
-                case CommandType::Setup: LogHandler::info("TEvent","%d Setup",i); break;
-                case CommandType::Firmware: LogHandler::info("TEvent","%d Firmware",i); break;
-                case CommandType::None: LogHandler::info("TEvent","%d Error",i); break;
-            }
-        }
     }
 
     TCodeEventReader::~TCodeEventReader() {
@@ -68,14 +53,14 @@ namespace TCode::TEvents {
         static char commandBuffer[MAX_COMMAND_BUFFER_LENGTH_COUNT] = {'\0'};
         size_t length = consumeNextCommandFromInputBuffer(commandBuffer, MAX_COMMAND_BUFFER_LENGTH_COUNT);
         if (!parseCommand(commandBuffer, length)) {
-            LogHandler::error("TEVENT", "Parsing Command Buffer:\"%s\" Could not be parsed", commandBuffer);
+            //LogHandler::error("TEVENT", "Parsing Command Buffer:\"%s\" Could not be parsed", commandBuffer);
             return false;
         }
         return true;
     }
 
 
-    bool TCodeEventReader::getNext(TCodeEvent &event) {
+    bool TCodeEventReader::getNext(Datatypes::TCodeEvent &event) {
         if (!eventBuffer.empty()) {
             event = eventBuffer.front();
             eventBuffer.pop_front();
@@ -117,7 +102,7 @@ namespace TCode::TEvents {
     }
 
     bool TCodeEventReader::parseCommand(const char *buffer, const size_t length) {
-        TCodeEvent event;
+        Datatypes::TCodeEvent event;
         if (TParser::parseCommand(buffer, length, event)) {
             eventBuffer.push_back(event);
             return true;

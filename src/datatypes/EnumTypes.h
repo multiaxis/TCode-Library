@@ -4,7 +4,7 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-namespace TCode {
+namespace TCode::Datatypes {
     /**
      * @brief representation of a TCode channel type as an Enum
      * @param Linear

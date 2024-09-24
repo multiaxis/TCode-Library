@@ -3,11 +3,11 @@
 // implemented by Eve 18/11/2023
 // Please copy, share, learn, innovate, give attribution.
 #include "TAxis.h"
-#include "../../utils/TMath.h"
+#include "../utils/TMath.h"
 
-namespace TCode {
+namespace TCode::Axis {
 
-    TCodeAxis::TCodeAxis(const char *name, AxisId id, float defaultPosition) {
+    TCodeAxis::TCodeAxis(const char *name, Datatypes::AxisId id, float defaultPosition) {
         this->name = name;
         this->id = id;
         this->defaultPosition = defaultPosition;
@@ -20,7 +20,7 @@ namespace TCode {
         minInterval = TCODE_MIN_AXIS_SMOOTH_INTERVAL;
     }
 
-    void TCodeAxis::set(const AxisData &data) {
+    void TCodeAxis::set(const Datatypes::AxisData &data) {
         unsigned long currentTime = millis();
         unsigned long deltaTime = 0;
 
@@ -29,7 +29,7 @@ namespace TCode {
         unsigned long extentionValue = data.commandExtention;
 
         switch (data.extentionType) {
-        case AxisExtentionType::Speed: {
+        case Datatypes::AxisExtentionType::Speed: {
             deltaTime = abs(endValue - startValue);
             deltaTime *= 100;
             if (extentionValue > 0) {
@@ -37,7 +37,7 @@ namespace TCode {
             }
             break;
         }
-        case AxisExtentionType::Time:
+        case Datatypes::AxisExtentionType::Time:
         default: {
             if (extentionValue > 0) {
                 deltaTime = extentionValue;
@@ -103,7 +103,7 @@ namespace TCode {
         currentState.startPosition = getPosition();
         currentState.startTime = currentTime;
         currentState.endTime = currentTime + 30;
-        currentState.endPosition = id.type == AxisType::Vibration ? defaultPosition : currentState.startPosition;
+        currentState.endPosition = id.type == Datatypes::AxisType::Vibration ? defaultPosition : currentState.startPosition;
     }
 
     const bool TCodeAxis::changed() {
@@ -119,7 +119,7 @@ namespace TCode {
         return name;
     }
 
-    const AxisId TCodeAxis::getId() {
+    const Datatypes::AxisId TCodeAxis::getId() {
         return id;
     }
 

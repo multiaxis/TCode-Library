@@ -3,7 +3,7 @@
 namespace TCode {
     TCodeManager::TCodeManager(const char *firmware, const char *tcodeVersion, const char *Filepath) : context(firmware, tcodeVersion, Filepath) {
         context.setAxisManager(&axisManager);
-        context.setInterfaceManager(&interfaceManager);
+        context.setModuleManager(&moduleManager);
     }
 
     void TCodeManager::read(const byte input) {
@@ -30,20 +30,20 @@ namespace TCode {
         eventReader.flush();
     }
 
-    bool TCodeManager::registerAxis(const char *name, const AxisId &id, float defaultValue) {
-        return axisManager.registerAxis(new TCodeAxis(name, id, defaultValue));
+    bool TCodeManager::registerAxis(const char *name, const Datatypes::AxisId &id, float defaultValue) {
+        return axisManager.registerAxis(new Axis::TCodeAxis(name, id, defaultValue));
     }
 
-    bool TCodeManager::registerAxis(TCodeAxis *axis) {
+    bool TCodeManager::registerAxis(Axis::TCodeAxis *axis) {
         return axisManager.registerAxis(axis);
     }
 
-    void TCodeManager::setAxisData(const AxisId &id, const AxisData &data) {
+    void TCodeManager::setAxisData(const Datatypes::AxisId &id, const Datatypes::AxisData &data) {
         axisManager.setAxisData(id, data);
     }
 
-    void TCodeManager::setAxisData(const AxisId &id, const float value, const AxisExtentionType extentionType, const unsigned long commandExtention, AxisRampData rampIn, AxisRampData rampOut) {
-        AxisData data = {
+    void TCodeManager::setAxisData(const Datatypes::AxisId &id, const float value, const Datatypes::AxisExtentionType extentionType, const unsigned long commandExtention, Datatypes::AxisRampData rampIn, Datatypes::AxisRampData rampOut) {
+        Datatypes::AxisData data = {
             value,
             commandExtention,
             extentionType,
@@ -54,11 +54,11 @@ namespace TCode {
         axisManager.setAxisData(id,data);
     }
 
-    float TCodeManager::getAxisPosition(const AxisId &axisId) {
+    float TCodeManager::getAxisPosition(const Datatypes::AxisId &axisId) {
         return axisManager.getAxisPosition(axisId);
     }
 
-    unsigned long TCodeManager::getAxisLastCommandTime(const AxisId &axisId) {
+    unsigned long TCodeManager::getAxisLastCommandTime(const Datatypes::AxisId &axisId) {
         return axisManager.getAxisLastCommandTime(axisId);
     }
 
@@ -67,26 +67,25 @@ namespace TCode {
     }
 
     void TCodeManager::updateInterfaces() {
-        interfaceManager.update(context);
+        moduleManager.update(context);
     }
 
-    void TCodeManager::setSettingManager(Settings::ISettings *settings) {
+    void TCodeManager::setSettingManager(Settings::TCodeSettingsInterface *settings) {
         context.setSettingManager(settings);
     }
 
-    void TCodeManager::setOutputStream(OutputStreamInterface *stream) {
+    void TCodeManager::setOutputStream(Output::TCodeIOutputStream *stream) {
         context.setOutputStream(stream);
     }
 
     void TCodeManager::runProcessedCommands() {
-        TCodeEvent event;
-        eventReader.printEventReader();
+        Datatypes::TCodeEvent event;
         while (eventReader.getNext(event)) {
-            TEvents::runEvent(context, event);
+            Events::runEvent(context, event);
         }
     }
 
-    void TCodeManager::registerInterface(TInterfaceBase *interface) {
-        interfaceManager.registerInterface(interface);
+    void TCodeManager::registerInterface(Module::TCodeModuleBase *interface) {
+        moduleManager.registerInterface(interface);
     }
 };

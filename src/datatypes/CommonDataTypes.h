@@ -6,7 +6,7 @@
 #include "EnumTypes.h"
 #include <Arduino.h>
 
-namespace TCode {
+namespace TCode::Datatypes {
     /**
      * @brief representation of a TCode channel type and channel number
      * @param type type of channel

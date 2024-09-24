@@ -4,38 +4,33 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include <Arduino.h>
-#include <vector>
-
 #include "datatypes/CommandDataTypes.h"
 #include "datatypes/CommonDataTypes.h"
 #include "datatypes/EnumTypes.h"
 
-#include "settings/Variant/DataContainer.h"
-#include "settings/Variant/TaggedDataContainer.h"
-#include "settings/Variant/Variant.h"
+#include "settings/ISettings.h"
 
-#include "settings/settingsClasses/ISettings.h"
+#include "context/TContext.h"
 
-#include "interface/buttonInterface/TButton.h"
-#include "interface/interfaceBaseClass/TInterfaceBase.h"
-#include "interface/interfaceManagement/interfaceManager.h"
+#include "module/TModuleBase.h"
+#include "module/TModuleManager.h"
 
-#include "events/EventReader/TCodeEventReader.h"
-#include "events/EventRunner/TEventRunner.h"
+#include "axis/TAxis.h"
+#include "axis/TAxisManager.h"
+
+#include "utils/TString.h"
+#include "utils/TMath.h"
+
+#include "encoding/TEncoder.h"
+#include "datawriter/TDataWriter.h"
+
+#include "outputstream/TOutputStreamInterface.h"
+
+#include "events/TEventReader.h"
+#include "events/TEventRunner.h"
 #include "parsing/TParser.h"
 
-#include "context/TCodeContext.h"
-
-#include "axis/axisClass/TAxis.h"
-#include "axis/axisManagement/TCodeAxisManager.h"
-
-#include "outputstream/outputStreamInterface.h"
-
-#include "logging/LogHandler.h"
-
 namespace TCode {
-
     class TCodeManager {
     public:
         TCodeManager(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION, const char *Filepath = DEFAULT_FILE_NAME);
@@ -47,25 +42,25 @@ namespace TCode {
 
         void clearInputBuffer();
 
-        bool registerAxis(const char *name, const AxisId &id, float defaultValue);
-        bool registerAxis(TCodeAxis *axis);
-        void setAxisData(const AxisId &id, const AxisData &data);
-        void setAxisData(const AxisId &id, const float value, const AxisExtentionType extentionType = AxisExtentionType::None, const unsigned long commandExtention = 0, AxisRampData rampIn = {0.0,0.0,false,false,false}, AxisRampData rampOut = {0.0,0.0,false,false,false});
-        float getAxisPosition(const AxisId &axisId);
-        unsigned long getAxisLastCommandTime(const AxisId &axisId);
+        bool registerAxis(const char *name, const Datatypes::AxisId &id, float defaultValue);
+        bool registerAxis(Axis::TCodeAxis *axis);
+        void setAxisData(const Datatypes::AxisId &id, const Datatypes::AxisData &data);
+        void setAxisData(const Datatypes::AxisId &id, const float value, const Datatypes::AxisExtentionType extentionType = Datatypes::AxisExtentionType::None, const unsigned long commandExtention = 0, Datatypes::AxisRampData rampIn = {0.0,0.0,false,false,false}, Datatypes::AxisRampData rampOut = {0.0,0.0,false,false,false});
+        float getAxisPosition(const Datatypes::AxisId &axisId);
+        unsigned long getAxisLastCommandTime(const Datatypes::AxisId &axisId);
         void stop();
 
-        void registerInterface(TInterfaceBase *interface);
+        void registerInterface(Module::TCodeModuleBase *interface);
         void updateInterfaces();
 
-        void setSettingManager(Settings::ISettings *settings);
-        void setOutputStream(OutputStreamInterface *stream);
+        void setSettingManager(Settings::TCodeSettingsInterface *settings);
+        void setOutputStream(Output::TCodeIOutputStream *stream);
 
     private:
         TCodeContext context;
-        TCodeAxisManager axisManager;
-        TCodeInterfaceManager interfaceManager;
-        TEvents::TCodeEventReader eventReader;
+        Axis::TCodeAxisManager axisManager;
+        Module::TCodeModuleManager moduleManager;
+        Events::TCodeEventReader eventReader;
 
         void runProcessedCommands();
     };

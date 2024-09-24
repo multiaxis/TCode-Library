@@ -4,11 +4,10 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "../settings/Variant/TaggedDataContainer.h"
 #include "../utils/TString.h"
 #include <string>
 
-namespace TCode::TEncoding {
+namespace TCode::Encoding {
 
     // #<name id>:<value 0 - false or 1 - true> - bool
     // $<name id>:<- if negative><value> - int,long

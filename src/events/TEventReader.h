@@ -3,19 +3,19 @@
 // implemented by Eve 07/07/2024
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
-#include "../../datatypes/CommandDataTypes.h"
-#include "../../datatypes/CommonDataTypes.h"
-#include "../../datatypes/EnumTypes.h"
+#include "../datatypes/CommandDataTypes.h"
+#include "../datatypes/CommonDataTypes.h"
+#include "../datatypes/EnumTypes.h"
 #include <Arduino.h>
 #include <deque>
 
-namespace TCode::TEvents {
+namespace TCode::Events {
 
     class TCodeEventReader {
     private:
         static const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 512;
         std::deque<char> inputBuffer;
-        std::deque<TCodeEvent> eventBuffer;
+        std::deque<Datatypes::TCodeEvent> eventBuffer;
 
         bool parseCommand(const char *buffer, const size_t length);
         size_t consumeNextCommandFromInputBuffer(char *buffer, const size_t length);
@@ -28,10 +28,8 @@ namespace TCode::TEvents {
 
         bool parseNext();
         bool parseAll();
-        bool getNext(TCodeEvent &event);
+        bool getNext(Datatypes::TCodeEvent &event);
         void flush();
-
-        void printEventReader();
 
         TCodeEventReader();
         ~TCodeEventReader();

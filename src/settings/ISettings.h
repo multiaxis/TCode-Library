@@ -25,7 +25,7 @@ namespace TCode::Settings {
      * @brief Wrapper for handling settings
      * @paragraph provides an interface for saving settings
      */
-    class ISettings {
+    class TCodeSettingsInterface {
     public:
         /**
          * @brief Initializes the Settings class

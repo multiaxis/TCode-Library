@@ -6,9 +6,9 @@
 #pragma once
 #include <Arduino.h>
 
-namespace TCode {
+namespace TCode::Output {
 
-    class OutputStreamInterface {
+    class TCodeIOutputStream {
     public:
         virtual void write(const char value) const = 0;
         virtual void write(const char *value) const = 0;

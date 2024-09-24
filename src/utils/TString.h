@@ -8,7 +8,6 @@
 #include <Arduino.h>
 
 namespace TCode::TString {
-
     bool readInt(size_t &&index, const char *buffer, const size_t length, unsigned long &value, size_t &log);
     bool readInt(size_t &index, const char *buffer, const size_t length, unsigned long &value, size_t &log);
 
@@ -36,10 +35,10 @@ namespace TCode::TString {
 
     unsigned long getHash(const char *str, size_t length);
 
-    char axisTypeToChar(const AxisType &type);
+    char axisTypeToChar(const Datatypes::AxisType &type);
 
-    const char *axisTypeToVerboseString(const AxisType &type);
+    const char *axisTypeToVerboseString(const Datatypes::AxisType &type);
 
-    String axisIdToString(const AxisId &id);
+    String axisIdToString(const Datatypes::AxisId &id);
 
 }

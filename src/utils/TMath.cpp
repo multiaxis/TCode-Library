@@ -7,7 +7,6 @@
 
 
 namespace TCode::TMath {
-
     float lerpf(float startValue, float endvalue, float t)
     {
         return (startValue + (endvalue - startValue) * t);
@@ -24,7 +23,7 @@ namespace TCode::TMath {
         return (delta * rise) / run + outMin;
     }
 
-    float interpolate(float currentX, float startX, float startValue, AxisRampData r0, float endX, float endValue, AxisRampData r1) {
+    float interpolate(float currentX, float startX, float startValue, Datatypes::AxisRampData r0, float endX, float endValue, Datatypes::AxisRampData r1) {
         float out = 0.0;
         if (!r0.hasTangent && !r1.hasTangent) {
             // linear

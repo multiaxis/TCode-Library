@@ -8,7 +8,7 @@
 #include "EnumTypes.h"
 #include <Arduino.h>
 
-namespace TCode {
+namespace TCode::Datatypes {
 
     /**
      * @brief structure for save entry data

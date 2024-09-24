@@ -6,7 +6,6 @@
 #include <stack>
 
 namespace TCode::TString {
-
     bool isHex(const char value) {
         return ((value >= '0')&&(value <= '9')) || ((value >= 'a') && (value <= 'f')) || ((value >= 'A') && (value <= 'F'));
     }
@@ -183,37 +182,37 @@ namespace TCode::TString {
         return hash;
     }
 
-    char axisTypeToChar(const AxisType &type) {
+    char axisTypeToChar(const Datatypes::AxisType &type) {
         switch (type) {
-        case AxisType::Auxiliary:
+        case Datatypes::AxisType::Auxiliary:
             return 'A';
-        case AxisType::Linear:
+        case Datatypes::AxisType::Linear:
             return 'L';
-        case AxisType::Rotation:
+        case Datatypes::AxisType::Rotation:
             return 'R';
-        case AxisType::Vibration:
+        case Datatypes::AxisType::Vibration:
             return 'V';
         default:
             return '?';
         }
     }
 
-    const char *axisTypeToVerboseString(const AxisType &type) {
+    const char *axisTypeToVerboseString(const Datatypes::AxisType &type) {
         switch (type) {
-        case AxisType::Auxiliary:
+        case Datatypes::AxisType::Auxiliary:
             return "Auxiliary";
-        case AxisType::Linear:
+        case Datatypes::AxisType::Linear:
             return "Linear";
-        case AxisType::Rotation:
+        case Datatypes::AxisType::Rotation:
             return "Rotation";
-        case AxisType::Vibration:
+        case Datatypes::AxisType::Vibration:
             return "Vibration";
         default:
             return "UNDEFINED";
         }
     }
 
-    String axisIdToString(const AxisId &id) {
+    String axisIdToString(const Datatypes::AxisId &id) {
         return axisTypeToChar(id.type) + String((int)id.channel);
     }
 

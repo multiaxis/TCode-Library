@@ -6,7 +6,6 @@
 #include "../utils/TString.h"
 
 namespace TCode::TParser {
-
     bool isExtention(const char value) {
         switch (toupper(value)) {
         case 'I':
@@ -29,109 +28,109 @@ namespace TCode::TParser {
     }
 
 
-    AxisId getAxisIdFromStart(const char *buffer) {
+    Datatypes::AxisId getAxisIdFromStart(const char *buffer) {
         if (strlen(buffer) != 2)
-            return {AxisType::None, UINT8_MAX};
+            return {Datatypes::AxisType::None, UINT8_MAX};
 
         char type = toupper(TString::readCharOrDefault(0, buffer, 2));
         uint8_t channel = static_cast<uint8_t>(TString::readCharOrDefault(1, buffer, 2) - '0');
-        LogHandler::info(TCODE_PARSER_TAG, "Axis Channel Number:%d", channel);
+        //LogHandler::info(TCODE_PARSER_TAG, "Axis Channel Number:%d", channel);
         switch (type) {
         case 'L':
-            return {AxisType::Linear, channel};
+            return {Datatypes::AxisType::Linear, channel};
             break;
         case 'R':
-            return {AxisType::Rotation, channel};
+            return {Datatypes::AxisType::Rotation, channel};
             break;
         case 'V':
-            return {AxisType::Vibration, channel};
+            return {Datatypes::AxisType::Vibration, channel};
             break;
         case 'A':
-            return {AxisType::Auxiliary, channel};
+            return {Datatypes::AxisType::Auxiliary, channel};
             break;
         default:
-            return {AxisType::None, UINT8_MAX};
+            return {Datatypes::AxisType::None, UINT8_MAX};
         }
     }
 
-    AxisId getAxisId(size_t &index, const char *buffer, const size_t length) {
+    Datatypes::AxisId getAxisId(size_t &index, const char *buffer, const size_t length) {
         char type = toupper(TString::readCharOrDefault(index++, buffer, length));
         uint8_t channel = static_cast<uint8_t>(TString::readCharOrDefault(index++, buffer, length) - '0');
-        LogHandler::info(TCODE_PARSER_TAG, "Axis Channel Number:%d", channel);
+        //LogHandler::info(TCODE_PARSER_TAG, "Axis Channel Number:%d", channel);
         switch (type) {
         case 'L':
-            return {AxisType::Linear, channel};
+            return {Datatypes::AxisType::Linear, channel};
             break;
         case 'R':
-            return {AxisType::Rotation, channel};
+            return {Datatypes::AxisType::Rotation, channel};
             break;
         case 'V':
-            return {AxisType::Vibration, channel};
+            return {Datatypes::AxisType::Vibration, channel};
             break;
         case 'A':
-            return {AxisType::Auxiliary, channel};
+            return {Datatypes::AxisType::Auxiliary, channel};
             break;
         default:
-            return {AxisType::None, UINT8_MAX};
+            return {Datatypes::AxisType::None, UINT8_MAX};
         }
     }
 
-    CommandType getCommandType(const char *buffer, const size_t length) {
+    Datatypes::CommandType getCommandType(const char *buffer, const size_t length) {
         switch (toupper(TString::readCharOrDefault(0, buffer, length))) {
         case 'L':
         case 'R':
         case 'V':
         case 'A':
-            return CommandType::Axis;
+            return Datatypes::CommandType::Axis;
         case 'D':
-            return CommandType::Device;
+            return Datatypes::CommandType::Device;
         case '$':
-            return CommandType::Setup;
+            return Datatypes::CommandType::Setup;
         case '*':
-            return CommandType::Firmware;
+            return Datatypes::CommandType::Firmware;
         default:
-            return CommandType::None;
+            return Datatypes::CommandType::None;
         }
     }
 
-    bool parseAxisCommand(const char *buffer, const size_t length, AxisCommandEvent &out) {
-        if (getCommandType(buffer, length) != CommandType::Axis)
+    bool parseAxisCommand(const char *buffer, const size_t length, Datatypes::AxisCommandEvent &out) {
+        if (getCommandType(buffer, length) != Datatypes::CommandType::Axis)
             return false;
 
         size_t index = 0;
-        AxisId id = getAxisId(index, buffer, length);
+        Datatypes::AxisId id = getAxisId(index, buffer, length);
         if (!id.isValid()) {
-            LogHandler::error(TCODE_PARSER_TAG, "Axis ID Invalid in Command, got axis type:\"%s\" channel number : \"%d\"", TString::axisTypeToVerboseString(id.type), id.channel);
+            //LogHandler::error(TCODE_PARSER_TAG, "Axis ID Invalid in Command, got axis type:\"%s\" channel number : \"%d\"", TString::axisTypeToVerboseString(id.type), id.channel);
             return false;
         }
 
-        AxisRampType rampType = AxisRampType::None;
-        AxisExtentionType extentionType = AxisExtentionType::None;
-        AxisRampData rampIn = {.hasTangent = false, .hasWeight = false};
-        AxisRampData rampOut = {.hasTangent = false, .hasWeight = false};
+        Datatypes::AxisRampType rampType = Datatypes::AxisRampType::None;
+        Datatypes::AxisExtentionType extentionType = Datatypes::AxisExtentionType::None;
+        Datatypes::AxisRampData rampIn = {.hasTangent = false, .hasWeight = false};
+        Datatypes::AxisRampData rampOut = {.hasTangent = false, .hasWeight = false};
         float commandValue = 0;
         unsigned long commandExtention = 0;
 
         size_t logValue;
         if (!TString::readTCodeFloat(index, buffer, length, commandValue, logValue)) {
-            LogHandler::error(TCODE_PARSER_TAG, "Could not read value in axis command");
+            //LogHandler::error(TCODE_PARSER_TAG, "Could not read value in axis command");
             return false;
         }
 
         while (true) {
             if (isExtention(TString::readCharOrDefault(index, buffer, length))) {
-                if (extentionType != AxisExtentionType::None) {
-                    LogHandler::error(TCODE_PARSER_TAG, "Cannot have more than one extention per command");
+                if (extentionType != Datatypes::AxisExtentionType::None) {
+                    //LogHandler::error(TCODE_PARSER_TAG, "Cannot have more than one extention per command");
                     return false;
                 }
 
                 if (!parseAxisExtention(index, buffer, length, extentionType, commandExtention)) {
-                    LogHandler::error(TCODE_PARSER_TAG, "Could not parse Axis extention");
+                    //LogHandler::error(TCODE_PARSER_TAG, "Could not parse Axis extention");
                     return false;
                 }
             } else if (isRamp(TString::readCharOrDefault(index, buffer, length))) {
                 if (!parseAxisRamp(index, buffer, length, rampType, rampIn, rampOut)) {
-                    LogHandler::error(TCODE_PARSER_TAG, "Could not parse Axis ramp");
+                    //LogHandler::error(TCODE_PARSER_TAG, "Could not parse Axis ramp");
                     return false;
                 }
             } else {
@@ -141,35 +140,35 @@ namespace TCode::TParser {
 
         // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
         if (toupper(TString::readCharOrDefault(index, buffer, length)) != '\0') {
-            LogHandler::error(TCODE_PARSER_TAG, "Could not parse chars left in buffer after parsing");
+            //LogHandler::error(TCODE_PARSER_TAG, "Could not parse chars left in buffer after parsing");
             return false;
         }
 
-        AxisData data{
+        Datatypes::AxisData data{
             .commandValue = commandValue,
             .commandExtention = commandExtention,
             .extentionType = extentionType,
             .rampIn = rampIn,
             .rampOut = rampOut};
 
-        out.commandType = CommandType::Axis;
+        out.commandType = Datatypes::CommandType::Axis;
         out.data = data;
         out.id = id;
         return true;
     }
 
-    AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length) {
+    Datatypes::AxisExtentionType getExtentionType(size_t &index, const char *buffer, const size_t length) {
         switch (toupper(TString::readCharOrDefault(index++, buffer, length))) {
         case 'I':
-            return AxisExtentionType::Time;
+            return Datatypes::AxisExtentionType::Time;
         case 'S':
-            return AxisExtentionType::Speed;
+            return Datatypes::AxisExtentionType::Speed;
         default:
-            return AxisExtentionType::None;
+            return Datatypes::AxisExtentionType::None;
         }
     }
 
-    bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, AxisExtentionType &extentionType, unsigned long &commandExtention) {
+    bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, Datatypes::AxisExtentionType &extentionType, unsigned long &commandExtention) {
         extentionType = getExtentionType(index, buffer, length);
 
         size_t logValue;
@@ -179,54 +178,54 @@ namespace TCode::TParser {
         return true;
     }
 
-    AxisRampType getRampType(size_t &index, const char *buffer, const size_t length) {
+    Datatypes::AxisRampType getRampType(size_t &index, const char *buffer, const size_t length) {
         char first = TString::readCharOrDefault(index++, buffer, length);
 
         switch (first) {
         case '<':
-            return AxisRampType::In;
+            return Datatypes::AxisRampType::In;
         case '>':
-            return AxisRampType::Out;
+            return Datatypes::AxisRampType::Out;
         case '=':
-            return AxisRampType::InOut;
+            return Datatypes::AxisRampType::InOut;
         default:
-            return AxisRampType::None;
+            return Datatypes::AxisRampType::None;
         }
     }
 
-    bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, AxisRampType &rampType, AxisRampData &rampIn, AxisRampData &rampOut) {
+    bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, Datatypes::AxisRampType &rampType, Datatypes::AxisRampData &rampIn, Datatypes::AxisRampData &rampOut) {
         //(<|>|=)(<tangent>(.<weight>))
-        if (rampType == AxisRampType::InOut)
+        if (rampType == Datatypes::AxisRampType::InOut)
             return false;
 
-        AxisRampType currentRampType = getRampType(index, buffer, length);
-        if (currentRampType == AxisRampType::None)
+        Datatypes::AxisRampType currentRampType = getRampType(index, buffer, length);
+        if (currentRampType == Datatypes::AxisRampType::None)
             return false;
         if (currentRampType == rampType)
             return false;
 
-        AxisRampData data;
+        Datatypes::AxisRampData data;
         if (!parseAxisRampData(index, buffer, length, currentRampType, data))
             return false;
 
-        if (currentRampType == AxisRampType::In || currentRampType == AxisRampType::InOut)
+        if (currentRampType == Datatypes::AxisRampType::In || currentRampType == Datatypes::AxisRampType::InOut)
             rampIn = data;
-        if (currentRampType == AxisRampType::Out || currentRampType == AxisRampType::InOut)
+        if (currentRampType == Datatypes::AxisRampType::Out || currentRampType == Datatypes::AxisRampType::InOut)
             rampOut = data;
 
-        if (rampType != AxisRampType::None)
-            rampType = AxisRampType::InOut;
+        if (rampType != Datatypes::AxisRampType::None)
+            rampType = Datatypes::AxisRampType::InOut;
 
         return true;
     }
 
-    bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const AxisRampType rampType, AxisRampData &data) {
+    bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const Datatypes::AxisRampType rampType, Datatypes::AxisRampData &data) {
         data = {
             .tangent = 0,
             .weight = 1 / 3.0f,
             .hasTangent = false,
             .hasWeight = false,
-            .autoTangent = rampType != AxisRampType::InOut};
+            .autoTangent = rampType != Datatypes::AxisRampType::InOut};
 
         if (!isdigit(TString::readCharOrDefault(index++, buffer, length))) {
             return false;
@@ -254,12 +253,12 @@ namespace TCode::TParser {
         return true;
     }
 
-    bool parseSetupCommand(const char *buffer, const size_t length, SetupCommandEvent &out) {
-        if (getCommandType(buffer, length) != CommandType::Setup)
+    bool parseSetupCommand(const char *buffer, const size_t length, Datatypes::SetupCommandEvent &out) {
+        if (getCommandType(buffer, length) != Datatypes::CommandType::Setup)
             return false;
 
         size_t index = 1;
-        AxisId id = getAxisId(index, buffer, length);
+        Datatypes::AxisId id = getAxisId(index, buffer, length);
         if (!id.isValid())
             return false;
 
@@ -293,15 +292,15 @@ namespace TCode::TParser {
         out.saveEntryData.max = maxValue;
         out.saveEntryData.minLog = minValueLog;
         out.saveEntryData.maxLog = maxValueLog;
-        out.commandType = CommandType::Setup;
+        out.commandType = Datatypes::CommandType::Setup;
         return true;
     }
 
-    bool parseFirmwareCommand(const char *buffer, const size_t length, FirmwareCommandEvent &out) {
+    bool parseFirmwareCommand(const char *buffer, const size_t length, Datatypes::FirmwareCommandEvent &out) {
         size_t index = 1;
         if(!TString::readVIntHex(index,buffer,length,out.firmwareID))
         {
-            LogHandler::error(TCODE_PARSER_TAG, "Invalid Firmware ID in Command:\"%s\"", buffer);
+            //LogHandler::error(TCODE_PARSER_TAG, "Invalid Firmware ID in Command:\"%s\"", buffer);
             return false;
         }
 
@@ -318,89 +317,83 @@ namespace TCode::TParser {
         }
 
         out.value[sizeof(out.value)-1] = '\0';
-        out.commandType = CommandType::Firmware;
+        out.commandType = Datatypes::CommandType::Firmware;
         return true;
     }
 
-    bool parseCommand(const char *buffer, const size_t length, TCodeEvent &out) {
-        CommandType type = TParser::getCommandType(buffer, length);
+    bool parseCommand(const char *buffer, const size_t length, Datatypes::TCodeEvent &out) {
+        Datatypes::CommandType type = TParser::getCommandType(buffer, length);
 
-        LogHandler::info(TCODE_PARSER_TAG, "Parsing Command Buffer:\"%s\"", buffer);
+        //LogHandler::info(TCODE_PARSER_TAG, "Parsing Command Buffer:\"%s\"", buffer);
 
         switch (type) {
-        case CommandType::Axis: {
-            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Axis");
-            AxisCommandEvent result;
-            out.commandType = CommandType::Axis;
+        case Datatypes::CommandType::Axis: {
+            //LogHandler::info(TCODE_PARSER_TAG, "Command Type : Axis");
+            Datatypes::AxisCommandEvent result;
+            out.commandType = Datatypes::CommandType::Axis;
             if (TParser::parseAxisCommand(buffer, length, result)) {
                 out.axisCommand = result;
-                LogHandler::info(TCODE_PARSER_TAG, "Value: %f", result.data.commandValue);
-                LogHandler::info(TCODE_PARSER_TAG, "Extention Type:%d", (int)result.data.extentionType);
-                LogHandler::info(TCODE_PARSER_TAG, "Extention: %d", result.data.commandExtention);
+                //LogHandler::info(TCODE_PARSER_TAG, "Value: %f", result.data.commandValue);
+                //LogHandler::info(TCODE_PARSER_TAG, "Extention Type:%d", (int)result.data.extentionType);
+                //LogHandler::info(TCODE_PARSER_TAG, "Extention: %d", result.data.commandExtention);
                 return true;
             }
             break;
         }
-        case CommandType::Device: {
-            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Device");
-            DeviceCommandEvent result;
+        case Datatypes::CommandType::Device: {
+            //LogHandler::info(TCODE_PARSER_TAG, "Command Type : Device");
+            Datatypes::DeviceCommandEvent result;
             if (TParser::parseDeviceCommand(buffer, length, result)) {
-                out.commandType = CommandType::Device;
+                out.commandType = Datatypes::CommandType::Device;
                 out.deviceCommand = result;
                 return true;
             }
             break;
         }
-        case CommandType::Setup: {
-            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Setup");
-            SetupCommandEvent result;
+        case Datatypes::CommandType::Setup: {
+            //LogHandler::info(TCODE_PARSER_TAG, "Command Type : Setup");
+            Datatypes::SetupCommandEvent result;
             if (TParser::parseSetupCommand(buffer, length, result)) {
-                out.commandType = CommandType::Setup;
+                out.commandType = Datatypes::CommandType::Setup;
                 out.setupCommand = result;
                 return true;
             }
             break;
         }
-        case CommandType::Firmware: {
-            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Firmware");
-            FirmwareCommandEvent result;
+        case Datatypes::CommandType::Firmware: {
+            //LogHandler::info(TCODE_PARSER_TAG, "Command Type : Firmware");
+            Datatypes::FirmwareCommandEvent result;
             if (TParser::parseFirmwareCommand(buffer, length, result)) {
-                out.commandType = CommandType::Firmware;
+                out.commandType = Datatypes::CommandType::Firmware;
                 out.firmwareCommand = result;
                 return true;
             }
             break;
         }
         default:
-            LogHandler::info(TCODE_PARSER_TAG, "Command Type : Unknown");
-            out.commandType = CommandType::None;
+            //LogHandler::info(TCODE_PARSER_TAG, "Command Type : Unknown");
+            out.commandType = Datatypes::CommandType::None;
             break;
         }
         return false;
     }
 
-    bool parseDeviceCommand(const char *buffer, const size_t length, DeviceCommandEvent &out) {
-        if (getCommandType(buffer, length) != CommandType::Device)
+    bool parseDeviceCommand(const char *buffer, const size_t length, Datatypes::DeviceCommandEvent &out) {
+        if (getCommandType(buffer, length) != Datatypes::CommandType::Device)
             return false;
 
         size_t index = 1;
+        Datatypes::DeviceCommandType command = Datatypes::DeviceCommandType::None;
         switch (toupper(TString::readCharOrDefault(index, buffer, length))) {
-        case 'S':
-            out = {CommandType::Device, DeviceCommandType::StopDevice};
-            return true;
-        case '0':
-            out = {CommandType::Device, DeviceCommandType::GetSoftwareVersion};
-            return true;
-        case '1':
-            out = {CommandType::Device, DeviceCommandType::GetTCodeVersion};
-            return true;
-        case '2':
-            out = {CommandType::Device, DeviceCommandType::GetAssignedAxisValues};
-            return true;
-        default:
-            out = {CommandType::Device, DeviceCommandType::None};
-            return false;
+        case 'S': command = Datatypes::DeviceCommandType::StopDevice; break;
+        case '0': command = Datatypes::DeviceCommandType::GetSoftwareVersion; break;
+        case '1': command = Datatypes::DeviceCommandType::GetTCodeVersion; break;
+        case '2': command = Datatypes::DeviceCommandType::GetAssignedAxisValues; break;
+        default: command = Datatypes::DeviceCommandType::None; break;
         }
+
+        out = {Datatypes::CommandType::Device, command};
+        return command != Datatypes::DeviceCommandType::None;
     }
 
 }

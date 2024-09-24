@@ -4,23 +4,25 @@
 // Please copy, share, learn, innovate, give attribution.
 #pragma once
 
-#include "../interfaceBaseClass/TInterfaceBase.h"
+#include "TModuleBase.h"
 #include <Arduino.h>
 #include <vector>
 // #include "../../context/TCodeContext.h"
 
-namespace TCode {
-    class TCodeContext;
 
-    class TCodeInterfaceManager {
+
+namespace TCode::Module {
+    
+
+    class TCodeModuleManager {
     private:
-        std::vector<TInterfaceBase *> registeredInterfaces;
+        std::vector<TCodeModuleBase *> registeredInterfaces;
 
     public:
-        void registerInterface(TInterfaceBase *interface);
+        void registerInterface(TCodeModuleBase *interface);
         void update(TCodeContext &context);
 
-        TCodeInterfaceManager();
-        ~TCodeInterfaceManager();
+        TCodeModuleManager();
+        ~TCodeModuleManager();
     };
 }

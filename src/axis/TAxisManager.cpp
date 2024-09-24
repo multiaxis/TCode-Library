@@ -2,22 +2,22 @@
 // protocol by TempestMAx (https://www.patreon.com/tempestvr)
 // implemented by Eve 07/07/2024
 // Please copy, share, learn, innovate, give attribution.
-#include "TCodeAxisManager.h"
+#include "TAxisManager.h"
 
-namespace TCode {
+namespace TCode::Axis {
     void TCodeAxisManager::stop() {
         for (size_t i = 0; i < registeredAxes.size(); i++)
             registeredAxes[i]->stop();
     }
 
-    void TCodeAxisManager::setAxisData(const AxisId &id, const AxisData &data) {
+    void TCodeAxisManager::setAxisData(const Datatypes::AxisId &id, const Datatypes::AxisData &data) {
         TCodeAxis *axis = nullptr;
         if (getAxisFromId(id, axis)) {
             axis->set(data);
         }
     }
 
-    float TCodeAxisManager::getAxisPosition(const AxisId &id) {
+    float TCodeAxisManager::getAxisPosition(const Datatypes::AxisId &id) {
         TCodeAxis *axis = nullptr;
         if (getAxisFromId(id, axis)) {
             return axis->getPosition();
@@ -26,7 +26,7 @@ namespace TCode {
         return NAN;
     }
 
-    unsigned long TCodeAxisManager::getAxisLastCommandTime(const AxisId &id) {
+    unsigned long TCodeAxisManager::getAxisLastCommandTime(const Datatypes::AxisId &id) {
         TCodeAxis *axis = nullptr;
         if (getAxisFromId(id, axis)) {
             return axis->getLastCommandTime();
@@ -46,7 +46,7 @@ namespace TCode {
         return true;
     }
 
-    bool TCodeAxisManager::hasAxisFromId(const AxisId &id) {
+    bool TCodeAxisManager::hasAxisFromId(const Datatypes::AxisId &id) {
         TCodeAxis *found = nullptr;
         return getAxisFromId(id, found);
     }
@@ -61,7 +61,7 @@ namespace TCode {
         return registeredAxes.size();
     }
 
-    bool TCodeAxisManager::getAxisFromId(const AxisId &id, TCodeAxis *&axis) {
+    bool TCodeAxisManager::getAxisFromId(const Datatypes::AxisId &id, TCodeAxis *&axis) {
         for (size_t i = 0; i < registeredAxes.size(); i++) {
             TCodeAxis *testAxis = registeredAxes[i];
             if (testAxis->getId() == id) {
