@@ -23,66 +23,58 @@ namespace TCode::TMath {
         return (delta * rise) / run + outMin;
     }
 
+    double mapd(double x, double inMin, double inMax, double outMin, double outMax) {
+        const double run = inMax - inMin;
+        if (run == 0) {
+            return -1; // AVR returns -1, SAM returns 0
+        }
+
+        const double rise = outMax - outMin;
+        const double delta = x - inMin;
+        return (delta * rise) / run + outMin;
+    }
+
     float interpolate(float currentX, float startX, float startValue, Datatypes::AxisRampData r0, float endX, float endValue, Datatypes::AxisRampData r1) {
         float out = 0.0;
+        if(currentX < startX)
+            return startValue;
+        if(currentX > endX)
+            return endValue;
+
         if (!r0.hasTangent && !r1.hasTangent) {
             // linear
             //LogHandler::warning("TMATH","Linear");
-            out = constrain(mapf(currentX, startX, endX, startValue, endValue),0.0,doubleLimit);
+            out = mapd(currentX, startX, endX, startValue, endValue);
         } else if (!r0.hasWeight && !r1.hasWeight) {
             // cubic hermite
-            float d = endX - startX;
-            float dx = currentX - startX;
-            float t = dx / d;
-            float r = 1 - t;
+            float dt = currentX - startX;
+            float t = dt / (endX - startX);
 
             float m0 = tan((PI / 2) * constrain(r0.tangent, -doubleLimit, doubleLimit));
             float m1 = tan((PI / 2) * constrain(r1.tangent, -doubleLimit, doubleLimit));
+
+            float i = (2*t*t*t-3*t*t+1);
+            float j = (t*t*t-2*t*t+t);
+            float k = (-2*t*t*t+3*t*t);
+            float l = (t*t*t-t*t);
+
             //LogHandler::warning("TMATH","Cubic");
-            out = r * r * (startValue * (1 + 2 * t) + m0 * dx) + t * t * (endValue * (3 - 2 * t) - d * m1 * r);
+            out = startValue * i + m0 * j + endValue * k + m1 * l;
         } else {
             // bezier
-            float dx = endX - startX;
-            float dy = endValue - startValue;
+            float dt = currentX - startX;
+            float t = dt / (endX - startX);
 
-            float m0 = tan(PI / 2 * constrain(r0.tangent, -doubleLimit, doubleLimit));
-            float m1 = tan(PI / 2 * constrain(r1.tangent, -doubleLimit, doubleLimit));
+            float a0 = (PI / 2) * constrain(r0.tangent, -doubleLimit, doubleLimit);
+            float a1 = (PI / 2) * constrain(r1.tangent, -doubleLimit, doubleLimit);
 
             float w0 = constrain(r0.weight, 0.0f, doubleLimit);
             float w1 = constrain(r1.weight, 0.0f, doubleLimit);
-            float w1s = 1 - w1;
+            
+            float py0 = constrain(sin(a0) * w0, 0.0f, doubleLimit);
+            float py1 = constrain(sin(a1) * w1, 0.0f, doubleLimit);
 
-            float ts;
-            float t = 0.5f;
-            float tx = (currentX - startX) / dx;
-
-            if ((abs(w0 - 1 / 3.0f) < error) && (abs(w1 - 1 / 3.0f) < error)) {
-                t = tx;
-                ts = 1 - t;
-            } else {
-                while (true) {
-                    ts = 1 - t;
-
-                    float t2 = t * t;
-                    float ts2 = ts * ts;
-
-                    float fg = 3 * ts2 * t * w0 + 3 * ts * t2 * w1s + t2 * t - tx;
-                    if (abs(fg) < error)
-                        break;
-
-                    // third order householder method
-                    float fpg = 3 * ts2 * w0 + 6 * ts * t * (w1s - w0) + 3 * t2 * (1 - w1s);
-                    float fppg = 6 * ts * (w1s - 2 * w0) + 6 * t * (1 - 2 * w1s + w0);
-                    float fpppg = 18 * w0 - 18 * w1s + 6;
-
-                    float fg2 = fg * fg;
-                    float fpg2 = fpg * fpg;
-                    t -= (6 * fg * fpg2 - 3 * fg2 * fppg) / (6 * fpg2 * fpg - 6 * fg * fpg * fppg + fg2 * fpppg);
-                }
-            }
-            //LogHandler::warning("TMATH","Bezier");
-            float t2 = t * t;
-            out = startValue + 3 * ts * ts * t * w0 * m0 * dx + 3 * ts * t2 * (dy - w1 * m1 * dx) + t2 * t * dy;
+            out = lerpf(lerpf(startValue,py0,t),lerpf(py1,endValue,t),t);
         }
         return constrain(out,0.0f,TMath::doubleLimit);
     }

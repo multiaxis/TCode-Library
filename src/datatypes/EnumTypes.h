@@ -52,7 +52,6 @@ namespace TCode::Datatypes {
     enum class AxisRampType {
         In,
         Out,
-        InOut,
         None
     };
 }

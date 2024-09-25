@@ -20,7 +20,6 @@ namespace TCode::TParser {
         switch (value) {
         case '<':
         case '>':
-        case '=':
             return true;
         default:
             return false;
@@ -117,8 +116,11 @@ namespace TCode::TParser {
             return false;
         }
 
+        bool hasInRamp = false;
+        bool hasOutRamp = false;
         while (true) {
-            if (isExtention(TString::readCharOrDefault(index, buffer, length))) {
+            char currentChar = TString::readCharOrDefault(index, buffer, length);
+            if (isExtention(currentChar)) {
                 if (extentionType != Datatypes::AxisExtentionType::None) {
                     //LogHandler::error(TCODE_PARSER_TAG, "Cannot have more than one extention per command");
                     return false;
@@ -128,14 +130,31 @@ namespace TCode::TParser {
                     //LogHandler::error(TCODE_PARSER_TAG, "Could not parse Axis extention");
                     return false;
                 }
-            } else if (isRamp(TString::readCharOrDefault(index, buffer, length))) {
-                if (!parseAxisRamp(index, buffer, length, rampType, rampIn, rampOut)) {
-                    //LogHandler::error(TCODE_PARSER_TAG, "Could not parse Axis ramp");
+            } else if (isRamp(currentChar)) {
+                if(hasInRamp && hasOutRamp)
                     return false;
+
+                if(currentChar == '<' && !hasInRamp)
+                {
+                    parseAxisRamp(index, buffer, length, rampIn);
+                    hasInRamp = true;
+                }
+                else if(currentChar == '>' && !hasOutRamp)
+                {
+                    parseAxisRamp(index, buffer, length, rampOut);
+                    hasOutRamp = true;
                 }
             } else {
                 break;
             }
+        }
+
+        
+
+        if(!(hasInRamp && hasOutRamp))
+        {
+            rampIn.autoTangent = true;
+            rampOut.autoTangent = true;
         }
 
         // if the command has been processed and there are still characters left over the command has not been processed correctly/the command is incorrect
@@ -186,70 +205,55 @@ namespace TCode::TParser {
             return Datatypes::AxisRampType::In;
         case '>':
             return Datatypes::AxisRampType::Out;
-        case '=':
-            return Datatypes::AxisRampType::InOut;
         default:
             return Datatypes::AxisRampType::None;
         }
     }
 
-    bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, Datatypes::AxisRampType &rampType, Datatypes::AxisRampData &rampIn, Datatypes::AxisRampData &rampOut) {
-        //(<|>|=)(<tangent>(.<weight>))
-        if (rampType == Datatypes::AxisRampType::InOut)
-            return false;
-
+    bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, Datatypes::AxisRampData &rampOut) {
+        //(<|>)(<tangent>(.<weight>))
         Datatypes::AxisRampType currentRampType = getRampType(index, buffer, length);
         if (currentRampType == Datatypes::AxisRampType::None)
             return false;
-        if (currentRampType == rampType)
-            return false;
 
-        Datatypes::AxisRampData data;
-        if (!parseAxisRampData(index, buffer, length, currentRampType, data))
-            return false;
-
-        if (currentRampType == Datatypes::AxisRampType::In || currentRampType == Datatypes::AxisRampType::InOut)
-            rampIn = data;
-        if (currentRampType == Datatypes::AxisRampType::Out || currentRampType == Datatypes::AxisRampType::InOut)
-            rampOut = data;
-
-        if (rampType != Datatypes::AxisRampType::None)
-            rampType = Datatypes::AxisRampType::InOut;
-
-        return true;
-    }
-
-    bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const Datatypes::AxisRampType rampType, Datatypes::AxisRampData &data) {
-        data = {
-            .tangent = 0,
+        Datatypes::AxisRampData data = {
+            .tangent = 0.5,
             .weight = 1 / 3.0f,
             .hasTangent = false,
             .hasWeight = false,
-            .autoTangent = rampType != Datatypes::AxisRampType::InOut};
+            .autoTangent = false
+        };
 
-        if (!isdigit(TString::readCharOrDefault(index++, buffer, length))) {
+        size_t logValue = 0;
+        float tangent = 0.5;
+        float weight = 1 / 3.0f;
+        
+        if (!isdigit(TString::readCharOrDefault(index, buffer, length))) {
             return false;
         }
 
-        size_t logValue;
-        float tangent;
+        
+
         if (!TString::readTCodeFloat(index, buffer, length, tangent, logValue))
             return false;
 
-        data.tangent = TMath::mapf(tangent, 0.0f, 1.0f, -TMath::doubleLimit, TMath::doubleLimit);
+        data.tangent = constrain(TMath::mapf(tangent,0.0,1.0,-TMath::doubleLimit,TMath::doubleLimit), -TMath::doubleLimit, TMath::doubleLimit);
         data.hasTangent = true;
-        if (TString::readCharOrDefault(index, buffer, length) != '.')
-            return true;
-        index++;
-        if (!isdigit(TString::readCharOrDefault(index++, buffer, length)))
-            return false;
 
-        float weight;
-        if (!TString::readTCodeFloat(index, buffer, length, weight, logValue))
-            return false;
+        if (TString::readCharOrDefault(index, buffer, length) == '.')
+        {
+            index++;
+            if (!isdigit(TString::readCharOrDefault(index++, buffer, length)))
+                return false;
 
-        data.weight = constrain(weight, 0, TMath::doubleLimit);
-        data.hasWeight = true;
+            
+            if (!TString::readTCodeFloat(index, buffer, length, weight, logValue))
+                return false;
+            data.weight = constrain(weight, 0, TMath::doubleLimit);
+            data.hasWeight = true;
+        }
+
+        rampOut = data;
         return true;
     }
 

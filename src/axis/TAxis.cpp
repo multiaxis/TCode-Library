@@ -64,7 +64,7 @@ namespace TCode::Axis {
 
         if (deltaTime != 0) {
             float deltaValue = endValue - startValue;
-            float easingTangent = 2 / PI * atan(2 * deltaValue / deltaTime); // approximates easing functions
+            float easingTangent = (2 / PI) * atan(2 * deltaValue / deltaTime); // approximates easing functions
             if (currentState.startRamp.autoTangent)
                 currentState.startRamp.tangent = easingTangent;
 

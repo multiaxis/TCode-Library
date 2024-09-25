@@ -32,9 +32,7 @@ namespace TCode::TParser {
 
     bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, Datatypes::AxisExtentionType &extentionType, unsigned long &commandExtention);
 
-    bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, Datatypes::AxisRampType &rampType, Datatypes::AxisRampData &rampIn, Datatypes::AxisRampData &rampOut);
-
-    bool parseAxisRampData(size_t &index, const char *buffer, const size_t length, const Datatypes::AxisRampType rampType, Datatypes::AxisRampData &data);
+    bool parseAxisRamp(size_t &index, const char *buffer, const size_t length, Datatypes::AxisRampData &rampOut);
 
     bool parseDeviceCommand(const char *buffer, const size_t length, Datatypes::DeviceCommandEvent &out);
 
