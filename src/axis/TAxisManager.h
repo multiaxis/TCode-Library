@@ -86,7 +86,7 @@ namespace TCode::Axis {
          *
          * @returns TCodeAxis pointer or nullptr if index out of bounds.
          */
-        const TCodeAxis *getAxisIndex(const size_t &index);
+        TCodeAxis *getAxisIndex(const size_t &index);
 
         /**
          * @brief gets the axis from container at index.
@@ -95,7 +95,7 @@ namespace TCode::Axis {
          *
          * @returns TCodeAxis pointer or nullptr if index out of bounds.
          */
-        const TCodeAxis *operator[](const size_t &index);
+        TCodeAxis *operator[](const size_t &index);
 
         /**
          * @brief returns the number of axis registered with this container.

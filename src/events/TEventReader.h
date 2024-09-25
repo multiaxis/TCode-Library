@@ -13,7 +13,7 @@ namespace TCode::Events {
 
     class TCodeEventReader {
     private:
-        static const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 512;
+        static const int MAX_COMMAND_BUFFER_LENGTH_COUNT = 64;
         std::deque<char> inputBuffer;
         std::deque<Datatypes::TCodeEvent> eventBuffer;
 

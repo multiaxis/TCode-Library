@@ -16,6 +16,9 @@
 #define DEFAULT_FILE_NAME "/spiffs/TCode.dat"
 
 namespace TCode {
+    /**
+     * @brief TCodeContext class used to contain important references to needed classes
+     */
     class TCodeContext {
     public:
         TCodeContext(const char *firmware = DEFAULT_FIRMWARE_NAME, const char *tcodeVersion = DEFAULT_TCODE_VERSION, const char *Filepath = DEFAULT_FILE_NAME)
