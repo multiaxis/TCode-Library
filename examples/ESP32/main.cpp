@@ -18,8 +18,13 @@
 #error Target CONFIG_IDF_TARGET is not supported
 #endif
 
-using namespace TCode;
+#include "TCodeEsp32Specific/Settings/SettingsESP32.h"
+#include "TCodeEsp32Specific/Output/arduinoPrintStream.h"
+#include "TCodeEsp32Specific/Output/TButton.h"
 
+using namespace TCode;
+using namespace TCode::Datatypes;
+using namespace TCode::Axis;
 
 TButton button(12,"Test");
 TCodeAxis stroke_axis("Stroke",{AxisType::Linear,0},0.5f);
@@ -34,10 +39,11 @@ TCodeAxis valve_axis("Valve",{AxisType::Auxiliary,0},0.0f);
 TCodeAxis suck_axis("Suck",{AxisType::Auxiliary,1},0.0f);
 TCodeAxis lube_axis("Lube",{AxisType::Auxiliary,2},0.0f);
 #define axis_count 11
-TCodeAxis* axis_pointers[axis_count] = {&stroke_axis,&surge_axis,&sway_axis,&twist_axis,&roll_axis,&pitch_axis,&vibe0_axis,&vibe1_axis,&valve_axis,&suck_axis,&lube_axis};
+TCodeAxis* axis_pointers[] = {&stroke_axis,&surge_axis,&sway_axis,&twist_axis,&roll_axis,&pitch_axis,&vibe0_axis,&vibe1_axis,&valve_axis,&suck_axis,&lube_axis};
 
 TCodeManager tcode;
-Settings::SettingsESP32 settings(DEFAULT_FILE_NAME);
+TCodeArduinoPrintWrapper printwrapper (&Serial);
+SettingsESP32 settings(DEFAULT_FILE_NAME);
 
 void verbose_print_reset_reason(int reason)
 {
@@ -104,12 +110,13 @@ void print_sys()
 }
 
 void setup() {
-  LogHandler::setLogLevel(LogLevel::VERBOSE);
+  //LogHandler::setLogLevel(LogHandler::LogLevel::VERBOSE);
+  //LogHandler::setFilterDuplicates(true);
   Serial.begin(115200);
   
   settings.init();
   tcode.setSettingManager(&settings);
-  tcode.setOutputStream(&Serial);
+  tcode.setOutputStream(&printwrapper);
 
   for(int i = 0; i < axis_count; i++)
   {
@@ -136,13 +143,6 @@ void loop() {
       received = true;
   }
   tcode.updateInterfaces();
-  
-  if(received)
-  {
-    //Serial.println((int)logging.getLogLevel());
-    //print_sys();
-    //print_heap();
-  }
 
   for (int i = 0; i < axis_count; i++)
   {
@@ -156,9 +156,7 @@ void loop() {
     }
   }
 
-  /*
-  Serial.print(">A0:");
-  Serial.println(test_axis.getPosition());
-  */
+
+  log_i();
 }
 

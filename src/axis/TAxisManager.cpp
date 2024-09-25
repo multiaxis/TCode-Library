@@ -17,7 +17,7 @@ namespace TCode::Axis {
         }
     }
 
-    float TCodeAxisManager::getAxisPosition(const Datatypes::AxisId &id) {
+    const float TCodeAxisManager::getAxisPosition(const Datatypes::AxisId &id){
         TCodeAxis *axis = nullptr;
         if (getAxisFromId(id, axis)) {
             return axis->getPosition();
@@ -26,7 +26,7 @@ namespace TCode::Axis {
         return NAN;
     }
 
-    unsigned long TCodeAxisManager::getAxisLastCommandTime(const Datatypes::AxisId &id) {
+    const unsigned long TCodeAxisManager::getAxisLastCommandTime(const Datatypes::AxisId &id){
         TCodeAxis *axis = nullptr;
         if (getAxisFromId(id, axis)) {
             return axis->getLastCommandTime();
@@ -35,7 +35,7 @@ namespace TCode::Axis {
         return LONG_MAX;
     }
 
-    bool TCodeAxisManager::registerAxis(TCodeAxis *axis) {
+    const bool TCodeAxisManager::registerAxis(TCodeAxis *axis) {
         if (axis == nullptr)
             return false;
 
@@ -46,22 +46,22 @@ namespace TCode::Axis {
         return true;
     }
 
-    bool TCodeAxisManager::hasAxisFromId(const Datatypes::AxisId &id) {
+    const bool TCodeAxisManager::hasAxisFromId(const Datatypes::AxisId &id){
         TCodeAxis *found = nullptr;
         return getAxisFromId(id, found);
     }
 
-    TCodeAxis *TCodeAxisManager::getAxisIndex(const size_t &index) {
+    const TCodeAxis *TCodeAxisManager::getAxisIndex(const size_t &index){
         if (index > registeredAxes.size())
             return nullptr;
         return registeredAxes[index];
     }
 
-    size_t TCodeAxisManager::count() {
+    const size_t TCodeAxisManager::count(){
         return registeredAxes.size();
     }
 
-    bool TCodeAxisManager::getAxisFromId(const Datatypes::AxisId &id, TCodeAxis *&axis) {
+    const bool TCodeAxisManager::getAxisFromId(const Datatypes::AxisId &id, TCodeAxis *&axis){
         for (size_t i = 0; i < registeredAxes.size(); i++) {
             TCodeAxis *testAxis = registeredAxes[i];
             if (testAxis->getId() == id) {
@@ -71,6 +71,10 @@ namespace TCode::Axis {
         }
 
         return false;
+    }
+
+    const TCodeAxis *TCodeAxisManager::operator[](const size_t &index){
+        return getAxisIndex(index);
     }
 
     TCodeAxisManager::TCodeAxisManager() {

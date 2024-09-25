@@ -18,6 +18,6 @@
 	"libLDFMode" : "chain+",
 	"build": {
 		"srcDir": "./src",
-		"srcFilter": "+<*> -<examples> -<test> -<settings/settingsClasses/SettingsESP32.cpp>"
+		"srcFilter": "+<*> -<examples> -<test>"
 	}
   }
