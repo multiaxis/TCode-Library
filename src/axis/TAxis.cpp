@@ -44,9 +44,9 @@ namespace TCode::Axis {
             } else {
                 int lastInterval = currentTime - currentState.startTime;
 
-                if (lastInterval > minInterval && minInterval < TCODE_MIN_AXIS_SMOOTH_INTERVAL)
+                if (lastInterval > minInterval && minInterval < TCODE_MAX_AXIS_SMOOTH_INTERVAL)
                     minInterval += 1;
-                else if (lastInterval < minInterval && minInterval > TCODE_MAX_AXIS_SMOOTH_INTERVAL)
+                else if (lastInterval < minInterval && minInterval > TCODE_MIN_AXIS_SMOOTH_INTERVAL)
                     minInterval -= 1;
 
                 deltaTime = minInterval;
@@ -78,16 +78,11 @@ namespace TCode::Axis {
     const float TCodeAxis::getPosition() {
         unsigned long currentTimeMicros = micros();
         unsigned long currentTime = millis();
-        if (currentTime > currentState.endTime)
-            return currentState.endPosition;
-        if (currentTime < currentState.startTime)
-            return currentState.startPosition;
-
         unsigned long delta = (currentState.endTime - currentState.startTime) * 1000;
         unsigned long ctDelta = currentTimeMicros - (currentState.startTime * 1000);
 
         float position = TMath::interpolate(ctDelta, 0, currentState.startPosition, currentState.startRamp, delta, currentState.endPosition, currentState.endRamp);
-        return constrain(position, 0.0, 1.0);
+        return position;
     }
 
     void TCodeAxis::stop() {
