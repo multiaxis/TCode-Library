@@ -30,7 +30,7 @@ namespace TCode::Axis {
 
         switch (data.extentionType) {
         case Datatypes::AxisExtentionType::Speed: {
-            deltaTime = abs(endValue - startValue);
+            deltaTime = abs((endValue*10000) - (startValue*10000));
             deltaTime *= 100;
             if (extentionValue > 0) {
                 deltaTime /= extentionValue;
