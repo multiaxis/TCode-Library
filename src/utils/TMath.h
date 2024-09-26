@@ -23,5 +23,4 @@ namespace TCode::TMath {
     float getFloatFromTCode(unsigned long value, int precision);
 
     unsigned long getTCodeEstimateLogFromFloat(float value);
-
 }

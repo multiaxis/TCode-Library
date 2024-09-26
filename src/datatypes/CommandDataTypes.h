@@ -53,7 +53,4 @@ namespace TCode::Datatypes {
         SetupCommandEvent setupCommand;
         FirmwareCommandEvent firmwareCommand;
     } TCodeEvent;
-
-    #define size_value sizeof(TCodeEvent);
-
 }

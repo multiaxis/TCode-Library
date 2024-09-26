@@ -1,12 +1,6 @@
 #include "TModuleManager.h"
 
 namespace TCode::Module {
-    TCodeModuleManager::TCodeModuleManager() {
-    }
-
-    TCodeModuleManager::~TCodeModuleManager() {
-    }
-
     void TCodeModuleManager::registerInterface(TCodeModuleBase *interface) {
         if (interface != nullptr)
             registeredInterfaces.push_back(interface);

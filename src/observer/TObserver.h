@@ -6,10 +6,29 @@
 
 namespace TCode::Observer {
 
+    /**
+     * @brief Interface for an observer in the observer pattern.
+     *
+     * The `TCodeIObserver` class is a generic interface for implementing the observer pattern.
+     * It defines a pure virtual `notify` method that must be implemented by any concrete observer
+     * class. The observer will receive updates (notifications) when a subject changes state or
+     * when an event occurs.
+     *
+     * @tparam T The type of message or event that the observer will be notified with.
+     */
     template <typename T>
     class TCodeIObserver {
-        public:
-            virtual void notify(T message) = 0;
+    public:
+        /**
+         * @brief Notifies the observer with a message or event.
+         *
+         * This pure virtual method must be implemented by derived classes. It is called
+         * to notify the observer of an event or state change, passing the relevant message
+         * or data to the observer.
+         *
+         * @param message The message or event of type `T` that the observer will be notified with.
+         */
+        virtual void notify(T message) = 0;
     };
 
 };

@@ -15,6 +15,29 @@
 #endif
 
 namespace TCode::Writing {
+
+    /**
+     * @brief Encodes and writes a TCode value to the output stream.
+     * 
+     * This template function takes a name-value pair and encodes it using the `encodeValue` function. 
+     * Once encoded, it writes the resulting data to the output stream set in the provided TCodeContext. 
+     * If the output stream is not set or encoding fails, it returns false.
+     * 
+     * @tparam T The type of the value to be written.
+     * @param name The name of the TCode value to be written (e.g., a key or identifier).
+     * @param value The value to be encoded and written to the output stream.
+     * @param context The TCodeContext that contains references to the output stream.
+     * @return true if the value is successfully encoded and written, false if an error occurs (e.g., no output stream or encoding failure).
+     * 
+     * @note The `context` must have a valid output stream set using `setOutputStream`. If the encoding fails, the function will return false.
+     * 
+     * Example usage:
+     * @code
+     * TCodeContext context;
+     * context.setOutputStream(myOutputStream);
+     * bool success = writeTCodeValue("example", 1234, context);
+     * @endcode
+     */
     template <typename T>
     bool writeTCodeValue(const char *name, const T &value, TCodeContext &context) {
         Output::TCodeIOutputStream *outputStream;
