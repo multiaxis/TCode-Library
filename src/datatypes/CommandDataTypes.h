@@ -47,11 +47,13 @@ namespace TCode::Datatypes {
      * @brief TCode Command Union
      */
     typedef union _TCodeEvent {
-        CommandType commandType;
+        CommandType commandType = CommandType::None;
         DeviceCommandEvent deviceCommand;
         AxisCommandEvent axisCommand;
         SetupCommandEvent setupCommand;
         FirmwareCommandEvent firmwareCommand;
     } TCodeEvent;
+
+    #define size_value sizeof(TCodeEvent);
 
 }

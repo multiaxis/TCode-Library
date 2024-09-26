@@ -30,6 +30,9 @@
 #include "events/TEventRunner.h"
 #include "parsing/TParser.h"
 
+#include "observer/TObserver.h"
+#include "observer/TObserverManager.h"
+
 namespace TCode {
     class TCodeManager {
     public:
@@ -56,11 +59,17 @@ namespace TCode {
         void setSettingManager(Settings::TCodeSettingsInterface *settings);
         void setOutputStream(Output::TCodeIOutputStream *stream);
 
+        void registerEventObserver(Observer::TCodeIObserver<Datatypes::TCodeEvent>* observer);
+        void setEventNotify(bool notify);
+
     private:
         TCodeContext context;
         Axis::TCodeAxisManager axisManager;
         Module::TCodeModuleManager moduleManager;
         Events::TCodeEventReader eventReader;
+        Observer::TCodeObserverManager<Datatypes::TCodeEvent> eventObserverManager;
+
+        bool notifyOnly = false;
 
         void runProcessedCommands();
     };

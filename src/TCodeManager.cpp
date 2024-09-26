@@ -78,10 +78,20 @@ namespace TCode {
         context.setOutputStream(stream);
     }
 
+    void TCodeManager::registerEventObserver(Observer::TCodeIObserver<Datatypes::TCodeEvent> *observer) {
+        eventObserverManager.registerObserver(observer);
+    }
+
+    void TCodeManager::setEventNotify(bool notify) {
+        notifyOnly = notify;
+    }
+
     void TCodeManager::runProcessedCommands() {
         Datatypes::TCodeEvent event;
         while (eventReader.getNext(event)) {
-            Events::runEvent(context, event);
+            eventObserverManager.notify(event);
+            if(!notifyOnly)
+                Events::runEvent(context, event);
         }
     }
 

@@ -189,7 +189,6 @@ namespace TCode::TParser {
 
     bool parseAxisExtention(size_t &index, const char *buffer, const size_t length, Datatypes::AxisExtentionType &extentionType, unsigned long &commandExtention) {
         extentionType = getExtentionType(index, buffer, length);
-
         size_t logValue;
         if (!TString::readInt(index, buffer, length, commandExtention, logValue))
             return false;
@@ -334,8 +333,8 @@ namespace TCode::TParser {
         case Datatypes::CommandType::Axis: {
             //LogHandler::info(TCODE_PARSER_TAG, "Command Type : Axis");
             Datatypes::AxisCommandEvent result;
-            out.commandType = Datatypes::CommandType::Axis;
             if (TParser::parseAxisCommand(buffer, length, result)) {
+                result.commandType = Datatypes::CommandType::Axis;
                 out.axisCommand = result;
                 //LogHandler::info(TCODE_PARSER_TAG, "Value: %f", result.data.commandValue);
                 //LogHandler::info(TCODE_PARSER_TAG, "Extention Type:%d", (int)result.data.extentionType);
@@ -348,7 +347,7 @@ namespace TCode::TParser {
             //LogHandler::info(TCODE_PARSER_TAG, "Command Type : Device");
             Datatypes::DeviceCommandEvent result;
             if (TParser::parseDeviceCommand(buffer, length, result)) {
-                out.commandType = Datatypes::CommandType::Device;
+                result.commandType = Datatypes::CommandType::Device;
                 out.deviceCommand = result;
                 return true;
             }
@@ -358,7 +357,7 @@ namespace TCode::TParser {
             //LogHandler::info(TCODE_PARSER_TAG, "Command Type : Setup");
             Datatypes::SetupCommandEvent result;
             if (TParser::parseSetupCommand(buffer, length, result)) {
-                out.commandType = Datatypes::CommandType::Setup;
+                result.commandType = Datatypes::CommandType::Setup;
                 out.setupCommand = result;
                 return true;
             }
@@ -368,7 +367,7 @@ namespace TCode::TParser {
             //LogHandler::info(TCODE_PARSER_TAG, "Command Type : Firmware");
             Datatypes::FirmwareCommandEvent result;
             if (TParser::parseFirmwareCommand(buffer, length, result)) {
-                out.commandType = Datatypes::CommandType::Firmware;
+                result.commandType = Datatypes::CommandType::Firmware;
                 out.firmwareCommand = result;
                 return true;
             }
