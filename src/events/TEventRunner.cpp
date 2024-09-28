@@ -50,23 +50,24 @@ namespace TCode::Events {
             int minLog = 4;
             float max = 1.0;
             int maxLog = 4;
-
             String idString = TString::axisIdToString(axis->getId());
-            String settingName = "AXIS-MIN-" + idString;
-            if (!settingManager->getSetting(settingName.c_str(), min))
-                settingManager->setSetting(settingName.c_str(), 0.0f);
+            if(settingManager != nullptr) {
+                String settingName = "AXIS-MIN-" + idString;
+                if (!settingManager->getSetting(settingName.c_str(), min))
+                    settingManager->setSetting(settingName.c_str(), 0.0f);
 
-            settingName = "AXIS-MIN-LOG-" + idString;
-            if (!settingManager->getSetting(settingName.c_str(), minLog))
-                settingManager->setSetting(settingName.c_str(), 4);
+                settingName = "AXIS-MIN-LOG-" + idString;
+                if (!settingManager->getSetting(settingName.c_str(), minLog))
+                    settingManager->setSetting(settingName.c_str(), 4);
 
-            settingName = "AXIS-MAX-" + idString;
-            if (!settingManager->getSetting(settingName.c_str(), max))
-                settingManager->setSetting(settingName.c_str(), 1.0f);
+                settingName = "AXIS-MAX-" + idString;
+                if (!settingManager->getSetting(settingName.c_str(), max))
+                    settingManager->setSetting(settingName.c_str(), 1.0f);
 
-            settingName = "AXIS-MAX-LOG-" + idString;
-            if (!settingManager->getSetting(settingName.c_str(), maxLog))
-                settingManager->setSetting(settingName.c_str(), 4);
+                settingName = "AXIS-MAX-LOG-" + idString;
+                if (!settingManager->getSetting(settingName.c_str(), maxLog))
+                    settingManager->setSetting(settingName.c_str(), 4);
+            }
 
             uint8_t logOut;
             unsigned long tcodeMin = TMath::getTCodeFromFloat(min, minLog, logOut);
@@ -143,11 +144,8 @@ namespace TCode::Events {
             break;
         }
         case Datatypes::DeviceCommandType::GetAssignedAxisValues: {
-            Settings::TCodeSettingsInterface *settingManager;
-            if (!context.getSettingManager(settingManager)) {
-                // LogHandler::error("TEventRunner", "Cannot Get Values Setting manager is not set");
-                return false;
-            }
+            Settings::TCodeSettingsInterface *settingManager = nullptr;
+            context.getSettingManager(settingManager);
             printSavedAxisValues(axisManager, settingManager, outputStream);
             break;
         }

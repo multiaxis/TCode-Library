@@ -231,8 +231,6 @@ namespace TCode::TParser {
             return false;
         }
 
-        
-
         if (!TString::readTCodeFloat(index, buffer, length, tangent, logValue))
             return false;
 

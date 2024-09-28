@@ -78,10 +78,10 @@ namespace TCode::Axis {
     const float TCodeAxis::getPosition() {
         unsigned long currentTimeMicros = micros();
         unsigned long currentTime = millis();
-        unsigned long delta = (currentState.endTime - currentState.startTime) * 1000;
-        unsigned long ctDelta = currentTimeMicros - (currentState.startTime * 1000);
-
-        float position = TMath::interpolate(ctDelta, 0, currentState.startPosition, currentState.startRamp, delta, currentState.endPosition, currentState.endRamp);
+        float microsFraction;
+        modf(((float)currentTimeMicros / 1000.0f),&microsFraction);
+        float currentTimeFloat = currentTime + microsFraction;
+        float position = TMath::interpolate(currentTimeFloat, currentState.startTime, currentState.startPosition, currentState.startRamp, currentState.endTime, currentState.endPosition, currentState.endRamp);
         return position;
     }
 
